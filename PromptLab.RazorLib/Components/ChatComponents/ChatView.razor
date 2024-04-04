@@ -1,0 +1,16 @@
+﻿@inherits AppComponentBase
+<CascadingValue Value="Timestamps" Name="Timestamps" TValue="bool">
+    <div @ref=_chatColumn style="@($"height:{Height}; overflow:auto; width:100%;font-family: Arial Narrow")">
+        @foreach (var message in ChatState?.ChatMessages ?? [])
+        {
+            @if (IsLogProbView && message.Role == Role.Assistant)
+            {
+                <TextAsLogProbTokens TokenStrings="message.TokenStrings"></TextAsLogProbTokens>
+            }
+            else
+            {
+                <MessageView Message="message"></MessageView>
+            }
+        }
+    </div>
+</CascadingValue>

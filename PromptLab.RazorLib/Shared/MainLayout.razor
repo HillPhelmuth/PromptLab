@@ -1,0 +1,44 @@
+﻿@inherits LayoutComponentBase
+
+<RadzenLayout Style="height:99vh;grid-template-columns: auto 1fr auto; grid-template-areas: 'rz-header rz-header rz-header' 'rz-sidebar rz-body rz-right-sidebar'">
+    <RadzenHeader Style="height:2.5rem;">
+        <RadzenRow>
+            <RadzenColumn Size="1">
+                <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+            </RadzenColumn>
+            <RadzenColumn Size="10"></RadzenColumn>
+            <RadzenColumn Size="1">
+                @* <RadzenSidebarToggle Click="@(() => rightSidebarExpanded = !rightSidebarExpanded)" /> *@
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenHeader>
+    <RadzenSidebar Responsive="false" @bind-Expanded="@sidebarExpanded" style="width:250px">
+        <RadzenPanelMenu>
+            <RadzenPanelMenuItem Text="Application Settings">
+                <AppSettingsMenu></AppSettingsMenu>
+            </RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Chat Settings">
+                <ChatSettingsMenu></ChatSettingsMenu>
+            </RadzenPanelMenuItem>
+        </RadzenPanelMenu>
+        
+    </RadzenSidebar>
+    <RadzenBody Style="padding:0; height:99vh" @onclick="CloseSidebars">@Body</RadzenBody>
+    @* <RadzenSidebar @bind-Expanded="@rightSidebarExpanded" Style="width: 250px; grid-area: rz-right-sidebar">
+        <div class="rz-p-4">
+            Right Sidebar
+        </div>
+    </RadzenSidebar> *@
+</RadzenLayout>
+<RadzenComponents />
+@code {
+    private bool sidebarExpanded = false;
+    private bool rightSidebarExpanded = false;
+    private void CloseSidebars()
+    {
+        sidebarExpanded = false;
+        rightSidebarExpanded = false;
+        StateHasChanged();
+    }
+
+}

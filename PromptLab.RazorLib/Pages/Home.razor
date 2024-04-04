@@ -1,0 +1,48 @@
+﻿@page "/"
+@inherits AppComponentBase
+<RadzenRow>
+    <RadzenColumn Size="4">
+        <RadzenCard>
+            <RadzenText Text="System Prompt" TextAlign="TextAlign.Center" TextStyle="TextStyle.Subtitle1"></RadzenText>
+            <RadzenTemplateForm TItem="SystemPromptForm" Data="_systemPromptForm" Submit="SubmitSystemPrompt">
+                <RadzenButton Size="ButtonSize.ExtraSmall" Text="Update Prompt" ButtonType="ButtonType.Submit"></RadzenButton>
+                <RadzenCard>
+                    <RadzenHtmlEditor @bind-Value=@_systemPromptForm.SystemPromptHtml style="height: 85vh;">
+                        <RadzenHtmlEditorUndo />
+                        <RadzenHtmlEditorRedo />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorBold />
+                        <RadzenHtmlEditorItalic />
+                        <RadzenHtmlEditorUnderline />
+                        <RadzenHtmlEditorStrikeThrough />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorUnorderedList/>
+                        <RadzenHtmlEditorOrderedList />
+                        <RadzenHtmlEditorFontSize />
+                        <RadzenHtmlEditorFormatBlock />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorLink />
+                        <RadzenHtmlEditorUnlink />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorSource />
+                    </RadzenHtmlEditor>
+                </RadzenCard>
+            </RadzenTemplateForm>
+        </RadzenCard>
+    </RadzenColumn>
+    <RadzenColumn Size="8" Style="position:relative">
+        <RadzenCard>
+
+            @* 
+            <RadzenButton Style="position:absolute; left:2rem; top: 2rem" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="clear" Click="ClearChat"></RadzenButton> *@
+
+            <ChatView ResetOnClose="false" ViewId="chatWithSk" Height="85vh" IsLogProbView=AppState.IsLogProbView Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
+        </RadzenCard>
+
+        <RadzenCard Style="position:relative"> <UserInput ButtonLabel="Send" HelperText="User Input" MessageSubmit="HandleInput" IsBusy="_isBusy"></UserInput></RadzenCard>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+
+}

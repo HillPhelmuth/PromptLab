@@ -1,0 +1,8 @@
+﻿@inherits AppComponentBase
+<RadzenCard class="@Message.CssClass">
+    <div @ref=_ref style="@("width:100%")">@((MarkupString)AsHtml(Message.Content))</div>
+    @if (AppState.ShowTimestamps)
+    {
+        <RadzenText Style="color:white" TextStyle="TextStyle.Overline">@Message.TimeStamp.ToString("g")</RadzenText>
+    }
+</RadzenCard>

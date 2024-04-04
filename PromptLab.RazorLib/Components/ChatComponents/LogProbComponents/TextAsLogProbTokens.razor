@@ -1,0 +1,10 @@
+﻿<CascadingValue Value="SpecifiedTokens" Name="SpecifiedTokens">
+    <RadzenCard Style="max-width: 100%;word-wrap: break-word; overflow-wrap: break-word;">
+        @foreach (var item in TokenStrings)
+        {
+        <LogProbTokenDisplay OnClick="HandleSelectedTokenString" TokenString="item"></LogProbTokenDisplay>
+        }
+    </RadzenCard>
+   
+    
+</CascadingValue>

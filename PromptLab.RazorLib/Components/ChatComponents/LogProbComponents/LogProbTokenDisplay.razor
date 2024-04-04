@@ -1,0 +1,55 @@
+﻿@using Radzen.Blazor.Rendering
+@if (TokenString.StringValue.Contains('\n'))
+{
+    <br/>
+}
+@* @onclick="@(() => _popup.ToggleAsync(_ref))" *@
+<span style="cursor: pointer" @ref="_ref" @onclick="@(() => OnClick.InvokeAsync(TokenString))" @onmouseenter="@(() => ShowTooltip(_ref, TokenString))">
+    @((MarkupString)_textAsHtml)
+</span>
+@* <Popup @ref=_popup Lazy="true" Style="display:none;position:absolute;height:300px;width:200px;padding:5px;border:var(--rz-panel-border);background-color:var(--rz-panel-background-color);">
+    <RadzenText Text="Top 5 alternatives"></RadzenText>
+    <RadzenButton Style="position:absolute; right:4px;top:4px" Icon="close" Size="ButtonSize.ExtraSmall" Click="@(() => _popup.ToggleAsync(_ref))"></RadzenButton>
+    <RadzenDataGrid Data="TokenString.TopLogProbs" TItem="TokenString" Density="Density.Compact">
+        <Columns>
+            <RadzenDataGridColumn TItem="TokenString" Property="@nameof(TokenString.StringValue)" Title="Token">
+                <Template Context="token">
+                    @if (TokenString.StringValue == token.StringValue)
+                    {
+                        <strong>@token.StringValue</strong>
+                    }
+                    else
+                    {
+                        @token.StringValue
+                    }
+
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="TokenString" Property="@nameof(TokenString.NormalizedLogProbability)" Title="Probability">
+                <Template Context="token">
+                    @if (TokenString.StringValue == token.StringValue)
+                    {
+                        <strong>@token.NormalizedLogProbability.ToString("P3")</strong>
+                    }
+                    else
+                    {
+                        @token.NormalizedLogProbability.ToString("P3")
+                    }
+
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</Popup> *@
+@code {
+    void ShowTooltipWithHtml(ElementReference elementReference, List<TokenString> alternateTokens, TooltipOptions? options = null) => TooltipService.Open(elementReference, ds =>
+
+        @<ol>
+    @foreach (var item in alternateTokens){
+    <li>
+        <h6>@item.StringValue</h6>
+        <p>@item.NormalizedLogProbability.ToString("P2")</p>
+    </li>
+    }
+</ol>, options);
+}
