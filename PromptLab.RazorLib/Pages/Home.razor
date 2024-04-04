@@ -33,8 +33,8 @@
     <RadzenColumn Size="8" Style="position:relative">
         <RadzenCard>
 
-            @* 
-            <RadzenButton Style="position:absolute; left:2rem; top: 2rem" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="clear" Click="ClearChat"></RadzenButton> *@
+            
+            <RadzenButton Style="position:absolute; left:2rem; top: 2rem" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="clear" Click="ClearChat"></RadzenButton>
 
             <ChatView ResetOnClose="false" ViewId="chatWithSk" Height="85vh" IsLogProbView=AppState.IsLogProbView Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
         </RadzenCard>
