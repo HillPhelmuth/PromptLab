@@ -40,7 +40,7 @@ public partial class PromptHelpPage
 	{
 		if (args.PropertyName == nameof(AppState.PromptToSave))
 		{
-			var properties = new Dictionary<string, object> { ["Message"] = AppState.PromptToSave, ["ShowConfirmButton"] = true };
+			var properties = new Dictionary<string, object> { ["MessageText"] = AppState.PromptToSave, ["ShowConfirmButton"] = true };
 			bool save = await DialogService.OpenAsync<MessageModalWindow>("Save Prompt", properties);
 			if (save)
 			{

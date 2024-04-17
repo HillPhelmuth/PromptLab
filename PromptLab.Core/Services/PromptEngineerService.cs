@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using PromptLab.Core.Models;
+#pragma warning disable SKEXP0001
 
 namespace PromptLab.Core.Services;
 
@@ -87,6 +88,7 @@ public class PromptEngineerService
                 LogItem?.Invoke(new LogEntry(jsonResult, DisplayType.Json, context.Function.Name, context.Function.Description));
                 break;
             }
+			case "GeneralExpertAdvice":
             case "PromptExpertAdvice":
             {
                 var result = context.Result.GetValue<string>()!;
