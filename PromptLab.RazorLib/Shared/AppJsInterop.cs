@@ -46,6 +46,17 @@ namespace PromptLab.RazorLib.Shared
                 Console.WriteLine($"Error on SetAppTheme: {ex.Message}");
             }
         }
+        public async ValueTask ShowJsonViewer(ElementReference element, object jsonObj)
+        {
+            try
+            {
+                await (await _moduleTask.Value).InvokeVoidAsync("showJsonViewer", element, jsonObj);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error on ShowJsonViewer: {ex.Message}");
+            }
+        }
         public async ValueTask DisposeAsync()
         {
             try

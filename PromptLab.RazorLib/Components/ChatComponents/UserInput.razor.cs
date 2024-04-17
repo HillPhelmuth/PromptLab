@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using PromptLab.RazorLib.ChatModels;
 
 namespace PromptLab.RazorLib.Components.ChatComponents;
 
@@ -17,6 +18,8 @@ public partial class UserInput : ComponentBase
     public EventCallback<string> MessageChanged { get; set; }
     [Parameter]
     public UserInputType UserInputType { get; set; }
+    [Parameter]
+    public UserInputFieldType UserInputFieldType { get; set; }
     [Parameter]
     public EventCallback<UserInputRequest> UserInputSubmit { get; set; }
     [Parameter]
@@ -41,6 +44,13 @@ public partial class UserInput : ComponentBase
     {
         CancelRequest.InvokeAsync();
     }
+    private void ToggleInputType()
+    {
+        UserInputFieldType = UserInputFieldType == UserInputFieldType.TextBox
+            ? UserInputFieldType.TextArea
+            : UserInputFieldType.TextBox;
+        StateHasChanged();
+    }
     private void SubmitRequest(RequestForm form)
     {
         MessageSubmit.InvokeAsync(form.UserInputRequest.ChatInput);
@@ -54,18 +64,4 @@ public partial class UserInput : ComponentBase
         };
         StateHasChanged();
     }
-}
-
-public enum UserInputType
-{
-    Chat,
-    Ask,
-    Both
-}
-
-public class UserInputRequest
-{
-    public string? AskInput { get; set; }
-    public string? ChatInput { get; set; }
-    public UserInputType UserInputType { get; set;}
 }

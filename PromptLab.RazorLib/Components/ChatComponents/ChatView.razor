@@ -1,4 +1,5 @@
-﻿@inherits AppComponentBase
+﻿@using PromptLab.RazorLib.ChatModels
+@inherits AppComponentBase
 <CascadingValue Value="Timestamps" Name="Timestamps" TValue="bool">
     <div @ref=_chatColumn style="@($"height:{Height}; overflow:auto; width:100%;font-family: Arial Narrow")">
         @foreach (var message in ChatState?.ChatMessages ?? [])

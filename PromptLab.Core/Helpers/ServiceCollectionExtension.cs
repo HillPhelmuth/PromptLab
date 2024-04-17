@@ -7,7 +7,7 @@ namespace PromptLab.Core.Helpers
     {
         public static IServiceCollection AddPromptLab(this IServiceCollection services)
         {
-            return services.AddScoped<ChatService>().AddSingleton<FilePickerService>();
+            return services.AddScoped<ChatService>().AddSingleton<LocalFileService>().AddScoped<PromptEngineerService>();
         }
     }
 }

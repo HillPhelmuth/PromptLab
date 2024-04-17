@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PromptLab.Core;
 using System.ComponentModel;
+using Microsoft.Extensions.Logging;
 
 namespace PromptLab.RazorLib.Shared;
 
@@ -8,6 +9,9 @@ public class AppComponentBase : ComponentBase, IDisposable
 {
     [Inject]
     protected AppState AppState { get; set; } = default!;
+    [Inject]
+    private ILoggerFactory LoggerFactory { get; set; } = default!;
+    protected ILogger Logger => LoggerFactory.CreateLogger(GetType());
 
     protected override Task OnInitializedAsync()
     {
@@ -20,10 +24,18 @@ public class AppComponentBase : ComponentBase, IDisposable
         if (!InterestingProperties.Contains(args.PropertyName!)) return;
         InvokeAsync(StateHasChanged);
     }
+       
+    protected virtual void Dispose(bool disposing)
+    {
+	    if (disposing)
+	    {
+			AppState.PropertyChanged -= UpdateState;
+		}
+    }
 
     public void Dispose()
     {
-        GC.SuppressFinalize(this);
-        AppState.PropertyChanged -= UpdateState;
+	    Dispose(true);
+	    GC.SuppressFinalize(this);
     }
 }

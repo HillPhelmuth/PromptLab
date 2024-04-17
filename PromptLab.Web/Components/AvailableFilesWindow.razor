@@ -1,0 +1,20 @@
+﻿<RadzenCard>
+	<RadzenCard>
+		<RadzenFormField Text="Saved Prompts">
+			<Start><RadzenIcon Icon="folder_open"></RadzenIcon></Start>
+			<ChildContent>
+				<RadzenDropDown Data=AvailableFiles @bind-Value=_selectedFile AllowFiltering=true FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"></RadzenDropDown>
+			</ChildContent>
+		</RadzenFormField>
+	</RadzenCard>
+	<RadzenCard>
+		<RadzenRow>
+			<RadzenColumn>
+				<RadzenButton Icon="file_open" Text="Select" Click=SelectFile ButtonStyle="ButtonStyle.Success"></RadzenButton>
+			</RadzenColumn>
+			<RadzenColumn>
+				<RadzenButton Icon="cancel" ButtonStyle="ButtonStyle.Warning" Text="Cancel" Click=Cancel></RadzenButton>
+			</RadzenColumn>
+		</RadzenRow>
+	</RadzenCard>
+</RadzenCard>

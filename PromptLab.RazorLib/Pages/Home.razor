@@ -1,48 +1,47 @@
-﻿@page "/"
+﻿@using PromptLab.RazorLib.ChatModels
+@using PromptLab.Core.Plugins
+@using Microsoft.Extensions.Configuration
 @inherits AppComponentBase
 <RadzenRow>
-    <RadzenColumn Size="4">
-        <RadzenCard>
-            <RadzenText Text="System Prompt" TextAlign="TextAlign.Center" TextStyle="TextStyle.Subtitle1"></RadzenText>
-            <RadzenTemplateForm TItem="SystemPromptForm" Data="_systemPromptForm" Submit="SubmitSystemPrompt">
-                <RadzenButton Size="ButtonSize.ExtraSmall" Text="Update Prompt" ButtonType="ButtonType.Submit"></RadzenButton>
-                <RadzenCard>
-                    <RadzenHtmlEditor @bind-Value=@_systemPromptForm.SystemPromptHtml style="height: 85vh;">
-                        <RadzenHtmlEditorUndo />
-                        <RadzenHtmlEditorRedo />
-                        <RadzenHtmlEditorSeparator />
-                        <RadzenHtmlEditorBold />
-                        <RadzenHtmlEditorItalic />
-                        <RadzenHtmlEditorUnderline />
-                        <RadzenHtmlEditorStrikeThrough />
-                        <RadzenHtmlEditorSeparator />
-                        <RadzenHtmlEditorUnorderedList/>
-                        <RadzenHtmlEditorOrderedList />
-                        <RadzenHtmlEditorFontSize />
-                        <RadzenHtmlEditorFormatBlock />
-                        <RadzenHtmlEditorSeparator />
-                        <RadzenHtmlEditorLink />
-                        <RadzenHtmlEditorUnlink />
-                        <RadzenHtmlEditorSeparator />
-                        <RadzenHtmlEditorSource />
-                    </RadzenHtmlEditor>
-                </RadzenCard>
-            </RadzenTemplateForm>
-        </RadzenCard>
-    </RadzenColumn>
-    <RadzenColumn Size="8" Style="position:relative">
-        <RadzenCard>
+	<RadzenColumn Size="4">
+		
+		<RadzenCard>
+			<div>
+				@if (!string.IsNullOrEmpty(_savedPrompt))
+				{
+					<RadzenText TextStyle="TextStyle.Caption">Saved as: @_savedPrompt</RadzenText>
+				}
+			</div>
+			<RadzenFormField Text="System Prompt Editor" Style="width:100%">
+				<RadzenCard Style="padding:.5rem; width:100%">
+					<RadzenHtmlEditor @bind-Value=@AppState.ActiveSystemPromptHtml style="height: 75vh;width:100%" Execute="HandleExecute">
+						<RadzenHtmlEditorUndo />
+						<RadzenHtmlEditorRedo />
+						<RadzenHtmlEditorSeparator />
+						<RadzenHtmlEditorUnorderedList />
+						<RadzenHtmlEditorOrderedList />
+						<RadzenHtmlEditorFormatBlock />
+						<RadzenHtmlEditorSeparator />
+						<RadzenHtmlEditorSeparator />
+						<RadzenHtmlEditorCustomTool CommandName="Save" Title="Save Prompt" Icon="save" IconColor="green" />
+						<RadzenHtmlEditorCustomTool CommandName="Load" Title="Load Prompt" Icon="file_upload" IconColor="blue" />
+						<RadzenHtmlEditorCustomTool CommandName="Improve" Title="Ask Expert Prompt Engineer For Help" Icon="psychology_alt" IconColor="black" />
+						
+					</RadzenHtmlEditor>
+				</RadzenCard>
+				
+			</RadzenFormField>
+			
+		</RadzenCard>
+	</RadzenColumn>
+	<RadzenColumn Size="8" Style="position:relative">
+		<RadzenCard>
 
-            
-            <RadzenButton Style="position:absolute; left:2rem; top: 2rem" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="clear" Click="ClearChat"></RadzenButton>
+			<RadzenButton Style="position:absolute; left:.5rem; top: 0" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="clear" Click="ClearChat"></RadzenButton>
+			<ChatView ResetOnClose="false" ViewId="chatWithSk" Height="82vh" IsLogProbView=AppState.IsLogProbView Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
+		</RadzenCard>
 
-            <ChatView ResetOnClose="false" ViewId="chatWithSk" Height="85vh" IsLogProbView=AppState.IsLogProbView Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
-        </RadzenCard>
-
-        <RadzenCard Style="position:relative"> <UserInput ButtonLabel="Send" HelperText="User Input" MessageSubmit="HandleInput" IsBusy="_isBusy"></UserInput></RadzenCard>
-    </RadzenColumn>
+		<RadzenCard Style="position:relative"> <UserInput ButtonLabel="Send" HelperText="User Input" MessageSubmit="HandleInput" IsBusy="_isBusy"></UserInput></RadzenCard>
+	</RadzenColumn>
 </RadzenRow>
 
-@code {
-
-}

@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="chat.css" />
+    <link rel="stylesheet" href="PromptLab.Web.styles.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link id="radzen-style" rel="stylesheet" href="_content/Radzen.Blazor/css/standard.css">
+    <link rel="stylesheet" href="js/lib/prism/themes/prism.min.css">
+    <link rel="stylesheet" href="js/lib/prism/themes/prism-funky.min.css">
+    <link rel="stylesheet" href="js/lib/prism/plugins/toolbar/prism-toolbar.min.css" />
+    <HeadOutlet @rendermode="InteractiveServer" />
+</head>
+
+<body>
+    <Routes @rendermode="InteractiveServer" />
+    <script src="_framework/blazor.web.js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
+    <script src="js/lib/prism/prism.min.js"></script>
+    <script src="js/lib/prism/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="js/lib/prism/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="js/lib/prism/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="js/lib\prism\plugins\copy-to-clipboard\prism-copy-to-clipboard.js"></script>
+    <script src=@("https://unpkg.com/@alenaksu/json-viewer@2.0.0/dist/json-viewer.bundle.js")></script>
+    <script>
+	    window.setTheme = (theme) => {
+		    const link = document.getElementById('radzen-style');
+
+		    // Construct the new href value based on the theme parameter
+		    const newHref = `_content/Radzen.Blazor/css/${theme}.css`;
+
+		    // Update the link element's href attribute to the new value
+		    link.href = newHref;
+	    }
+    </script>
+    <script>
+	    window.toggleZoomScreen = (zoomPercent) => {
+		    // document.body.style.zoom = zoomPercent;
+      //       document.body.style.height = "100vh";
+      //       document.body.style.width = "100vw";
+            document.body.style.transform = `scale(${zoomPercent})`;
+	    } 
+    </script>
+</body>
+
+</html>

@@ -32,7 +32,7 @@ public partial class LogProbTokenDisplay : ComponentBase
         {
             var text = TokenString.StringValue;
             var textAsHtml = TextAsHtml(text, TokenString.NormalizedLogProbability);
-            _textAsHtml = textAsHtml!;
+            _textAsHtml = textAsHtml;
         }
         else
         {

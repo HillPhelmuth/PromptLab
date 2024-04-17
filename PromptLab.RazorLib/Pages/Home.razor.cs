@@ -4,102 +4,172 @@ using PromptLab.Core.Services;
 using PromptLab.RazorLib.Components.ChatComponents;
 using ReverseMarkdown;
 using System.Diagnostics;
+using Markdig;
+using PromptLab.RazorLib.ChatModels;
+using System.ComponentModel;
+using Microsoft.Extensions.Logging;
+using Radzen;
+using PromptLab.RazorLib.Components;
 
 namespace PromptLab.RazorLib.Pages;
 
 public partial class Home
 {
-    private ChatView _chatView;
-    private bool _isBusy;
-    [Inject]
-    private FilePickerService FilePickerService { get; set; } = default!;
-    [Inject]
-    private ChatService ChatService { get; set; } = default!;
-    private class SystemPromptForm
-    {
-        public string SystemPromptHtml { get; set; } =
-            """
+	private ChatView _chatView;
+	private bool _isBusy;
+	[Inject]
+	private IFileService FileService { get; set; } = default!;
+	[Inject]
+	private ChatService ChatService { get; set; } = default!;
+	[Inject]
+	private PromptEngineerService PromptEngineerService { get; set; } = default!;
+	[Inject]
+	private DialogService DialogService { get; set; } = default!;
+	private class SystemPromptForm
+	{
+		public string SystemPromptHtml { get; set; } =
+			"""
             <h2>Instructions</h2>
             <p>You are a helpful AI assistant.</p>
             """;
-    }
-    private SystemPromptForm _systemPromptForm = new();
-    protected override List<string> InterestingProperties => [nameof(AppState.IsLogProbView), nameof(AppState.ShowTimestamps)];
-    private async Task PickFile()
-    {
-        var item = FilePickerService.PickFileAsync();
-    }
-    private void ClearChat()
-    {
-        _chatView.ChatState!.Reset();
-    }
-    private void SubmitSystemPrompt(SystemPromptForm systemPromptForm)
-    {
-        var config = new Config
-        {
-            // Include the unknown tag completely in the result (default as well)
-            UnknownTags = Config.UnknownTagsOption.PassThrough,
-            // generate GitHub flavoured markdown, supported for BR, PRE and table tags
-            GithubFlavored = true,
-            // will ignore all comments
-            RemoveComments = true,
-            // remove markdown output for links where appropriate
-            SmartHrefHandling = true
-        };
+	}
+	private SystemPromptForm _systemPromptForm = new();
+	private string _savedPrompt = "";
+	private string _text;
+	protected override List<string> InterestingProperties => [nameof(AppState.IsLogProbView), nameof(AppState.ShowTimestamps), nameof(AppState.ActiveSystemPromptHtml)];
+	protected override Task OnInitializedAsync()
+	{
+		_systemPromptForm.SystemPromptHtml = AppState.ActiveSystemPromptHtml;
+		return base.OnInitializedAsync();
+	}
+	protected override async void UpdateState(object? sender, PropertyChangedEventArgs args)
+	{
+		switch (args.PropertyName)
+		{
+			case nameof(AppState.ActiveSystemPromptHtml):
+				_systemPromptForm.SystemPromptHtml = AppState.ActiveSystemPromptHtml;
+				AppState.ChatSettings.SystemPrompt = AppState.ActiveSystemPrompt;
+				break;
+			case nameof(AppState.PromptToSave):
+				{
+					//var parameters = new Dictionary<string, object> { ["MessageText"] = _text };
+					//var dialogOptions = new DialogOptions { CloseDialogOnOverlayClick = true, Height = "40vh", Width = "40vw", Resizable = true, Draggable = true };
+					//await DialogService.OpenAsync<MessageModalWindow>("Response from Prompt Engineer Agent", parameters, dialogOptions);
+					var properties = new Dictionary<string, object> { ["MessageText"] = AppState.PromptToSave, ["ShowConfirmButton"] = true };
+					var save = await DialogService.OpenAsync<MessageModalWindow>("Save Prompt", properties, new DialogOptions { Height = "80vh", Width = "65vw"});
+					Logger.LogInformation("Save Prompt dialog result: {saveResult}", ((object)save)?.ToString());
+					if (save is bool && save == true)
+					{
+						AppState.ActiveSystemPromptHtml = AsHtml(AppState.PromptToSave);
+					}
 
-        var converter = new Converter(config);
-        var systemPromptAsMarkdown = converter.Convert(systemPromptForm.SystemPromptHtml);
-        Debug.WriteLine(systemPromptAsMarkdown);
-        AppState.ChatSettings.SystemPrompt = systemPromptAsMarkdown;
-    }
-    private async void HandleInput(string input)
-    {
-        _isBusy = true;
-        StateHasChanged();
-        await Task.Delay(1);
-        _chatView.ChatState!.AddUserMessage(input);
-        if (AppState.ChatSettings is {LogProbs: true, Streaming: false})
-        {
-            var choice = await ChatService.GetLogProbs(_chatView.ChatState!.ChatHistory,
-                AppState.ChatSettings.Temperature.GetValueOrDefault(1.0f),
-                AppState.ChatSettings.TopP.GetValueOrDefault(1.0f));
-            var content = choice.Message.Content;
-            var tokenStrings = choice.LogProbabilityInfo.TokenLogProbabilityResults.ToList().AsTokenStrings();
-            AppState.TokenStrings = tokenStrings;
-            _chatView.ChatState!.AddAssistantMessage(content, tokenStrings: tokenStrings);
-            _isBusy = false;
-            StateHasChanged();
-        }
-        else
-        {
-            var settings = AppState.ChatSettings.AsPromptExecutionSettings();
-            var chatSequence = ChatService.StreamingChatResponse(_chatView.ChatState!.ChatHistory, settings,
-                               AppState.ChatSettings.SystemPrompt, AppState.ChatSettings.Model);
-            await ExecuteChatSequence(chatSequence);
-            _isBusy = false;
-            StateHasChanged();
-        }
-    }
-    private async Task ExecuteChatSequence(IAsyncEnumerable<string> chatseq)
-    {
-        var hasStarted = false;
-        await foreach (var response in chatseq)
-        {
-            if (!hasStarted)
-            {
-                hasStarted = true;
-                _chatView!.ChatState!.AddAssistantMessage(response);
-                _chatView!.ChatState!.ChatMessages.LastOrDefault(x => x.Role == Role.Assistant)!
-                    .IsActiveStreaming = true;
-                continue;
-            }
+					break;
+				}
+		}
 
-            _chatView!.ChatState!.UpdateAssistantMessage(response);
-        }
+		base.UpdateState(sender, args);
+	}
+	private async Task PickFile()
+	{
+		var item = await FileService.OpenFileAsync();
+		if (string.IsNullOrEmpty(item)) return;
+		AppState.ActiveSystemPromptHtml = AsHtml(item);
+	}
+	private async Task ImprovePrompt()
+	{
+		_isBusy = true;
+		StateHasChanged();
+		await Task.Delay(1);
+		_text = await PromptEngineerService.HelpFromPromptEngineer(AppState.ActiveSystemPrompt);
+		//var parameters = new Dictionary<string, object> { ["MessageText"] = _text };
+		//var dialogOptions = new DialogOptions { CloseDialogOnOverlayClick = true, Height = "40vh", Width = "80vw", Resizable = true, Draggable = true };
+		//DialogService.Open<MessageModalWindow>("Response from Prompt Engineer Agent", parameters, dialogOptions);
+		_isBusy = false;
+		StateHasChanged();
+	}
+	private async Task SavePrompt()
+	{
+		Logger.LogInformation("Saving system prompt");
+		var item = await FileService.SaveFileAsync("system_prompt.md", AppState.ActiveSystemPrompt);
+		_savedPrompt = item ?? "";
+		StateHasChanged();
+	}
+	private void ClearChat()
+	{
+		_chatView.ChatState.Reset();
+	}
+	
+	private async void HandleExecute(HtmlEditorExecuteEventArgs args)
+	{
+		switch (args.CommandName)
+		{
+			case "Save":
+				await SavePrompt();
+				break;
+			case "Load":
+				await PickFile();
+				break;
+			case "Improve":
+				await ImprovePrompt();
+				break;
+		}
+	}
+	private async void HandleInput(string input)
+	{
+		_isBusy = true;
+		StateHasChanged();
+		await Task.Delay(1);
+		_chatView.ChatState.AddUserMessage(input);
+		if (AppState.ChatSettings is { LogProbs: true })
+		{
+			var choice = await ChatService.GetLogProbs(_chatView.ChatState.ChatHistory,
+				AppState.ChatSettings.Temperature.GetValueOrDefault(1.0f),
+				AppState.ChatSettings.TopP.GetValueOrDefault(1.0f), AppState.ActiveSystemPrompt, AppState.ChatSettings.Model, AppState.ChatSettings.ResponseFormat.GetDescription());
+			var content = choice.Message.Content;
+			var tokenStrings = choice.LogProbabilityInfo.TokenLogProbabilityResults.ToList().AsTokenStrings();
+			AppState.TokenStrings = tokenStrings;
+			_chatView.ChatState.AddAssistantMessage(content, tokenStrings: tokenStrings);
+			_isBusy = false;
+			StateHasChanged();
+		}
+		else
+		{
+			var settings = AppState.ChatSettings.AsPromptExecutionSettings();
+			var chatSequence = ChatService.StreamingChatResponse(_chatView.ChatState.ChatHistory, settings,
+							   AppState.ActiveSystemPrompt, AppState.ChatSettings.Model);
+			await ExecuteChatSequence(chatSequence);
+			_isBusy = false;
+			StateHasChanged();
+		}
+	}
+	private async Task ExecuteChatSequence(IAsyncEnumerable<string> chatseq)
+	{
+		var hasStarted = false;
+		await foreach (var response in chatseq)
+		{
+			if (!hasStarted)
+			{
+				hasStarted = true;
+				_chatView.ChatState.AddAssistantMessage(response);
+				_chatView.ChatState.ChatMessages.LastOrDefault(x => x.Role == Role.Assistant)!
+					.IsActiveStreaming = true;
+				continue;
+			}
 
-        var lastAsstMessage =
-            _chatView!.ChatState!.ChatMessages.LastOrDefault(x => x.Role == Role.Assistant);
-        if (lastAsstMessage is not null)
-            lastAsstMessage.IsActiveStreaming = false;
-    }
+			_chatView.ChatState.UpdateAssistantMessage(response);
+		}
+
+		var lastAsstMessage =
+			_chatView.ChatState.ChatMessages.LastOrDefault(x => x.Role == Role.Assistant);
+		if (lastAsstMessage is not null)
+			lastAsstMessage.IsActiveStreaming = false;
+	}
+	private string AsHtml(string? text)
+	{
+		if (text == null) return "";
+		var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+		var result = Markdown.ToHtml(text, pipeline);
+		return result;
+
+	}
 }

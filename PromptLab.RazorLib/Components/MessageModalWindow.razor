@@ -1,0 +1,12 @@
+﻿@inherits AppComponentBase
+<RadzenCard>
+	@((MarkupString)AsHtml(MessageText))
+</RadzenCard>
+@if (ShowConfirmButton)
+{
+	<RadzenCard Style="padding-top:0">
+		<RadzenText TextAlign="TextAlign.Center" Text="Replace your prompt?" TextStyle="TextStyle.Subtitle1"></RadzenText>
+		<RadzenButton Text="Accept" Click=Confirm></RadzenButton>
+		<RadzenButton Text="Cancel" Click="Cancel"></RadzenButton>
+	</RadzenCard>
+}

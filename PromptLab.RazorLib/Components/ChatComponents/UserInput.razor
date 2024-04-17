@@ -1,26 +1,24 @@
-﻿<RadzenRow Style="position:absolute; bottom:2px; height:max-content; width:95%">
+﻿@using PromptLab.RazorLib.ChatModels
+<RadzenRow Style="position:absolute; bottom:2px; height:max-content; width:95%">
     <RadzenColumn Size="12" SizeLG="12">
-        <RadzenCard Style="padding-top:2px;padding-bottom:6px">
+        <RadzenCard Style="padding-top:2px;padding-bottom:6px" Variant="Variant.Text">
             <RadzenTemplateForm Data="_requestForm" TItem="RequestForm" Submit="SubmitRequest">
                 <RadzenRow>
                     <RadzenColumn Size="10">
-                        
-                        @if (_requestForm.UserInputRequest.UserInputType is UserInputType.Ask or UserInputType.Both)
-                        {
-                            <RadzenFormField Text="Ask for Planner (optional)" Style="width: 100%">
-                                <ChildContent>
-                                    <RadzenTextBox ReadOnly="_isDisabled" Style="width: 100%" @bind-Value="@_requestForm.UserInputRequest.AskInput"></RadzenTextBox>
-                                </ChildContent>
-                                <Helper>
-                                    @* <RadzenRequiredValidator Component="Input" Text="@($"{HelperText} required")"></RadzenRequiredValidator> *@
-                                </Helper>
-                            </RadzenFormField>
-                        }
                         @if (_requestForm.UserInputRequest.UserInputType is UserInputType.Chat or UserInputType.Both)
                         {
                             <RadzenFormField Text="@HelperText" Style="width: 100%">
                                 <ChildContent>
-                                    <RadzenTextBox ReadOnly="_isDisabled" Name="Input" Style="width: 100%" @bind-Value="@_requestForm.UserInputRequest.ChatInput"></RadzenTextBox>
+	                                @switch (UserInputFieldType)
+	                                {
+		                                case UserInputFieldType.TextBox:
+			                                <RadzenTextBox ReadOnly="_isDisabled" Name="Input" Style="width: 100%" @bind-Value="@_requestForm.UserInputRequest.ChatInput"></RadzenTextBox>
+			                                break;
+		                                case UserInputFieldType.TextArea:
+			                                <RadzenTextArea ReadOnly="_isDisabled" Name="Input" Style="width: 100%; height:5rem" @bind-Value="@_requestForm.UserInputRequest.ChatInput"></RadzenTextArea>
+			                                break;
+	                                }
+
                                 </ChildContent>
                                 <Helper>
                                     <RadzenRequiredValidator Component="Input" Text="@($"{HelperText} required")"></RadzenRequiredValidator>
@@ -29,9 +27,11 @@
                         }
                     </RadzenColumn>
                     <RadzenColumn Size="2" SizeLG="2" Style="display: flex; align-items:center">
-                        <RadzenCard Style="display: flex; align-items: center; justify-items: center; justify-content:center; justify-items:center; padding:0">
+                        <RadzenCard Variant=Variant.Text Style="display: flex; align-items: center; justify-items: center; justify-content:center; justify-items:center; padding:0">
+	                        <RadzenButton ButtonStyle=ButtonStyle.Info Size="ButtonSize.ExtraSmall" Icon="@(UserInputFieldType == UserInputFieldType.TextBox ? "expand":"unfold_less")" Click="ToggleInputType"></RadzenButton>
                             <RadzenButton Disabled="_isDisabled" ButtonType="ButtonType.Submit" Size=ButtonSize.Small Icon="send" IsBusy="IsBusy" BusyText="Sending..." Text="@ButtonLabel"></RadzenButton>
-                            <RadzenButton Size="ButtonSize.Small" Icon="block" Click="Cancel"></RadzenButton>
+                            
+                            <RadzenButton Size="ButtonSize.Small" Icon="block" Click="Cancel"></RadzenButton>                            
                         </RadzenCard>
                     </RadzenColumn>
                 </RadzenRow>

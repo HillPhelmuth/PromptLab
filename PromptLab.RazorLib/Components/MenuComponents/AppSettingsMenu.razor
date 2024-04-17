@@ -13,6 +13,6 @@
         <RadzenDropDown Style="padding-left:4px;padding-right:4px" @bind-Value=_appSettings.Theme TValue="StyleTheme" Data="@(Enum.GetValues<StyleTheme>())"></RadzenDropDown>
     </RadzenFormField><br />
     <RadzenToggleButton Size="ButtonSize.ExtraSmall" Style="border-radius:30px" @bind-Value=_appSettings.ShowTimestamps ToggleButtonStyle="ButtonStyle.Dark" ButtonStyle=ButtonStyle.Light Text="@(_appSettings.ShowTimestamps ? "HIDE Timestamps" : "SHOW Timestamps")" Icon="toggle_on" ToggleIcon="toggle_off"></RadzenToggleButton><br />
-    <RadzenToggleButton Size="ButtonSize.ExtraSmall" Style="border-radius:30px" @bind-Value=_appSettings.ShowTimestamps ToggleButtonStyle="ButtonStyle.Dark" ButtonStyle=ButtonStyle.Light Text="@(_appSettings.ShowTimestamps ? "Use LogProb view" : "Show Timestamps")" Icon="toggle_on" ToggleIcon="toggle_off"></RadzenToggleButton><br />
+    
     <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Small" Text="Save"></RadzenButton>
 </RadzenTemplateForm>

@@ -1,8 +1,9 @@
 ﻿@inherits AppComponentBase
-<RadzenCard class="@Message.CssClass">
+<div style="position:relative" class="@Message.CssClass">
+ <RadzenButton Size=ButtonSize.ExtraSmall Variant=Variant.Text Style="position:absolute; right:4px; top: 2px;" Icon="remove" title="Remove message" Click="@(() => OnRemove.InvokeAsync(Message))"></RadzenButton>
     <div @ref=_ref style="@("width:100%")">@((MarkupString)AsHtml(Message.Content))</div>
     @if (AppState.ShowTimestamps)
     {
         <RadzenText Style="color:white" TextStyle="TextStyle.Overline">@Message.TimeStamp.ToString("g")</RadzenText>
     }
-</RadzenCard>
+</div>

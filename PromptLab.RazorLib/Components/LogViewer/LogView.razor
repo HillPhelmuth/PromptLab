@@ -1,0 +1,10 @@
+﻿@inherits AppComponentBase
+
+@foreach (var log in Logs ?? [])
+{
+	<RadzenCard>
+		<RadzenText TextStyle="TextStyle.Subtitle2">@log.Label</RadzenText>
+		<RadzenText TextStyle="TextStyle.Body2">@log.Description</RadzenText>
+		<RadzenButton Text="View Results" Size=ButtonSize.ExtraSmall Click="@(() => OpenLogItem(log))" Variant="Variant.Text"></RadzenButton>
+	</RadzenCard>
+}

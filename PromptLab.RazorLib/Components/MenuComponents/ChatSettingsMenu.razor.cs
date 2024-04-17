@@ -14,7 +14,7 @@ public partial class ChatSettingsMenu
     private void Submit(ChatSettings chatSettings)
     {
         AppState.ChatSettings = chatSettings;
-        AppState.IsLogProbView = chatSettings.LogProbs;
+        AppState.IsLogProbView = chatSettings.LogProbs && !chatSettings.Model.StartsWith("gemini");
         ChatSettings = chatSettings;
         ChatSettingsChanged.InvokeAsync(chatSettings);
     }

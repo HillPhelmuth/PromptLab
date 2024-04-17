@@ -1,0 +1,25 @@
+﻿<RadzenText TextStyle="TextStyle.Subtitle1" TextAlign="TextAlign.Center" Text="Save Prompt To Brower Storage"></RadzenText>
+<RadzenCard>
+	<RadzenTemplateForm Data=_savePromptForm TItem="SavePromptForm" Submit="Submit">
+
+		<RadzenFormField Text="File Name">
+			<ChildContent>
+				<RadzenTextBox Name="filename" @bind-Value=_savePromptForm.Name></RadzenTextBox>
+			</ChildContent>
+			<Helper>
+				<RadzenText Text="Name your prompt" TextStyle="TextStyle.Caption"></RadzenText>
+				<RadzenRequiredValidator Component="filename"></RadzenRequiredValidator>
+			</Helper>
+		</RadzenFormField>
+		<RadzenCard>
+			<RadzenRow>
+				<RadzenColumn>
+					<RadzenButton Icon="file_open" Text="Select" ButtonType=ButtonType.Submit ButtonStyle="ButtonStyle.Success"></RadzenButton>
+				</RadzenColumn>
+				<RadzenColumn>
+					<RadzenButton Icon="cancel" ButtonStyle="ButtonStyle.Warning" Text="Cancel" Click=Cancel></RadzenButton>
+				</RadzenColumn>
+			</RadzenRow>
+		</RadzenCard>
+	</RadzenTemplateForm>
+</RadzenCard>

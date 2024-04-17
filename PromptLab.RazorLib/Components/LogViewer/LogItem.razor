@@ -1,0 +1,31 @@
+﻿@using System.Text.Json
+@inherits AppComponentBase
+
+@switch (Log?.DisplayType)
+{
+	case DisplayType.Json:
+		<div style="height:max-content; min-height:10px">
+			<json-viewer data="@(JsonSerializer.Deserialize<object>(Log?.Content))" @ref=_ref id="json"></json-viewer>
+		</div>
+		break;
+	case DisplayType.Text:
+		<RadzenText>@Log?.Content</RadzenText>
+		break;
+	case DisplayType.Markdown:
+		<div>@((MarkupString)AsHtml(Log?.Content))</div>
+		break;
+	case DisplayType.Prompt:
+		<div>@((MarkupString)AsHtml(Log?.Content))</div>
+		break;
+}
+<div @ref=_ref></div>
+@code {
+	private async Task ShowInlineDialog()
+	{
+		var settings = new DialogOptions { Left = "100%", Height = "100%", CloseDialogOnOverlayClick = true, ShowTitle = true };
+		DialogService.Open("Rendered Prompt", ds =>
+			@<RadzenCard>
+		<div>@((MarkupString)AsHtml(Log?.Content))</div>
+			</RadzenCard>, settings);
+	}
+}

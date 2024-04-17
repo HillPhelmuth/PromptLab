@@ -1,4 +1,5 @@
-﻿@inherits AppComponentBase
+﻿@using PromptLab.Core.Helpers
+@inherits AppComponentBase
 <RadzenTemplateForm Data="_chatSettings" TItem="ChatSettings" Submit="Submit" Style="display: flex;
                                                                                      justify-content: center;
                                                                                      flex-direction: column;
@@ -6,7 +7,7 @@
                                                                                      flex-wrap: wrap;">
     <RadzenFormField Text="Model">
      <ChildContent>
-         <RadzenTextBox Name="Model" @bind-Value=_chatSettings.Model></RadzenTextBox>
+         <RadzenDropDown Name="Model" @bind-Value=_chatSettings.Model Data="@SettingsOptions.AvailableModels"></RadzenDropDown>
      </ChildContent>
      <Helper>
          <RadzenRequiredValidator Component="Model"></RadzenRequiredValidator>
@@ -37,11 +38,15 @@
             <RadzenNumeric Style="padding:4px;color:darkgray" @bind-Value=_chatSettings.MaxTokens TValue="int?" Min="0" Max="4096" Step="1"></RadzenNumeric>
         </ChildContent>
     </RadzenFormField>
+    <RadzenFormField Text="Response Format">
+     <RadzenDropDown Data="@Enum.GetValues(typeof(ResponseFormat))" @bind-Value=_chatSettings.ResponseFormat></RadzenDropDown>
+    </RadzenFormField>
     <RadzenLabel Style="border-radius:30px">
-        <RadzenCheckBox @bind-Value=_chatSettings.LogProbs></RadzenCheckBox><span style="color:white; margin-left:4px">Use LogProbs Output</span>
+        <RadzenCheckBox Disabled="@(_chatSettings.Model.StartsWith("gemini"))" @bind-Value=_chatSettings.LogProbs></RadzenCheckBox><span style="color:white; margin-left:4px">Use LogProbs Output</span>
     </RadzenLabel>
-    <RadzenLabel Style="border-radius:30px">
+   @*  <RadzenLabel Style="border-radius:30px">
         <RadzenCheckBox @bind-Value=_chatSettings.Streaming></RadzenCheckBox><span style="color:white; margin-left:4px">Use Streaming Output</span>
-    </RadzenLabel><br />
+    </RadzenLabel> *@
+    <br />
     <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Small" Text="Save"></RadzenButton>
 </RadzenTemplateForm>

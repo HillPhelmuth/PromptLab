@@ -13,7 +13,7 @@ public partial class AppSettingsMenu
     [Inject]
     private AppJsInterop AppJsInterop { get; set; } = default!;
     [Inject]
-    private FilePickerService FilePickerService { get; set; } = default!;
+    private IFileService FilePickerService { get; set; } = default!;
     private AppSettings _appSettings = new();
     protected override void OnInitialized()
     {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.ComponentModel;
+using PromptLab.RazorLib.ChatModels;
 using AppJsInterop = PromptLab.RazorLib.Shared.AppJsInterop;
 
 namespace PromptLab.RazorLib.Components.ChatComponents;
@@ -14,6 +15,8 @@ public partial class MessageView
     private string _previousContent = "";
     [CascadingParameter(Name = "Timestamps")]
     public bool Timestamps { get; set; }
+    [Parameter]
+    public EventCallback<Message> OnRemove { get; set; }
     [Inject] private IJSRuntime JsRuntime { get; set; } = default!;
 
     private bool _shouldRender;
