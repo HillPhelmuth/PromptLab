@@ -44,4 +44,10 @@
     <PackageReference Include="ReverseMarkdown" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Data\PromptLab.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
