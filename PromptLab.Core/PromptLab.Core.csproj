@@ -8,16 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="PromptMdFiles\**" />
+    <EmbeddedResource Remove="PromptMdFiles\**" />
+    <None Remove="PromptMdFiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Services\WebFileService.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="PromptMdFiles\openaipromptguide.md" />
     <None Remove="Prompts\openaipromptguide.md" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="PromptMdFiles\openaipromptguide.md" />
     <EmbeddedResource Include="Prompts\openaipromptguide.md" />
   </ItemGroup>
 
