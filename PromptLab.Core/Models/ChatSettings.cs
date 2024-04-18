@@ -22,7 +22,7 @@ public class ChatSettings
 	public ResponseFormat ResponseFormat { get; set; }
 
 	public string SystemPrompt { get; set; } = "You are a helpful AI Assistant";
-	public string Model { get; set; } = "gpt-3.5-turbo";
+	public string Model { get; set; } = "gpt-4-turbo";
 
 	public OpenAIPromptExecutionSettings AsPromptExecutionSettings()
 	{
