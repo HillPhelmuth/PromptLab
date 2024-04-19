@@ -13,6 +13,7 @@ using Microsoft.SemanticKernel.Text;
 using PromptLab.Core.Helpers;
 using System.ComponentModel;
 using System.Collections;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
 namespace PromptLab.Core.Plugins
