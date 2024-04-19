@@ -17,6 +17,8 @@ public partial class MessageView
     public bool Timestamps { get; set; }
     [Parameter]
     public EventCallback<Message> OnRemove { get; set; }
+    [CascadingParameter(Name = "AllowRemove")]
+    public bool AllowRemove { get; set; }
     [Inject] private IJSRuntime JsRuntime { get; set; } = default!;
 
     private bool _shouldRender;
@@ -34,6 +36,7 @@ public partial class MessageView
 
     protected override Task OnParametersSetAsync()
     {
+        Console.WriteLine($"ALlow remove = {AllowRemove}");
         if (Message.Content != _previousContent)
         {
             _previousContent = Message.Content ?? "";

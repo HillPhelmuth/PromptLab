@@ -34,14 +34,3 @@
 	</RadzenSidebar> *@
 </RadzenLayout>
 <RadzenComponents />
-@code {
-	private bool sidebarExpanded = false;
-	private bool rightSidebarExpanded = false;
-	private void CloseSidebars()
-	{
-		sidebarExpanded = false;
-		rightSidebarExpanded = false;
-		StateHasChanged();
-	}
-
-}

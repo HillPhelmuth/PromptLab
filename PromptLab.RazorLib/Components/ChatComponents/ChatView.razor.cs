@@ -33,6 +33,8 @@ public partial class ChatView
 	public bool IsLogProbView { get; set; }
 	[Parameter]
 	public bool Timestamps { get; set; } = true;
+	[Parameter]
+	public bool AllowRemove { get; set; }
 
 	/// <summary>
 	/// Unique Identifier for ChatView instance. If you have multiple ChatView components in your application,
@@ -52,6 +54,11 @@ public partial class ChatView
 
 		return base.OnParametersSetAsync();
 	}
+	private void HandleRemoveMessage(Message message)
+	{
+		ChatState.RemoveMessage(message);
+		StateHasChanged();
+    }
 
 	public List<(string role, string? message)> GetMessageHistory()
 	{

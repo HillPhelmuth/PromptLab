@@ -24,13 +24,14 @@ public partial class UserInput : ComponentBase
     public EventCallback<UserInputRequest> UserInputSubmit { get; set; }
     [Parameter]
     public EventCallback CancelRequest { get; set; }
+    [Parameter]
+    public bool IsRequired { get; set; } = true;
     protected override Task OnParametersSetAsync()
     {
         _requestForm.UserInputRequest.UserInputType = UserInputType;
         return base.OnParametersSetAsync();
     }
-
-
+    
     private bool _isDisabled = false;
 
     private class RequestForm

@@ -119,7 +119,8 @@ public partial class Home
 		_isBusy = true;
 		StateHasChanged();
 		await Task.Delay(1);
-		_chatView.ChatState.AddUserMessage(input);
+		if (!string.IsNullOrWhiteSpace(input))
+			_chatView.ChatState.AddUserMessage(input);
 		if (AppState.ChatSettings is { LogProbs: true })
 		{
 			var choice = await ChatService.GetLogProbs(_chatView.ChatState.ChatHistory,
