@@ -10,6 +10,7 @@ using PromptLab.RazorLib.Components.LogViewer;
 using System.ComponentModel;
 using PromptLab.RazorLib.Components;
 using Radzen;
+using System.Threading;
 
 namespace PromptLab.RazorLib.Pages;
 
@@ -25,7 +26,7 @@ public partial class PromptHelpPage
 	private ChatView _chatView;
 	private bool _isBusy;
 	private List<LogEntry> _logs = [];
-	
+	private CancellationTokenSource _cancellationTokenSource = new();
 	protected override Task OnInitializedAsync()
 	{
 		PromptEngineerService.LogItem += HandleLog;
@@ -58,11 +59,17 @@ public partial class PromptHelpPage
 		_isBusy = true;
 		StateHasChanged();
 		await Task.Delay(1);
+		_cancellationTokenSource = new();
+		var token = _cancellationTokenSource.Token;
 		_chatView.ChatState.AddUserMessage(input);
-		var chatStream = PromptEngineerService.ChatWithPromptEngineer(_chatView.ChatState.ChatHistory);
+		var chatStream = PromptEngineerService.ChatWithPromptEngineer(_chatView.ChatState.ChatHistory, token);
 		await ExecuteChatSequence(chatStream);
 		_isBusy = false;
 		StateHasChanged();
+	}
+	private void Cancel()
+	{
+		_cancellationTokenSource.Cancel();
 	}
 	private async Task ExecuteChatSequence(IAsyncEnumerable<string> chatseq)
 	{

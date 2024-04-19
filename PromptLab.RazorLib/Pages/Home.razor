@@ -4,7 +4,7 @@
 @inherits AppComponentBase
 <RadzenRow>
 	<RadzenColumn Size="4">
-		
+
 		<RadzenCard>
 			<div>
 				@if (!string.IsNullOrEmpty(_savedPrompt))
@@ -26,22 +26,24 @@
 						<RadzenHtmlEditorCustomTool CommandName="Save" Title="Save Prompt" Icon="save" IconColor="green" />
 						<RadzenHtmlEditorCustomTool CommandName="Load" Title="Load Prompt" Icon="file_upload" IconColor="blue" />
 						<RadzenHtmlEditorCustomTool CommandName="Improve" Title="Ask Expert Prompt Engineer For Help" Icon="psychology_alt" IconColor="black" />
-						
+
 					</RadzenHtmlEditor>
 				</RadzenCard>
-				
+
 			</RadzenFormField>
-			
+
 		</RadzenCard>
 	</RadzenColumn>
 	<RadzenColumn Size="8" Style="position:relative">
 		<RadzenCard>
 
 			<RadzenButton Style="position:absolute; left:.5rem; top: 0" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="clear" Click="ClearChat"></RadzenButton>
-			<ChatView ResetOnClose="false" AllowRemove=true ViewId="chatWithSk" Height="82vh" IsLogProbView=AppState.IsLogProbView Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
+			<ChatView ResetOnClose="false" AllowRemove=true ViewId="chatWithSk" Height="80vh" IsLogProbView=AppState.IsLogProbView Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
 		</RadzenCard>
 
-		<RadzenCard Style="position:relative"> <UserInput IsRequired="@(_chatView.ChatState.ChatMessages.LastOrDefault()?.Role == Role.Assistant)" ButtonLabel="Send" HelperText="User Input" MessageSubmit="HandleInput" IsBusy="_isBusy"></UserInput></RadzenCard>
+		<RadzenCard Style="position:relative">
+			<UserInput IsRequired="@(_chatView.ChatState.ChatMessages.LastOrDefault()?.Role == Role.Assistant)" ButtonLabel="Send" HelperText="User Input" MessageSubmit="HandleInput" IsBusy="_isBusy" CancelRequest="Cancel"></UserInput>
+		</RadzenCard>
 	</RadzenColumn>
 </RadzenRow>
 

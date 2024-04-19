@@ -8,6 +8,6 @@
     <div @ref=_ref style="@("width:100%")">@((MarkupString)AsHtml(Message.Content))</div>
     @if (AppState.ShowTimestamps)
     {
-        <RadzenText Style="color:white" TextStyle="TextStyle.Overline">@Message.TimeStamp.ToString("g")</RadzenText>
+        <RadzenText Style="color:darkblue" TextStyle="TextStyle.Overline">@Message.TimeStamp.ToString("g")</RadzenText>
     }
 </div>

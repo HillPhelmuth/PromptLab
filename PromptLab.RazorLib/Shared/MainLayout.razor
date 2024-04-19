@@ -6,17 +6,18 @@
 			<RadzenColumn Size="1">
 				<RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
 			</RadzenColumn>
-			<RadzenColumn Size="10"></RadzenColumn>
+			<RadzenColumn Size="10">
+				<RadzenText TextAlign="TextAlign.Center" Text="@_title" TextStyle="TextStyle.DisplayH6" Style="margin-top:.5rem"></RadzenText>
+			</RadzenColumn>
 			<RadzenColumn Size="1">
-				@* <RadzenSidebarToggle Click="@(() => rightSidebarExpanded = !rightSidebarExpanded)" /> *@
 			</RadzenColumn>
 		</RadzenRow>
 	</RadzenHeader>
 	<RadzenSidebar Responsive="false" @bind-Expanded="@sidebarExpanded" style="width:250px">
 
 		<RadzenPanelMenu>
-			<RadzenPanelMenuItem Path="" Text="Home"></RadzenPanelMenuItem>
-			<RadzenPanelMenuItem Path="prompt" Text="Prompt Helper"></RadzenPanelMenuItem>
+			<RadzenPanelMenuItem Path="" Text="Home" Click="@(() => SetHeaderTitle("Prompt Lab Playground"))"></RadzenPanelMenuItem>
+			<RadzenPanelMenuItem Path="prompt" Text="Prompt Helper" Click="@(() => SetHeaderTitle("Prompt Engineering Assistant"))"></RadzenPanelMenuItem>
 			<RadzenPanelMenuItem Icon="expand" Text="Application Settings">
 				<AppSettingsMenu></AppSettingsMenu>
 			</RadzenPanelMenuItem>
@@ -27,10 +28,6 @@
 
 	</RadzenSidebar>
 	<RadzenBody Style="padding: 4px 0 0 0; height:99vh" @onclick="CloseSidebars">@Body</RadzenBody>
-	@* <RadzenSidebar @bind-Expanded="@rightSidebarExpanded" Style="width: 250px; grid-area: rz-right-sidebar">
-	<div class="rz-p-4">
-	Right Sidebar
-	</div>
-	</RadzenSidebar> *@
+	
 </RadzenLayout>
 <RadzenComponents />

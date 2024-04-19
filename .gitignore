@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /PromptLab.Core/PromptMdFiles
 /PromptLab/Data/PromptLab.db
 /PromptLab.Web/Data/PromptLab.db
+/PromptLab.Web/SearchResultsJson.json

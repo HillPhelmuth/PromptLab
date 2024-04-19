@@ -9,6 +9,7 @@ using Polly;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Text.Json;
+using System.Runtime.CompilerServices;
 
 namespace PromptLab.Core.Services;
 
@@ -33,7 +34,7 @@ public class ChatService
         _logger = loggerFactory.CreateLogger<ChatService>();
 
 	}
-    public async Task<ChatChoice> GetLogProbs(ChatHistory chatMessages, float temp, float topP, string systemPrompt = "You are a helpful AI model", string model = "gpt-3.5-turbo", string format = "")
+    public async Task<ChatChoice> GetLogProbs(ChatHistory chatMessages, float temp, float topP, string systemPrompt = "You are a helpful AI model", string model = "gpt-3.5-turbo", string format = "", CancellationToken cancellationToken = default)
     {
         var responseFormat = string.IsNullOrEmpty(format) ? ChatCompletionsResponseFormat.Text : ChatCompletionsResponseFormat.JsonObject;
         var options = new ChatCompletionsOptions { LogProbabilitiesPerToken = 5, EnableLogProbabilities = true, Temperature = temp, NucleusSamplingFactor = topP, DeploymentName = model, ResponseFormat = responseFormat };
@@ -46,19 +47,19 @@ public class ChatService
                 options.Messages.Add(new ChatRequestAssistantMessage(message.Content));
         }
         var chat = new OpenAIClient(_configuration["OpenAI:ApiKey"]);
-        var response = await chat.GetChatCompletionsAsync(options);
+        var response = await chat.GetChatCompletionsAsync(options, cancellationToken);
                
         var chatChoice = response.Value.Choices[0];
         return chatChoice;
     }
-    public async IAsyncEnumerable<string> StreamingChatResponse(ChatHistory chatMessages, OpenAIPromptExecutionSettings settings, string systemPrompt, string model = "gpt-3.5-turbo")
+    public async IAsyncEnumerable<string> StreamingChatResponse(ChatHistory chatMessages, OpenAIPromptExecutionSettings settings, string systemPrompt, string model = "gpt-3.5-turbo",[EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var chatService = CreateKernel(model).Services.GetRequiredService<IChatCompletionService>();
         var chatHistory = new ChatHistory(systemPrompt);
         chatHistory.AddRange(chatMessages);
         var chatHistoryString = JsonSerializer.Serialize(chatHistory.Select(x => new {role = x.Role, content = x.Content}), s_options);
         _logger.LogInformation("Chat History:\n {chatHistoryString}", chatHistoryString);
-        await foreach (var token in chatService.GetStreamingChatMessageContentsAsync(chatHistory, settings))
+        await foreach (var token in chatService.GetStreamingChatMessageContentsAsync(chatHistory, settings, cancellationToken: cancellationToken))
         {
             if (string.IsNullOrEmpty(token.Content)) continue;
             yield return token.Content;

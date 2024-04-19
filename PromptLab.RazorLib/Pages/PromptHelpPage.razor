@@ -1,26 +1,23 @@
 ﻿@using PromptLab.RazorLib.ChatModels
 @inherits AppComponentBase
 @page "/prompt"
-@* <RadzenButton Size=ButtonSize.ExtraSmall Text="AddMemory" IsBusy=_isBusy BusyText="Saving..." Click=TempAddMem></RadzenButton> *@
 <RadzenRow>
- <RadzenColumn Size="8" Style="position:relative">
-  <RadzenCard>
+	<RadzenColumn Size="8" Style="position:relative; height:99%">
+		<RadzenCard Style="padding:0">
 
+			<RadzenButton Style="position:absolute; left:2rem; top: 2rem" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="clear" Click="ClearChat"></RadzenButton>
 
-   <RadzenButton Style="position:absolute; left:2rem; top: 2rem" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="clear" Click="ClearChat"></RadzenButton>
+			<ChatView ResetOnClose="false" ViewId="prompt" Height="85vh" IsLogProbView=false Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
+		</RadzenCard>
 
-   <ChatView ResetOnClose="false" ViewId="prompt" Height="80vh" IsLogProbView=false Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
-  </RadzenCard>
-
-  <RadzenCard Style="position:relative"> <UserInput ButtonLabel="Send" HelperText="Prompt" MessageSubmit="HandleInput" IsBusy="_isBusy"></UserInput></RadzenCard>
- </RadzenColumn>
- <RadzenColumn Size=4>
-		<RadzenText TextAlign="TextAlign.Center" Text="Logs" TextStyle="TextStyle.Subtitle1"></RadzenText>
-  <RadzenCard Style="height:85vh; overflow:auto">
-   
-   
-   <LogView Logs="_logs"></LogView>
-
-  </RadzenCard>
- </RadzenColumn>
+		<RadzenCard Style="position:relative">
+			<UserInput ButtonLabel="Send" HelperText="Prompt" MessageSubmit="HandleInput" IsBusy="_isBusy" CancelRequest="Cancel"></UserInput>
+		</RadzenCard>
+	</RadzenColumn>
+	<RadzenColumn Size=4>
+		<RadzenText TextAlign="TextAlign.Center" Text="Function Call Logs" TextStyle="TextStyle.Subtitle1"></RadzenText>
+		<RadzenCard Style="height:85vh; overflow:auto">
+			<LogView Logs="_logs"></LogView>
+		</RadzenCard>
+	</RadzenColumn>
 </RadzenRow>

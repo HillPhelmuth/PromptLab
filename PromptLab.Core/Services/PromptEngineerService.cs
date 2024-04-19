@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using PromptLab.Core.Models;
+using System.Runtime.CompilerServices;
 #pragma warning disable SKEXP0001
 
 namespace PromptLab.Core.Services;
@@ -32,14 +33,14 @@ public class PromptEngineerService
 		_apiKey = _configuration["OpenAI:ApiKey"]!;
 		_logger = loggerFactory.CreateLogger<PromptEngineerService>();
 	}
-	public async IAsyncEnumerable<string> ChatWithPromptEngineer(ChatHistory chatHistory)
+	public async IAsyncEnumerable<string> ChatWithPromptEngineer(ChatHistory chatHistory,[EnumeratorCancellation] CancellationToken cancellationToken = default)
 	{
 		chatHistory.AddSystemMessage(Prompt.PromptEngineerSystemPrompt);
 		var kernel = ChatService.CreateKernel(_appState.ChatSettings.Model);
 		AddPluginsAndFilters(kernel);
 		var chatService = kernel.Services.GetRequiredService<IChatCompletionService>();
 		var settings = new OpenAIPromptExecutionSettings { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions, MaxTokens = 1024 };
-		await foreach (var update in chatService.GetStreamingChatMessageContentsAsync(chatHistory, settings, kernel))
+		await foreach (var update in chatService.GetStreamingChatMessageContentsAsync(chatHistory, settings, kernel, cancellationToken))
 		{
 			if (string.IsNullOrEmpty(update.Content)) continue;
 			yield return update.Content;

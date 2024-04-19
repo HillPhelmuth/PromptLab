@@ -9,7 +9,11 @@ public partial class MainLayout
     private bool rightSidebarExpanded = false;
     [Inject]
     private DialogService DialogService { get; set; } = default!;
-
+    private string _title = "Prompt Lab Playground";
+    private void SetHeaderTitle(string title)
+    {
+        _title = title;
+    }
     private void CloseSidebars()
     {
         sidebarExpanded = false;

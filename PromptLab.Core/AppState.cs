@@ -104,6 +104,7 @@ public class AppState : INotifyPropertyChanged
 
 	protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
 	{
+		Console.WriteLine($"AppState Property {propertyName} Changed");
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
