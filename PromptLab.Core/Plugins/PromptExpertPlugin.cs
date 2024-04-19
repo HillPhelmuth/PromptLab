@@ -100,8 +100,10 @@ namespace PromptLab.Core.Plugins
         {
             if (_semanticTextMemory is null) await CreateMemoryStore();
             var searchResults = await _semanticTextMemory!.SearchAsync(PromptHelperCollection, question, 10, 0.5).ToListAsync();
+#if DEBUG
 			await File.WriteAllTextAsync("SearchResultsJson.json", JsonSerializer.Serialize(searchResults, new JsonSerializerOptions(){WriteIndented = true}));
-            var item = 1;
+#endif
+			var item = 1;
 			var expertKnowledge = string.Join($"\n", searchResults.Select(x => $"{item++}\n{x.Metadata.Text}"));
             var plugin = KernelPluginFactory.CreateFromObject(new TextMemoryPlugin(_semanticTextMemory), "TextMemory");
             kernel.Plugins.Add(plugin);
@@ -128,39 +130,6 @@ namespace PromptLab.Core.Plugins
 			_semanticTextMemory = new MemoryBuilder().WithLoggerFactory(_loggerFactory)
 				.WithOpenAITextEmbeddingGeneration(_configuration["OpenAI:EmbeddingModelId"], _configuration["OpenAI:ApiKey"])
 				.WithMemoryStore(sqliteConnect).Build();
-		}
-
-		public static async Task SavePromptGuide(IConfiguration configuration)
-		{
-			// ToDo Remove this method
-			return;
-			_configuration = configuration;
-			await CreateMemoryStore();
-			var files = Directory.GetFiles(@"C:\Users\adamh\source\repos\PromptLab\PromptLab.Core\PromptMdFiles", "*.md");
-			var fileText = new Dictionary<string, string>();
-
-			foreach (var file in files)
-			{
-				var lineBuilder = new StringBuilder();
-				var lines = await File.ReadAllLinesAsync(file);
-				foreach (var line in lines)
-				{
-					if (string.IsNullOrWhiteSpace(line) || line.Contains("import {")) continue;
-					lineBuilder.AppendLine(line);
-				}
-				fileText[Path.GetFileNameWithoutExtension(file)] = lineBuilder.ToString();
-			}
-			var memoryChunks = new List<string>();
-			foreach (var (name, text) in fileText)
-			{
-				var lines = TextChunker.SplitMarkDownLines(text, 200, TokenHelper.GetTokens);
-				var chunks = TextChunker.SplitMarkdownParagraphs(lines, 512, 102, name, TokenHelper.GetTokens);
-				foreach (var chunk in chunks)
-				{
-					var id = await _semanticTextMemory.SaveInformationAsync(PromptHelperCollection, chunk, $"{name}-{chunks.IndexOf(chunk)}", name);
-				}
-			}
-
 		}
 	}
 }

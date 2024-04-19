@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /PromptLab/Data/PromptLab.db
 /PromptLab.Web/Data/PromptLab.db
 /PromptLab.Web/SearchResultsJson.json
+/PromptLab.Core/Plugins/MemorySave.cs
