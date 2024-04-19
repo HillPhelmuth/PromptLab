@@ -1,5 +1,9 @@
 ﻿<CascadingValue Value="SpecifiedTokens" Name="SpecifiedTokens">
-    <RadzenCard Style="max-width: 100%;word-wrap: break-word; overflow-wrap: break-word;">
+    <RadzenCard Style="position:relative;max-width: 100%;word-wrap: break-word; overflow-wrap: break-word;">
+	    @if (AllowRemove)
+	    {
+            <RadzenButton Size=ButtonSize.ExtraSmall Variant=Variant.Text Style="position:absolute; right:4px; top: 2px;" Icon="delete" title="Remove message" Click="@(() => OnRemove.InvokeAsync(Message))"></RadzenButton>
+	    }
         @foreach (var item in TokenStrings)
         {
         <LogProbTokenDisplay OnClick="HandleSelectedTokenString" TokenString="item"></LogProbTokenDisplay>

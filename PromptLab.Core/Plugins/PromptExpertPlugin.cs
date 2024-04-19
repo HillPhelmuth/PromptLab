@@ -13,6 +13,7 @@ using Microsoft.SemanticKernel.Text;
 using PromptLab.Core.Helpers;
 using System.ComponentModel;
 using System.Collections;
+using Microsoft.Extensions.Logging;
 
 namespace PromptLab.Core.Plugins
 {
@@ -20,6 +21,7 @@ namespace PromptLab.Core.Plugins
 	{
 		private static ISemanticTextMemory? _semanticTextMemory;
 		private static IConfiguration _configuration;
+		private static ILoggerFactory _loggerFactory;
 		private static string? _apiKey;
 		private const string PromptHelperCollection = "promptHelperCollection";
 		private const string PromptHelperPrompt =
@@ -39,10 +41,11 @@ namespace PromptLab.Core.Plugins
 			Provide specific instructions or suggestions on how to improve the prompt. Include reasons for each suggestion from the Expert Knowledge.
 			**Important**! DO NOT RE-WRITE THE PROMPT YOURSELF. Only provide instructions and suggestions. 
 			""";
-		public PromptExpertPlugin(IConfiguration configuration)
+		public PromptExpertPlugin(IConfiguration configuration, ILoggerFactory loggerFactory)
 		{
 			_configuration = configuration;
 			_apiKey = _configuration["OpenAI:ApiKey"];
+			_loggerFactory = loggerFactory;
 
 		}
 		[KernelFunction, Description("Get expert advice on how to improve a prompt")]
@@ -56,7 +59,7 @@ namespace PromptLab.Core.Plugins
 			
 			var plugin = KernelPluginFactory.CreateFromObject(new TextMemoryPlugin(_semanticTextMemory), "TextMemory");
 			kernel.Plugins.Add(plugin);
-			
+			var debugResults = await _semanticTextMemory.SearchAsync(PromptHelperCollection, question, 10, .4).ToListAsync();
 			var settings = new OpenAIPromptExecutionSettings { Temperature = 0.7, MaxTokens = 512 };
 			var args = new KernelArguments(settings)
 			{
@@ -81,7 +84,7 @@ namespace PromptLab.Core.Plugins
 			{
 				await sqliteConnect.CreateCollectionAsync(PromptHelperCollection);
 			}
-			_semanticTextMemory = new MemoryBuilder()
+			_semanticTextMemory = new MemoryBuilder().WithLoggerFactory(_loggerFactory)
 				.WithOpenAITextEmbeddingGeneration(_configuration["OpenAI:EmbeddingModelId"], _configuration["OpenAI:ApiKey"])
 				.WithMemoryStore(sqliteConnect).Build();
 		}

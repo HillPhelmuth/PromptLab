@@ -1,15 +1,19 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using PromptLab.Core.Models;
+using PromptLab.RazorLib.ChatModels;
 using Radzen;
 
 namespace PromptLab.RazorLib.Components.ChatComponents.LogProbComponents;
 
 public partial class TextAsLogProbTokens : ComponentBase
 {
+
+    public List<TokenString> TokenStrings => Message.TokenStrings;
     [Parameter]
-    public List<TokenString> TokenStrings { get; set; } = [];
-    [Parameter]
+    [EditorRequired]
+    public Message Message { get; set; } = default!;
+	[Parameter]
     public string FontSize { get; set; } = "1.1rem";
     [Parameter]
     public TokenString SelectedTokenString { get; set; } = default!;
@@ -17,6 +21,10 @@ public partial class TextAsLogProbTokens : ComponentBase
     public EventCallback<TokenString> SelectedTokenStringChanged { get; set; }
     [Parameter]
     public List<TokenString>? SpecifiedTokens { get; set; }
+    [Parameter]
+    public EventCallback<Message> OnRemove { get; set; }
+    [CascadingParameter(Name = "AllowRemove")]
+    public bool AllowRemove { get; set; }
     [Inject]
     private DialogService DialogService { get; set; } = default!;
     public void HandleSelectedTokenString(TokenString token)
@@ -28,10 +36,10 @@ public partial class TextAsLogProbTokens : ComponentBase
     }
     protected override Task OnParametersSetAsync()
     {
-        foreach (var tokenString in TokenStrings)
-        {
-            Console.WriteLine("Token LogProbs: " + JsonSerializer.Serialize(tokenString, new JsonSerializerOptions { WriteIndented=true}));
-        }
+        //foreach (var tokenString in TokenStrings)
+        //{
+        //    Console.WriteLine("Token LogProbs: " + JsonSerializer.Serialize(tokenString, new JsonSerializerOptions { WriteIndented=true}));
+        //}
         return base.OnParametersSetAsync();
     }
 }

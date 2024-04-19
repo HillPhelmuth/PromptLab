@@ -64,6 +64,14 @@ public class ChatState : INotifyPropertyChanged
             AddAssistantMessage(message);
         }
     }
+    public void RemoveMessage(Message message)
+    {
+        var find = ChatMessages.Find(x => x.Order == message.Order);
+        var removeIndex = ChatMessages.IndexOf(find ?? message);
+        ChatHistory.RemoveAt(removeIndex);
+        ChatMessages.Remove(find ?? message);
+        MessagePropertyChanged();
+    }
     private void MessagePropertyChanged()
     {
         OnPropertyChanged(nameof(ChatMessages));
