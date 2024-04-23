@@ -1,0 +1,98 @@
+﻿@page "/memory"
+@using Microsoft.SemanticKernel.Memory
+<RadzenTabs>
+	<Tabs>
+		<RadzenTabsItem Text="Memory Search">
+			<RadzenRow>
+				<RadzenColumn Size="4">
+					<RadzenCard>
+						<RadzenTemplateForm Data=_memorySearchForm TItem="MemorySearchForm" Submit="Submit">
+							<RadzenFormField Text="Search" Style="width:100%">
+								<ChildContent>
+									<RadzenTextArea Style="width:100%; height:4rem" Name="Search" @bind-Value=_memorySearchForm.SearchText></RadzenTextArea>
+								</ChildContent>
+							</RadzenFormField>
+							<RadzenFormField Text="Count">
+								<ChildContent>
+									<RadzenNumeric @bind-Value=_memorySearchForm.Count Step="1" Min="0" Max="500"></RadzenNumeric>
+								</ChildContent>
+								<Helper>
+									<RadzenText TextStyle="TextStyle.Caption" Text="Max number of results"></RadzenText>
+								</Helper>
+							</RadzenFormField>
+							<RadzenFormField Text="Count">
+								<ChildContent>
+									<RadzenNumeric @bind-Value=_memorySearchForm.MinThreshold Step=".01" Min="0" Max="1"></RadzenNumeric>
+								</ChildContent>
+								<Helper>
+									<RadzenText TextStyle="TextStyle.Caption" Text="Minimum cosine similarity"></RadzenText>
+								</Helper>
+							</RadzenFormField><br />
+							<RadzenButton ButtonType="ButtonType.Submit" Text="Search"></RadzenButton>
+							<RadzenButton Text="Get All" Click="GetAll"></RadzenButton>
+						</RadzenTemplateForm>
+					</RadzenCard>
+				</RadzenColumn>
+				<RadzenColumn Size="4">
+					<RadzenDataGrid @ref=_grid AllowFiltering=true FilterCaseSensitivity=FilterCaseSensitivity.CaseInsensitive AllowSorting=true AllowPaging=true PageSize=20 Density="Density.Compact" ShowPagingSummary="true" TItem="MemoryQueryResult" Data=_memoryQueryResults>
+						<Template Context="result">
+							<RadzenCard Style="word-wrap: break-word; overflow-wrap: break-word;width:100%;white-space: pre-wrap;max-height:18rem;overflow:auto;">
+								@* <RadzenText Text="@result.Metadata.Id" TextAlign="TextAlign.Center" TextStyle="TextStyle.Overline"></RadzenText> *@
+
+								@((MarkupString)AsHtml(result.Metadata.Text))
+							</RadzenCard>
+						</Template>
+						<Columns>
+							<RadzenDataGridColumn TItem="MemoryQueryResult" Title="Id" Property="Metadata.Id"></RadzenDataGridColumn>
+							<RadzenDataGridColumn TItem="MemoryQueryResult" Title="Name" Property="Metadata.Description"></RadzenDataGridColumn>
+							<RadzenDataGridColumn TItem="MemoryQueryResult" Title="Relevance" Property="Relevance">
+								<Template Context="item">
+									@item.Relevance.ToString("P2")
+								</Template>
+							</RadzenDataGridColumn>
+						</Columns>
+					</RadzenDataGrid>
+				</RadzenColumn>
+				<RadzenColumn Size="4">
+					<RadzenDataGrid @ref=_grid2 AllowFiltering=true FilterCaseSensitivity=FilterCaseSensitivity.CaseInsensitive AllowSorting=true AllowPaging=true PageSize=20 Density="Density.Compact" ShowPagingSummary="true" TItem="MemoryQueryResult" Data=_memoryQueryResultsEnhanced>
+						<Template Context="result">
+							<RadzenCard Style="word-wrap: break-word; overflow-wrap: break-word;width:100%;white-space: pre-wrap;max-height:18rem;overflow:auto;">
+								@* <RadzenText Text="@result.Metadata.Id" TextAlign="TextAlign.Center" TextStyle="TextStyle.Overline"></RadzenText> *@
+
+								@((MarkupString)AsHtml(result.Metadata.Text))
+							</RadzenCard>
+						</Template>
+						<Columns>
+							<RadzenDataGridColumn TItem="MemoryQueryResult" Title="Id" Property="Metadata.Id"></RadzenDataGridColumn>
+							<RadzenDataGridColumn TItem="MemoryQueryResult" Title="Name" Property="Metadata.Description"></RadzenDataGridColumn>
+							<RadzenDataGridColumn TItem="MemoryQueryResult" Title="Relevance" Property="Relevance">
+								<Template Context="item">
+									@item.Relevance.ToString("P2")
+								</Template>
+							</RadzenDataGridColumn>
+						</Columns>
+					</RadzenDataGrid>
+				</RadzenColumn>
+			</RadzenRow>
+		</RadzenTabsItem>
+		<RadzenTabsItem Text="Memory Save">
+			<RadzenRow>
+				<RadzenColumn>
+					<RadzenCard>
+						<RadzenButton Text="Save With Images" Click=SaveAllNew IsBusy=_isBusy BusyText="Saving..."></RadzenButton>
+						<RadzenButton Text="Cancel" Click=Cancel></RadzenButton>
+					</RadzenCard>
+				</RadzenColumn>
+				<RadzenColumn>
+					<RadzenText Text="Logs" TextAlign="TextAlign.Center"></RadzenText>
+					<RadzenCard Style="height:75vh; overflow:auto; background-color:black; color:white">
+						@foreach (var log in _logs)
+						{
+							@((MarkupString)AsHtml(log))
+						}
+					</RadzenCard>
+				</RadzenColumn>
+			</RadzenRow>
+		</RadzenTabsItem>
+	</Tabs>
+</RadzenTabs>
