@@ -2,6 +2,6 @@
 {
     public enum StyleTheme
     {
-        Standard, Dark, Material, Humanistic, Software
+        Standard, Dark, Material, Humanistic, Software, Fluent, Material3
     }
 }

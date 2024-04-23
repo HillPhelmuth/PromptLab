@@ -366,3 +366,7 @@ FodyWeavers.xsd
 /PromptLab.Web/Data/PromptLab.db
 /PromptLab.Web/SearchResultsJson.json
 /PromptLab.Core/Plugins/MemorySave.cs
+/PromptLab.Web/AllMemoryIds.json
+/PromptLab.Web/AllMemoryIds_promptEnhancedCollection.json
+/PromptLab.Web/AllMemoryIds_promptHelperCollection.json
+/PromptLab.Web/AllNewMemoryIds.json

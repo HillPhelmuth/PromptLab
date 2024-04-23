@@ -8,12 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="PromptMdFiles\**" />
-    <EmbeddedResource Remove="PromptMdFiles\**" />
-    <None Remove="PromptMdFiles\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="Services\WebFileService.cs" />
   </ItemGroup>
 

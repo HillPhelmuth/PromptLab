@@ -65,7 +65,13 @@ public class PromptEngineerService
 		var kernel = ChatService.CreateKernel(_appState.ChatSettings.Model);
 		AddPluginsAndFilters(kernel);
 		var chatHistory = new ChatHistory(Prompt.PromptEngineerSystemPrompt);
-		var input = $"Improve this prompt. Do not evaluate. Then Save the prompt with 'SavePrompt'.\n\n## Prompt\n\n{prompt}";
+		var input = $"""
+		             Improve this prompt. Do not evaluate. Do not explain or ask for approval. Just think carefully about each change you will make to the prompt and then create the improved prompt and save the prompt with 'SavePrompt'.
+
+		             ## Prompt
+
+		             {prompt}
+		             """;
 		chatHistory.AddUserMessage(input);
 		var chatService = kernel.Services.GetRequiredService<IChatCompletionService>();
 		var settings = new OpenAIPromptExecutionSettings { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions, MaxTokens = 1024 };

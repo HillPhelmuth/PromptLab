@@ -22,6 +22,8 @@ public class AppState : INotifyPropertyChanged
 
 	private string _activeSystemPromptMarkdown;
 	private string _promptToSave = "";
+	private ModelSettings _modelSettings = new();
+	private UserProfile _userProfile = new();
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public string? UserName
@@ -54,22 +56,46 @@ public class AppState : INotifyPropertyChanged
 		set => SetField(ref _tokenStrings, value);
 	}
 
+	public UserProfile UserProfile
+	{
+		get => _userProfile;
+		set => SetField(ref _userProfile, value);
+	}
+
 	public AppSettings AppSettings
 	{
 		get => _appSettings;
-		set => SetField(ref _appSettings, value);
+		set
+		{
+			UserProfile.AppSettings = value;
+			SetField(ref _appSettings, value);
+		}
 	}
 
 	public ChatSettings ChatSettings
 	{
 		get => _chatSettings;
-		set => SetField(ref _chatSettings, value);
+		set
+		{
+			UserProfile.ChatSettings = value;
+			SetField(ref _chatSettings, value);
+		}
+	}
+
+	public ModelSettings ModelSettings
+	{
+		get => _modelSettings;
+		set
+		{
+			UserProfile.ModelSettings = value;
+			SetField(ref _modelSettings, value);
+		}
 	}
 
 	public string ActiveSystemPromptHtml
 	{
 		get => _activeSystemPrompt;
-		set 
+		set
 		{
 			SetField(ref _activeSystemPrompt, value);
 			ChatSettings.SystemPrompt = ActiveSystemPromptAsMarkdown();
@@ -80,10 +106,10 @@ public class AppState : INotifyPropertyChanged
 	{
 		get => _promptToSave;
 		set => SetField(ref _promptToSave, value);
-	} 
+	}
 
 	public string ActiveSystemPrompt => ActiveSystemPromptAsMarkdown();
-	
+
 	private string ActiveSystemPromptAsMarkdown()
 	{
 		var config = new Config

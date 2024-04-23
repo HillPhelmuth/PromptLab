@@ -8,9 +8,9 @@ using PromptLab.RazorLib.ChatModels;
 using PromptLab.RazorLib.Components.ChatComponents;
 using PromptLab.RazorLib.Components.LogViewer;
 using System.ComponentModel;
-using PromptLab.RazorLib.Components;
 using Radzen;
 using System.Threading;
+using PromptLab.RazorLib.Components.ModalWindows;
 
 namespace PromptLab.RazorLib.Pages;
 

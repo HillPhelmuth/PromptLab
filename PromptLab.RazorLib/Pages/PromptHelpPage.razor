@@ -10,7 +10,7 @@
 			<ChatView ResetOnClose="false" ViewId="prompt" Height="85vh" IsLogProbView=false Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
 		</RadzenCard>
 
-		<RadzenCard Style="position:relative">
+		<RadzenCard Style="position:relative" Variant="Variant.Flat">
 			<UserInput ButtonLabel="Send" HelperText="Prompt" MessageSubmit="HandleInput" IsBusy="_isBusy" CancelRequest="Cancel"></UserInput>
 		</RadzenCard>
 	</RadzenColumn>

@@ -23,6 +23,11 @@ public class Message(Role role, string content, int order)
 
     public string CssClass => Role.ToString().ToLower();
 }
+public class NewMessageForm
+{
+	public Role Role { get; set; }
+    public string? Content { get; set; }
+}
 
 public enum Role
 {

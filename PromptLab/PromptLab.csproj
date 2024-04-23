@@ -44,4 +44,10 @@
 		</Content>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Resources\PromptLabLogo.ico">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

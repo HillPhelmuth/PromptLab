@@ -37,11 +37,12 @@
 	<RadzenColumn Size="8" Style="position:relative">
 		<RadzenCard>
 
-			<RadzenButton Style="position:absolute; left:.5rem; top: 0" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="clear" Click="ClearChat"></RadzenButton>
+			<RadzenButton Style="position:absolute; left:.5rem; top: 0" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="Clear" Click="ClearChat"></RadzenButton>
+			<RadzenButton Style="position:absolute; right:.5rem; top: 0" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="post_add" Text="Add Message" Click="AddMessage"></RadzenButton>
 			<ChatView ResetOnClose="false" AllowRemove=true ViewId="chatWithSk" Height="80vh" IsLogProbView=AppState.IsLogProbView Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
 		</RadzenCard>
 
-		<RadzenCard Style="position:relative">
+		<RadzenCard Style="position:relative" Variant="Variant.Filled">
 			<UserInput IsRequired="@(_chatView.ChatState.ChatMessages.LastOrDefault()?.Role == Role.Assistant)" ButtonLabel="Send" HelperText="User Input" MessageSubmit="HandleInput" IsBusy="_isBusy" CancelRequest="Cancel"></UserInput>
 		</RadzenCard>
 	</RadzenColumn>
