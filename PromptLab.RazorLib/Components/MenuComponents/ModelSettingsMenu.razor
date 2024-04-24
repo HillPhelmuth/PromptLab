@@ -1,0 +1,63 @@
+﻿@inherits AppComponentBase
+<RadzenTemplateForm TItem="ModelSettings" Data="_modelSettings" Submit="Submit" Style="display: flex; justify-content: center; flex-direction: column; align-content: center; flex-wrap: wrap;">
+	<RadzenFormField Text="OpenAI Service">
+		<ChildContent>
+			<RadzenDropDown Data="@(Enum.GetValues<OpenAIModelType>())" TValue="OpenAIModelType" @bind-Value=_modelSettings.OpenAIModelType></RadzenDropDown>
+		</ChildContent>
+		<Helper>
+			<RadzenText Style="color:#3ca1c3" TextStyle="TextStyle.Caption" Text="Select Standard or Azure Hosted"></RadzenText>
+		</Helper>
+	</RadzenFormField>
+	@if (_modelSettings.OpenAIModelType == OpenAIModelType.OpenAI)
+	{
+		<RadzenFormField Text="OpenAI Api Key">
+			<ChildContent>
+				<RadzenPassword Name="OpenAIApiKey" @bind-Value=_modelSettings.OpenAIApiKey></RadzenPassword>
+			</ChildContent>
+			<Helper>
+				<RadzenRequiredValidator Component="OpenAIApiKey"></RadzenRequiredValidator>
+			</Helper>
+		</RadzenFormField>
+	}
+	else
+	{
+		<RadzenFormField Text="Azure Api Key">
+			<ChildContent>
+				<RadzenPassword Name="AzureOpenAIApiKey" @bind-Value=_modelSettings.AzureOpenAIApiKey></RadzenPassword>
+			</ChildContent>
+			<Helper>
+				<RadzenRequiredValidator Component="AzureOpenAIApiKey"></RadzenRequiredValidator>
+			</Helper>
+		</RadzenFormField>
+		<RadzenFormField Text="Azure OpenAI Endpoint">
+			<ChildContent>
+				<RadzenTextBox Name="AzureOpenAIEndpoint" @bind-Value=_modelSettings.AzureOpenAIApiEndpoint></RadzenTextBox>
+			</ChildContent>
+			<Helper>
+				<RadzenRequiredValidator Component="AzureOpenAIEndpoint"></RadzenRequiredValidator>
+			</Helper>
+		</RadzenFormField>
+		<RadzenFormField Text="Azure Gpt4 Deployment">
+			<ChildContent>
+				<RadzenTextBox Name="AzureGpt4" @bind-Value=_modelSettings.AzureOpenAIGpt4DeploymentName></RadzenTextBox>
+			</ChildContent>
+			<Helper>
+				<RadzenRequiredValidator Visible="@(string.IsNullOrEmpty(_modelSettings.AzureOpenAIGpt4DeploymentName) && string.IsNullOrEmpty(_modelSettings.AzureOpenAIGpt35DeploymentName))" Component="AzureGpt4" Text="At least 1 Azure deployment required"></RadzenRequiredValidator>
+			</Helper>
+		</RadzenFormField>
+		<RadzenFormField Text="Azure Gpt35 Deployment">
+			<ChildContent>
+				<RadzenTextBox Name="AzureGpt35" @bind-Value=_modelSettings.AzureOpenAIGpt4DeploymentName></RadzenTextBox>
+			</ChildContent>
+			<Helper>
+				<RadzenRequiredValidator Visible="@(string.IsNullOrEmpty(_modelSettings.AzureOpenAIGpt4DeploymentName) && string.IsNullOrEmpty(_modelSettings.AzureOpenAIGpt35DeploymentName))" Component="AzureGpt35" Text="At least 1 Azure deployment required"></RadzenRequiredValidator>
+			</Helper>
+		</RadzenFormField>
+	}
+	<RadzenFormField Text="Gemini Api Key (Optional)">
+		<ChildContent>
+			<RadzenPassword Name="GoogleApiKey" @bind-Value=_modelSettings.GoogleGeminiApiKey></RadzenPassword>
+		</ChildContent>
+	</RadzenFormField>
+	<RadzenButton ButtonType="ButtonType.Submit" Text="Save"></RadzenButton>
+</RadzenTemplateForm>

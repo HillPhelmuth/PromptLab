@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PromptLab.Core.Plugins;
 using PromptLab.Core.Services;
 
 namespace PromptLab.Core.Helpers

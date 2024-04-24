@@ -7,7 +7,7 @@
                                                                                      flex-wrap: wrap;">
     <RadzenFormField Text="Model">
      <ChildContent>
-         <RadzenDropDown Name="Model" @bind-Value=_chatSettings.Model Data="@SettingsOptions.AvailableModels"></RadzenDropDown>
+         <RadzenDropDown Name="Model" @bind-Value=_chatSettings.Model Data="@AvailableModels"></RadzenDropDown>
      </ChildContent>
      <Helper>
          <RadzenRequiredValidator Component="Model"></RadzenRequiredValidator>

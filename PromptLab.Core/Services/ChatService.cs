@@ -10,6 +10,7 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Text.Json;
 using System.Runtime.CompilerServices;
+using PromptLab.Core.Models;
 
 namespace PromptLab.Core.Services;
 
@@ -65,6 +66,15 @@ public class ChatService
             yield return token.Content;
         }
     }
+    public async Task<string> ChatResponseWithImages(ImageContent image,TextContent text, OpenAIPromptExecutionSettings settings, CancellationToken cancellationToken)
+    {
+	    var chatService = CreateKernel("gpt-4-turbo").Services.GetRequiredService<IChatCompletionService>();
+		ChatHistory chatHistory = [new ChatMessageContent(AuthorRole.User, [image, text])];
+		var chatHistoryString = JsonSerializer.Serialize(chatHistory, s_options);
+		_logger.LogInformation("Chat History:\n {chatHistoryString}", chatHistoryString);
+		var response = await chatService.GetChatMessageContentAsync(chatHistory, settings, cancellationToken: cancellationToken);
+        return response.Content!;
+    }
     public static Kernel CreateKernel(string model)
     {
         var kernelBuilder = Kernel.CreateBuilder();
@@ -90,11 +100,28 @@ public class ChatService
             kernelBuilder.AddGoogleAIGeminiChatCompletion(model, _googleApiKey);
         else
         {
-	        kernelBuilder.AddOpenAIChatCompletion(model, _openaiApiKey);
+	        //kernelBuilder.AddOpenAIChatCompletion(model, _openaiApiKey);
+            kernelBuilder.AddAICompletion(_appState.ModelSettings, model);
             kernelBuilder.AddOpenAITextEmbeddingGeneration(_openAiEmbeddingsModel, _openaiApiKey);
         }
         var kernel = kernelBuilder.Build();
 
         return kernel;
+    }
+}
+public static class KernelExtensions
+{
+    public static IKernelBuilder AddAICompletion(this IKernelBuilder kernelBuilder, ModelSettings modelSettings, string model = "gpt-3.5-turbo")
+    {
+        if (modelSettings.OpenAIModelType == OpenAIModelType.OpenAI)
+        {
+	        kernelBuilder.AddOpenAIChatCompletion(model, modelSettings.OpenAIApiKey!);
+		}
+        else
+        {
+            var deployment = model.Contains('3') ? modelSettings.AzureOpenAIGpt35DeploymentName : modelSettings.AzureOpenAIGpt4DeploymentName;
+            kernelBuilder.AddAzureOpenAIChatCompletion(deployment, modelSettings.AzureOpenAIApiEndpoint, modelSettings.AzureOpenAIApiKey);
+        }
+        return kernelBuilder;
     }
 }

@@ -1,0 +1,16 @@
+﻿@using PromptLab.RazorLib.ChatModels
+@inherits AppComponentBase
+<RadzenTemplateForm Data=_newMessageForm TItem="NewMessageForm" Submit="Submit">
+	<RadzenFormField Text="Role">
+		<RadzenDropDown Data="@Enum.GetValues(typeof(Role))" @bind-Value="_newMessageForm.Role"></RadzenDropDown>
+	</RadzenFormField>
+	<RadzenFormField Text="Content" Style="width:100%">
+		<ChildContent>
+			<RadzenTextArea Name="Content" Style="width:100%;height:8rem" @bind-Value="_newMessageForm.Content"></RadzenTextArea>
+		</ChildContent>
+		<Helper>
+			<RadzenRequiredValidator Component="Content"></RadzenRequiredValidator>
+		</Helper>
+	</RadzenFormField>
+	<RadzenButton ButtonType="ButtonType.Submit" Text="Add"></RadzenButton>
+</RadzenTemplateForm>

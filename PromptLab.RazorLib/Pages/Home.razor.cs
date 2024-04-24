@@ -9,7 +9,7 @@ using PromptLab.RazorLib.ChatModels;
 using System.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Radzen;
-using PromptLab.RazorLib.Components;
+using PromptLab.RazorLib.Components.ModalWindows;
 
 namespace PromptLab.RazorLib.Pages;
 
@@ -101,7 +101,23 @@ public partial class Home
 	{
 		_chatView.ChatState.Reset();
 	}
-	
+	private async Task AddMessage()
+	{
+		var dialogResult = await DialogService.OpenAsync<AddMessageWindow>("Add Message", options: new DialogOptions { Height = "40vh", Width = "40vw" });
+		if (dialogResult is NewMessageForm newMessage)
+		{
+			switch (newMessage.Role)
+			{
+				case Role.User:
+					_chatView.ChatState.AddUserMessage(newMessage.Content!);
+					break;
+				case Role.Assistant:
+					_chatView.ChatState.AddAssistantMessage(newMessage.Content!);
+					break;
+			}
+			StateHasChanged();
+		}
+	}
 	private async void HandleExecute(HtmlEditorExecuteEventArgs args)
 	{
 		switch (args.CommandName)

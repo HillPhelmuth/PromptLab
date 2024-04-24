@@ -1,11 +1,15 @@
-﻿namespace PromptLab.Core.Services;
+﻿using System.Text.Json;
+using PromptLab.Core.Models;
+
+namespace PromptLab.Core.Services;
 
 public class LocalFileService : IFileService
 {
     public event Action? PickFile;
-    public event Action? PickFolder;
+    public event Action<UserProfile>? SaveUserProfile;
     public event Action<string, string>? SaveFile;
     public event Action<double>? Zoom;
+    public event Func<UserProfile>? LoadUserProfile;
     private TaskCompletionSource<string?> Tcs { get; set; } = new();
     public void FilePicked(string filePath)
     {
@@ -20,17 +24,16 @@ public class LocalFileService : IFileService
         var text = await File.ReadAllTextAsync(result);
         return text;
     }
-    //public void FolderPicked(string folderPath)
-    //{
-    //    Tcs.TrySetResult(folderPath);
-    //}
-    //public async Task<string?> PickFolderAsync()
-    //{
-    //    PickFolder?.Invoke();
-    //    var result = await Tcs.Task;
-    //    Tcs = new TaskCompletionSource<string?>();
-    //    return result;
-    //}
+    public Task SaveUserSettings(UserProfile userProfile)
+    {
+		SaveUserProfile?.Invoke(userProfile);
+        return Task.CompletedTask;
+	}
+    public Task<UserProfile> LoadUserSettings()
+    {
+        var item = LoadUserProfile?.Invoke();
+        return Task.FromResult(item ?? new UserProfile());
+    }
     public async Task<string?> SaveFileAsync(string fileName, string file)
     {
         SaveFile?.Invoke(fileName, file);

@@ -15,16 +15,17 @@ using System.ComponentModel;
 using System.Collections;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using static PromptLab.Core.Helpers.AppConstants;
 
 namespace PromptLab.Core.Plugins
 {
 	public class PromptExpertPlugin
 	{
-		private static ISemanticTextMemory? _semanticTextMemory;
-		private static IConfiguration _configuration;
+		internal static ISemanticTextMemory? _semanticTextMemory;
+		internal static IConfiguration _configuration;
 		private static ILoggerFactory _loggerFactory;
 		private static string? _apiKey;
-		private const string PromptHelperCollection = "promptHelperCollection";
+		internal const string PromptHelperCollection = "promptHelperCollection";
 		private const string PromptHelperPrompt =
 			"""
 			You are a prompt expert. Using the Expert Knowledge below, provide instructions on how to improve the provided prompt.
@@ -42,24 +43,25 @@ namespace PromptLab.Core.Plugins
 			Provide specific instructions or suggestions on how to improve the prompt. Include reasons for each suggestion from the Expert Knowledge.
 			**Important**! DO NOT RE-WRITE THE PROMPT YOURSELF. Only provide instructions and suggestions. 
 			""";
-		
+
 		private const string PromptHelperPromptGeneral =
-            """
-            You are a prompt expert. Using the Expert Knowledge below, provide instructions on prompt engineering best practices and techniques.
-
-            ## Expert Knowledge
-            {{ $expertKnowledge }}
-
-            ## Question
-            {{ $input }}
-
-            ## Task
-            Provide specific instructions or suggestions on prompt engineering best practices and techniques. Include reasons for each suggestion from the Expert Knowledge.
+			"""
+            You are a prompt expert. Utilize the following Expert Knowledge to guide your response to the question provided.
+            
+            Expert Knowledge: {{ $expertKnowledge }}
+            
+            Question: {{ $input }}
+            
+            Task: Carefully respond to the question by applying the expert knowledge provided. Structure your response as follows:
+            
+            Identify the main question or challenge.
+            Offer specific, actionable suggestions on prompt engineering best practices and techniques, categorizing them as needed.
+            Justify each suggestion with direct references or logical connections to the Expert Knowledge. Ensure each part of your response is clear and comprehensible to someone unfamiliar with prompt engineering.
             
             """;
 
-        public PromptExpertPlugin(IConfiguration configuration, ILoggerFactory loggerFactory)
-        {
+		public PromptExpertPlugin(IConfiguration configuration, ILoggerFactory loggerFactory)
+		{
 			_configuration = configuration;
 			_apiKey = _configuration["OpenAI:ApiKey"];
 			_loggerFactory = loggerFactory;
@@ -73,20 +75,19 @@ namespace PromptLab.Core.Plugins
 				question = issues;
 			}
 			if (_semanticTextMemory is null) await CreateMemoryStore();
+			var plugin = KernelPluginFactory.CreateFromObject(new TextMemoryPlugin(_semanticTextMemory!), "TextMemory");
+			if (kernel.Plugins.All(x => x.Name != "TextMemory")) 
+				kernel.Plugins.Add(plugin);
 			
-			var plugin = KernelPluginFactory.CreateFromObject(new TextMemoryPlugin(_semanticTextMemory), "TextMemory");
-			kernel.Plugins.Add(plugin);
-			var debugResults = await _semanticTextMemory.SearchAsync(PromptHelperCollection, question, 10, .4).ToListAsync();
 			var settings = new OpenAIPromptExecutionSettings { Temperature = 0.7, MaxTokens = 512 };
 			var args = new KernelArguments(settings)
 			{
 				["input"] = question,
 				["limit"] = 5,
 				["relevance"] = 0.50,
-				["collection"] = PromptHelperCollection,
+				["collection"] = PromptEngineeringCollection,
 				["prompt"] = prompt,
-				["issues"] = issues,
-				["expertKnowledge"] = ""
+				["issues"] = issues				
 			};
 			var result = await kernel.InvokePromptAsync(PromptHelperPrompt, args);
 			kernel.Plugins.Remove(plugin);
@@ -94,42 +95,43 @@ namespace PromptLab.Core.Plugins
 
 		}
 
-        [KernelFunction, Description("Get expert advice on prompt engineering best pracitices and techniques")]
-        public async Task<string> GeneralExpertAdvice(Kernel kernel,
-            [Description("Question for the expert")] string question)
-        {
-            if (_semanticTextMemory is null) await CreateMemoryStore();
-            var searchResults = await _semanticTextMemory!.SearchAsync(PromptHelperCollection, question, 10, 0.5).ToListAsync();
+		[KernelFunction, Description("Get expert advice on prompt engineering best pracitices and techniques")]
+		public async Task<string> GeneralExpertAdvice(Kernel kernel,
+			[Description("Question for the expert")] string question)
+		{
+			if (_semanticTextMemory is null) await CreateMemoryStore();
+			var searchResults = await _semanticTextMemory!.SearchAsync(PromptEngineeringCollection, question, 10, 0.5).ToListAsync();
 #if DEBUG
-			await File.WriteAllTextAsync("SearchResultsJson.json", JsonSerializer.Serialize(searchResults, new JsonSerializerOptions(){WriteIndented = true}));
+			await File.WriteAllTextAsync("SearchResultsJson.json", JsonSerializer.Serialize(searchResults, new JsonSerializerOptions() { WriteIndented = true }));
 #endif
 			var item = 1;
 			var expertKnowledge = string.Join($"\n", searchResults.Select(x => $"{item++}\n{x.Metadata.Text}"));
-            var plugin = KernelPluginFactory.CreateFromObject(new TextMemoryPlugin(_semanticTextMemory), "TextMemory");
-            kernel.Plugins.Add(plugin);
+			var plugin = KernelPluginFactory.CreateFromObject(new TextMemoryPlugin(_semanticTextMemory), "TextMemory");
+			kernel.Plugins.Add(plugin);
 
-            var settings = new OpenAIPromptExecutionSettings { Temperature = 0.7, MaxTokens = 512 };
-            var args = new KernelArguments(settings)
-            {
-                ["input"] = question,
-                ["expertKnowledge"] = expertKnowledge
-            };
-            var result = await kernel.InvokePromptAsync(PromptHelperPromptGeneral, args);
-            kernel.Plugins.Remove(plugin);
-            return result.GetValue<string>() ?? "Inform the user about an error executing Get Expert Advice and proceed without it.";
-        }
+			var settings = new OpenAIPromptExecutionSettings { Temperature = 0.7, MaxTokens = 512 };
+			var args = new KernelArguments(settings)
+			{
+				["input"] = question,
+				["expertKnowledge"] = expertKnowledge
+			};
+			var result = await kernel.InvokePromptAsync(PromptHelperPromptGeneral, args);
+			kernel.Plugins.Remove(plugin);
+			return result.GetValue<string>() ?? "Inform the user about an error executing Get Expert Advice and proceed without it.";
+		}
 
-        private static async Task CreateMemoryStore()
+		internal static async Task CreateMemoryStore()
 		{
 			var sqliteConnect = await SqliteMemoryStore.ConnectAsync(_configuration["Sqlite:ConnectionString"]);
 			var collections = await sqliteConnect.GetCollectionsAsync().ToListAsync();
-			if (!collections.Contains(PromptHelperCollection))
+			if (!collections.Contains(PromptEngineeringCollection))
 			{
-				await sqliteConnect.CreateCollectionAsync(PromptHelperCollection);
+				await sqliteConnect.CreateCollectionAsync(PromptEngineeringCollection);
 			}
 			_semanticTextMemory = new MemoryBuilder().WithLoggerFactory(_loggerFactory)
 				.WithOpenAITextEmbeddingGeneration(_configuration["OpenAI:EmbeddingModelId"], _configuration["OpenAI:ApiKey"])
 				.WithMemoryStore(sqliteConnect).Build();
 		}
+
 	}
 }

@@ -7,7 +7,7 @@
 				<RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
 			</RadzenColumn>
 			<RadzenColumn Size="10">
-				<RadzenText TextAlign="TextAlign.Center" Text="@_title" TextStyle="TextStyle.DisplayH6" Style="margin-top:.5rem"></RadzenText>
+				<RadzenText TextAlign="TextAlign.Center" Text="@_title" TextStyle="TextStyle.DisplayH6" Style="margin-top:.6rem"></RadzenText>
 			</RadzenColumn>
 			<RadzenColumn Size="1">
 			</RadzenColumn>
@@ -25,10 +25,13 @@
 			<RadzenPanelMenuItem Icon="expand" Text="Chat Settings">
 				<ChatSettingsMenu></ChatSettingsMenu>
 			</RadzenPanelMenuItem>
+			<RadzenPanelMenuItem Icon="expand" Text="Model Settings">
+				<ModelSettingsMenu></ModelSettingsMenu>
+			</RadzenPanelMenuItem>
 		</RadzenPanelMenu>
 
 	</RadzenSidebar>
-	<RadzenBody Style="padding: 4px 0 0 0; height:99vh" @onclick="CloseSidebars">@Body</RadzenBody>
+	<RadzenBody Style="padding: 4px 4px 0 0; height:99vh" @onclick="CloseSidebars">@Body</RadzenBody>
 	
 </RadzenLayout>
 <RadzenComponents />
