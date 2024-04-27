@@ -80,6 +80,7 @@ public class Prompt
 		- Generate a numerical score based on how well the prompt meets the criteria. The scale is 1 to 10, where 10 represents an ideal prompt.
 		- Be an extremely critical, tough, and detail-oriented evaluator to provide valuable feedback to developers.
 		- Provide a detailed explanation for the score, citing specific ways in which the prompt excels or falls short, and offering constructive suggestions for improvement.
+		- If the score is is below 10, your explantion must include specific instructions for improving the prompt in a way that would increase the score by at least 1 point.
 
 		Prompt to evaluate:
 		{{ $prompt }}
