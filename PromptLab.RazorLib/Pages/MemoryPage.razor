@@ -77,13 +77,13 @@
 		</RadzenTabsItem>
 		<RadzenTabsItem Text="Memory Save">
 			<RadzenRow>
-				<RadzenColumn>
+				<RadzenColumn Size="4">
 					<RadzenCard>
 						<RadzenButton Text="Save With Images" Click=SaveAllNew IsBusy=_isBusy BusyText="Saving..."></RadzenButton>
 						<RadzenButton Text="Cancel" Click=Cancel></RadzenButton>
 					</RadzenCard>
 				</RadzenColumn>
-				<RadzenColumn>
+				<RadzenColumn Size="8">
 					<RadzenText Text="Logs" TextAlign="TextAlign.Center"></RadzenText>
 					<RadzenCard Style="height:75vh; overflow:auto; background-color:black; color:white">
 						@foreach (var log in _logs)
