@@ -15,6 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Data\PromptLab.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PromptLab.Core\PromptLab.Core.csproj" />
     <ProjectReference Include="..\PromptLab.RazorLib\PromptLab.RazorLib.csproj" />
   </ItemGroup>

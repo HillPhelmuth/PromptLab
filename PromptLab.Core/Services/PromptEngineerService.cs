@@ -49,6 +49,14 @@ public class PromptEngineerService
 
 	private void AddPluginsAndFilters(Kernel kernel)
 	{
+		AddFilters(kernel);
+		var evaluator = kernel.ImportPluginFromType<PromptEvaluationPlugin>();
+		kernel.ImportPluginFromType<PromptExpertPlugin>();
+		kernel.ImportPluginFromType<SavePromptPlugin>();
+	}
+
+	private void AddFilters(Kernel kernel)
+	{
 		var filters = new FunctionFilter();
 		var promptFilters = new PromptFilter();
 		filters.FunctionInvoked += OnFiltersOnFunctionInvoked;
@@ -56,10 +64,8 @@ public class PromptEngineerService
 
 		kernel.FunctionFilters.Add(filters);
 		kernel.PromptFilters.Add(promptFilters);
-		var evaluator = kernel.ImportPluginFromType<PromptEvaluationPlugin>();
-		kernel.ImportPluginFromType<PromptExpertPlugin>();
-		kernel.ImportPluginFromType<SavePromptPlugin>();
 	}
+
 	public async Task<string> HelpFromPromptEngineer(string prompt)
 	{
 		var kernel = ChatService.CreateKernel(_appState.ChatSettings.Model);
