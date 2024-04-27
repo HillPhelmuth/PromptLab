@@ -14,11 +14,7 @@
     <None Remove="Data\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Data\PromptLab.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+
 
   <ItemGroup>
     <ProjectReference Include="..\PromptLab.Core\PromptLab.Core.csproj" />
