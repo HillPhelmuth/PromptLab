@@ -12,7 +12,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>PromptLab</RootNamespace>
 		<UserSecretsId>34d08305-17d3-471a-a80c-0a5fe9df6161</UserSecretsId>
-  <PublishDir>bin\Release\App\</PublishDir>
+  <PublishDir>.\bin\Release\App\</PublishDir>
   <SelfContained>true</SelfContained>
   <PublishSingleFile>true</PublishSingleFile>
 	</PropertyGroup>
