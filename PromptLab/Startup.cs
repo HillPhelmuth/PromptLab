@@ -23,8 +23,8 @@ public  class Startup
                        .ConfigureServices(WireupServices)
                        .ConfigureAppConfiguration((hostingContext, config) =>
                        {
-                           //config.AddUserSecrets<Startup>();
-                           config.AddJsonFile("appsettings.json");
+                           config.AddUserSecrets<Startup>();
+
                        })
                        .Build();
         Services = host.Services;
