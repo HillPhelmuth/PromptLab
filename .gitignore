@@ -370,3 +370,4 @@ FodyWeavers.xsd
 /PromptLab.Web/AllMemoryIds_promptEnhancedCollection.json
 /PromptLab.Web/AllMemoryIds_promptHelperCollection.json
 /PromptLab.Web/AllNewMemoryIds.json
+/PromptLab/appsettings.json

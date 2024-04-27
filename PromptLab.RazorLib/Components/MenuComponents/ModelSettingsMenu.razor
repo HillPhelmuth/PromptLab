@@ -47,7 +47,7 @@
 		</RadzenFormField>
 		<RadzenFormField Text="Azure Gpt35 Deployment">
 			<ChildContent>
-				<RadzenTextBox Name="AzureGpt35" @bind-Value=_modelSettings.AzureOpenAIGpt4DeploymentName></RadzenTextBox>
+				<RadzenTextBox Name="AzureGpt35" @bind-Value=_modelSettings.AzureOpenAIGpt35DeploymentName></RadzenTextBox>
 			</ChildContent>
 			<Helper>
 				<RadzenRequiredValidator Visible="@(string.IsNullOrEmpty(_modelSettings.AzureOpenAIGpt4DeploymentName) && string.IsNullOrEmpty(_modelSettings.AzureOpenAIGpt35DeploymentName))" Component="AzureGpt35" Text="At least 1 Azure deployment required"></RadzenRequiredValidator>
