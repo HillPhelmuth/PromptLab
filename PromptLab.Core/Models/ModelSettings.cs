@@ -13,6 +13,7 @@ public class ModelSettings
 	public string? AzureOpenAIApiEndpoint { get; set; }
 	public string? AzureOpenAIGpt4DeploymentName { get; set; }
 	public string? AzureOpenAIGpt35DeploymentName { get; set; }
+	public string? AzureOpenAIEmbeddingsDeploymentName { get; set; }
 	public string? GoogleGeminiApiKey { get; set; }
 	public OpenAIModelType OpenAIModelType { get; set; }
 }

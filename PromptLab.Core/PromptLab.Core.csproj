@@ -12,10 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="PromptMdFiles\FullFileWithImageText\Research\openaipromptguide.md" />
     <None Remove="Prompts\openaipromptguide.md" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="PromptMdFiles\FullFileWithImageText\Research\openaipromptguide.md" />
     <EmbeddedResource Include="Prompts\openaipromptguide.md" />
   </ItemGroup>
 
@@ -44,13 +46,6 @@
     <None Update="Data\PromptLab.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="PromptLab.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="PromptMdFiles\FullFileWithImageText\" />
   </ItemGroup>
 
 </Project>
