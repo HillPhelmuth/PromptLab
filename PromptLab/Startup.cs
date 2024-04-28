@@ -24,6 +24,7 @@ public  class Startup
                        .ConfigureAppConfiguration((hostingContext, config) =>
                        {
                            config.AddUserSecrets<Startup>();
+
                        })
                        .Build();
         Services = host.Services;

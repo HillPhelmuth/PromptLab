@@ -2,6 +2,7 @@ using PromptLab.Core;
 using PromptLab.Core.Helpers;
 using PromptLab.Core.Services;
 using PromptLab.RazorLib.ChatModels;
+using PromptLab.RazorLib.Pages;
 using PromptLab.RazorLib.Shared;
 using PromptLab.Web;
 using PromptLab.Web.Components;
@@ -34,6 +35,6 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode().AddAdditionalAssemblies(typeof(Home).Assembly);
 
 app.Run();

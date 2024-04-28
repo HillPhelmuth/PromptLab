@@ -23,7 +23,7 @@ public partial class MainForm : Form
         };
         _filePickerService.SaveUserProfile += profile =>
         {
-	        DesktopFileService.SaveUserSettings(profile, UserDataFolder);
+            DesktopFileService.SaveUserSettings(profile, UserDataFolder);
         };
         _filePickerService.LoadUserProfile += () => DesktopFileService.LoadUserSettings(UserDataFolder);
         //_filePickerService.PickFolder += () =>
@@ -33,9 +33,9 @@ public partial class MainForm : Form
         //};
         _filePickerService.SaveFile += (fileName, fileText) =>
         {
-			var filePath = DesktopFileService.OpenSaveFile(fileName, fileText);
-			_filePickerService.FilePicked(filePath);
-		};
+            var filePath = DesktopFileService.OpenSaveFile(fileName, fileText);
+            _filePickerService.FilePicked(filePath);
+        };
         _filePickerService.Zoom += AdjustZoom;
         InitializeComponent();
 
@@ -50,8 +50,8 @@ public partial class MainForm : Form
         //var env = _webView.CoreWebView2.Environment.UserDataFolder;
         _webView.CoreWebView2InitializationCompleted += (sender, e) =>
         {
-			UserDataFolder = Path.Combine(_webView.CoreWebView2.Environment.UserDataFolder, "PromptLab");
-		};
+            UserDataFolder = Path.Combine(_webView.CoreWebView2.Environment.UserDataFolder, "PromptLab");
+        };
         //UserDataFolder = Path.Combine(_webView.CoreWebView2.Environment.UserDataFolder, "PromptLab");
         Startup.ServiceCollection!.AddSingleton<IFileService>(_filePickerService);
         blazor.Services = Startup.ServiceCollection!.BuildServiceProvider();
@@ -59,19 +59,24 @@ public partial class MainForm : Form
         logger.AddFile("Logs\\AppLogs.txt");
         blazor.RootComponents.Add<Main>("#app");
         Controls.Add(blazor);
-		this.FormClosing += MainForm_FormClosing;
+        this.FormClosing += MainForm_FormClosing;
         this.Icon = new Icon(@"Resources\PromptLabLogo.ico");
     }
-    
-	private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
-	{
-		Log.CloseAndFlush();
-	}
 
-	public void AdjustZoom(double zoomFactor)
+    private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
+    {
+        Log.CloseAndFlush();
+    }
+
+    public void AdjustZoom(double zoomFactor)
     {
         _webView.ZoomFactor = zoomFactor;
     }
-    
 
+    private void RefreshButtonClick(object sender, EventArgs e)
+    {
+        _webView.Refresh();
+        _webView.Reload();
+        Log.Logger.Information("Refreshed WebView");
+    }
 }

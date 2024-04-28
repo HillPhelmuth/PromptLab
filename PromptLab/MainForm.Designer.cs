@@ -28,12 +28,35 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
-        this.components = new System.ComponentModel.Container();
-        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(1100, 900);
-        this.WindowState = FormWindowState.Maximized;
-        this.Text = "Prompt Lab";
+        System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+        refreshButton = new Button();
+        SuspendLayout();
+        // 
+        // refreshButton
+        // 
+        refreshButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        refreshButton.Image = (Image)resources.GetObject("refreshButton.Image");
+        refreshButton.Location = new Point(1283, -2);
+        refreshButton.Name = "refreshButton";
+        refreshButton.Size = new Size(41, 29);
+        refreshButton.TabIndex = 0;
+        refreshButton.UseVisualStyleBackColor = true;
+        refreshButton.Click += RefreshButtonClick;
+        // 
+        // MainForm
+        // 
+        AutoScaleDimensions = new SizeF(8F, 20F);
+        AutoScaleMode = AutoScaleMode.Font;
+        ClientSize = new Size(1326, 900);
+        Controls.Add(refreshButton);
+        Name = "MainForm";
+        Text = "Prompt Lab";
+        WindowState = FormWindowState.Maximized;
+        Click += RefreshButtonClick;
+        ResumeLayout(false);
     }
 
     #endregion
+
+    private Button refreshButton;
 }

@@ -12,6 +12,9 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>PromptLab</RootNamespace>
 		<UserSecretsId>34d08305-17d3-471a-a80c-0a5fe9df6161</UserSecretsId>
+  <PublishDir>.\bin\Release\App\</PublishDir>
+  <SelfContained>true</SelfContained>
+  <PublishSingleFile>true</PublishSingleFile>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -33,6 +36,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Properties\Resources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Resources.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Update="wwwroot\css\app.css">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
@@ -42,6 +53,13 @@
 		<Content Update="wwwroot\index.html">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Properties\Resources.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>

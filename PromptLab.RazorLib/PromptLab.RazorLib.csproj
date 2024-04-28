@@ -17,9 +17,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Markdig" Version="0.36.2" />
+        <PackageReference Include="Markdig" Version="0.37.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.*" />
-        <PackageReference Include="Radzen.Blazor" Version="4.29.1" />
+        <PackageReference Include="Radzen.Blazor" Version="4.30.2" />
         <PackageReference Include="ReverseMarkdown" Version="4.3.0" />
     </ItemGroup>
 
