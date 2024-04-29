@@ -30,10 +30,26 @@
 							</RadzenFormField><br />
 							<RadzenButton ButtonType="ButtonType.Submit" Text="Search"></RadzenButton>
 							<RadzenButton Text="Get All" Click="GetAll"></RadzenButton>
+							<RadzenButton Text="Create Question Batch" Click="CreateQuestionBatch" ButtonStyle="ButtonStyle.Secondary"></RadzenButton>
+							<RadzenButton Text="Create Answer Batch" Click="CreateAnswerBatch" ButtonStyle="ButtonStyle.Secondary"></RadzenButton>
 						</RadzenTemplateForm>
 					</RadzenCard>
+					@if (_batchlines.Count > 0)
+					{
+						<RadzenText TextStyle="TextStyle.DisplayH5" TextAlign="TextAlign.Center">BatchLines: @_batchlines.Count</RadzenText>
+					}
+					@if (_questions.Count > 0)
+					{
+						<RadzenCard Style="height:25rem; overflow:auto">
+							@foreach (var question in _questions)
+							{
+								<RadzenText>@(_questions.IndexOf(question)) - @question</RadzenText>
+							}
+						</RadzenCard>
+					}
 				</RadzenColumn>
 				<RadzenColumn Size="4">
+					<RadzenText Text="text-embedding-3-small" TextAlign="TextAlign.Center" TextStyle="TextStyle.Subtitle1"></RadzenText>
 					<RadzenDataGrid @ref=_grid AllowFiltering=true FilterCaseSensitivity=FilterCaseSensitivity.CaseInsensitive AllowSorting=true AllowPaging=true PageSize=20 Density="Density.Compact" ShowPagingSummary="true" TItem="MemoryQueryResult" Data=_memoryQueryResults>
 						<Template Context="result">
 							<RadzenCard Style="word-wrap: break-word; overflow-wrap: break-word;width:100%;white-space: pre-wrap;max-height:18rem;overflow:auto;">
@@ -54,6 +70,7 @@
 					</RadzenDataGrid>
 				</RadzenColumn>
 				<RadzenColumn Size="4">
+					<RadzenText Text="text-embedding-3-large" TextAlign="TextAlign.Center" TextStyle="TextStyle.Subtitle1"></RadzenText>
 					<RadzenDataGrid @ref=_grid2 AllowFiltering=true FilterCaseSensitivity=FilterCaseSensitivity.CaseInsensitive AllowSorting=true AllowPaging=true PageSize=20 Density="Density.Compact" ShowPagingSummary="true" TItem="MemoryQueryResult" Data=_memoryQueryResultsEnhanced>
 						<Template Context="result">
 							<RadzenCard Style="word-wrap: break-word; overflow-wrap: break-word;width:100%;white-space: pre-wrap;max-height:18rem;overflow:auto;">
@@ -94,5 +111,6 @@
 				</RadzenColumn>
 			</RadzenRow>
 		</RadzenTabsItem>
+		
 	</Tabs>
 </RadzenTabs>

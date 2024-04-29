@@ -23,29 +23,32 @@ public class MemoryService
 		_configuration = configuration;
 		_loggerFactory = loggerFactory;
 	}
-	public static async Task<ISemanticTextMemory> GetSqliteMemory()
+	public static async Task<ISemanticTextMemory> GetSqliteMemory(string? model = null)
 	{
+		model ??= _configuration["OpenAI:EmbeddingModelId"]!;
 		var sqliteConnect = await SqliteMemoryStore.ConnectAsync(_configuration["Sqlite:ConnectionString"]!);
 		var memory = new MemoryBuilder().WithLoggerFactory(_loggerFactory)
-			.WithOpenAITextEmbeddingGeneration(_configuration["OpenAI:EmbeddingModelId"]!, _configuration["OpenAI:ApiKey"]!)
+			.WithOpenAITextEmbeddingGeneration(model, _configuration["OpenAI:ApiKey"]!)
 			.WithMemoryStore(sqliteConnect).Build();
 		return memory;
 	}
-	public async IAsyncEnumerable<MemoryQueryResult> SearchVectorStoreAsync(string query, int count = 10, double minSimilarity = 0.5, CollectionType collectionType = CollectionType.PromptEngineeringCollection)
+	public async IAsyncEnumerable<MemoryQueryResult> SearchVectorStoreAsync(string query, int count = 10, double minSimilarity = 0.5, CollectionType collectionType = CollectionType.PromptEngineeringCollectionSmall)
 	{
-		var memory = await GetSqliteMemory();
-		var collection = collectionType == CollectionType.PromptEngineeringCollection ? AppConstants.PromptEngineeringCollection : AppConstants.PromptEngineeringEnhancedCollection;
+		var model = collectionType == CollectionType.PromptEngineeringEnhancedCollection ? "text-embedding-3-large" : "text-embedding-3-small";
+		var memory = await GetSqliteMemory(model);
+		var collection = collectionType == CollectionType.PromptEngineeringCollectionSmall ? AppConstants.PromptEngineeringEnhancedCollectionSmall : AppConstants.PromptEngineeringEnhancedCollection;
 		var results = memory.SearchAsync(collection, query, count, minSimilarity);
 		await foreach (var result in results)
 		{
 			yield return result;
 		}
 	}
-	public async IAsyncEnumerable<MemoryQueryResult> GetAllVectorStoreContent(CollectionType collectionType = CollectionType.PromptEngineeringCollection)
+	public async IAsyncEnumerable<MemoryQueryResult> GetAllVectorStoreContent(CollectionType collectionType = CollectionType.PromptEngineeringCollectionSmall)
 	{
-		var memory = await GetSqliteMemory();
+		var model = collectionType == CollectionType.PromptEngineeringEnhancedCollection ? "text-embedding-3-large" : "text-embedding-3-small";
+		var memory = await GetSqliteMemory(model);
 
-		var collection = collectionType == CollectionType.PromptEngineeringCollection ? AppConstants.PromptEngineeringCollection : AppConstants.PromptEngineeringEnhancedCollection;
+		var collection = collectionType == CollectionType.PromptEngineeringCollectionSmall ? AppConstants.PromptEngineeringEnhancedCollectionSmall : AppConstants.PromptEngineeringEnhancedCollection;
 		var results = memory.SearchAsync(collection, "*", 500, 0.0);
 		List<string> ids = [];
 		await foreach (var result in results)
@@ -58,6 +61,6 @@ public class MemoryService
 }
 public enum CollectionType
 {
-	PromptEngineeringCollection,
+	PromptEngineeringCollectionSmall,
 	PromptEngineeringEnhancedCollection
 }
