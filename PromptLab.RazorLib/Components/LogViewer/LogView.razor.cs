@@ -16,6 +16,6 @@ public partial class LogView
 
     private async void OpenLogItem(LogEntry log)
     {
-		 await DialogService.OpenSideAsync<LogItem>("Log Details", new Dictionary<string, object> { ["Log"] = log }, new SideDialogOptions { Position = DialogPosition.Right, Style="top:0"});
+        await DialogService.OpenSideAsync<LogItem>("Log Details", new Dictionary<string, object> { ["Log"] = log }, new SideDialogOptions { Position = DialogPosition.Right, Style = "top:0", CloseDialogOnOverlayClick = true, ShowClose = false, ShowTitle = false });
 	}
 }

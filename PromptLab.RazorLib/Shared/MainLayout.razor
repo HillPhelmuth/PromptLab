@@ -13,7 +13,7 @@
 			</RadzenColumn>
 		</RadzenRow>
 	</RadzenHeader>
-	<RadzenSidebar Responsive="false" @bind-Expanded="@sidebarExpanded" style="width:250px">
+	<RadzenSidebar Responsive="false" @bind-Expanded="@sidebarExpanded" style="width:250px;overflow:auto">
 
 		<RadzenPanelMenu>
 			<RadzenPanelMenuItem Path="" Text="Home" Click="@(() => SetHeaderTitle("Prompt Lab Playground"))"></RadzenPanelMenuItem>
@@ -27,6 +27,7 @@
 			<RadzenPanelMenuItem Icon="expand" Text="Model Settings">
 				<ModelSettingsMenu></ModelSettingsMenu>
 			</RadzenPanelMenuItem>
+			
 		</RadzenPanelMenu>
 
 	</RadzenSidebar>

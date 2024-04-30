@@ -27,6 +27,10 @@ public partial class LogItem
         }
         await base.OnParametersSetAsync();
     }
+    private void Close()
+    {
+        DialogService.CloseSide();
+    }
     private string AsHtml(string? text)
     {
         if (text == null) return "";

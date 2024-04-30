@@ -33,7 +33,7 @@ public class PromptEngineerService
 		_apiKey = _configuration["OpenAI:ApiKey"]!;
 		_logger = loggerFactory.CreateLogger<PromptEngineerService>();
 	}
-	public async IAsyncEnumerable<string> ChatWithPromptEngineer(ChatHistory chatHistory,[EnumeratorCancellation] CancellationToken cancellationToken = default)
+	public async IAsyncEnumerable<string> ChatWithPromptEngineer(ChatHistory chatHistory, [EnumeratorCancellation] CancellationToken cancellationToken = default)
 	{
 		chatHistory.AddSystemMessage(Prompt.PromptEngineerSystemPrompt);
 		var kernel = ChatService.CreateKernel(_appState.ChatSettings.Model);
@@ -59,11 +59,11 @@ public class PromptEngineerService
 	{
 		var filters = new FunctionFilter();
 		var promptFilters = new PromptFilter();
-		filters.FunctionInvoked += OnFiltersOnFunctionInvoked;
-		promptFilters.PromptRendered += OnPromptFiltersOnPromptRendered;
+		filters.FunctionInvoked += OnFunctionInvoked;
+		promptFilters.PromptRendered += OnPromptRendered;
 
-		kernel.FunctionFilters.Add(filters);
-		kernel.PromptFilters.Add(promptFilters);
+		kernel.FunctionInvocationFilters.Add(filters);
+		kernel.PromptRenderFilters.Add(promptFilters);
 	}
 
 	public async Task<string> HelpFromPromptEngineer(string prompt)
@@ -85,12 +85,12 @@ public class PromptEngineerService
 		_logger.LogInformation("Chat Response: {response}", response.Content);
 		return response.Content ?? "";
 	}
-	private void OnPromptFiltersOnPromptRendered(object? sender, PromptRenderedContext context)
+	private void OnPromptRendered(object? sender, PromptRenderContext context)
 	{
-		LogItem?.Invoke(new LogEntry(context.RenderedPrompt, DisplayType.Prompt, "Prompt Function", "The rendered prompt of a prompt function"));
+		LogItem?.Invoke(new LogEntry(context.RenderedPrompt ?? "No RenderedPrompt", DisplayType.Prompt, "Prompt Function", "The rendered prompt of a prompt function"));
 	}
 
-	private void OnFiltersOnFunctionInvoked(object? sender, FunctionInvokedContext context)
+	private void OnFunctionInvoked(object? sender, FunctionInvocationContext context)
 	{
 		switch (context.Function.Name)
 		{
@@ -101,8 +101,8 @@ public class PromptEngineerService
 					LogItem?.Invoke(new LogEntry(jsonResult, DisplayType.Json, context.Function.Name, context.Function.Description));
 					break;
 				}
-            case "GeneralExpertAdvice":
-            case "PromptExpertAdvice":
+			case "GeneralExpertAdvice":
+			case "PromptExpertAdvice":
 				{
 					var result = context.Result.GetValue<string>()!;
 					LogItem?.Invoke(new LogEntry(result, DisplayType.Markdown, context.Function.Name, context.Function.Description));
@@ -117,36 +117,5 @@ public class PromptEngineerService
 				}
 
 		}
-	}
-}
-public class FunctionFilter : IFunctionFilter
-{
-	public event EventHandler<FunctionInvokingContext>? FunctionInvoking;
-	public event EventHandler<FunctionInvokedContext>? FunctionInvoked;
-	public void OnFunctionInvoking(FunctionInvokingContext context)
-	{
-
-		FunctionInvoking?.Invoke(this, context);
-	}
-
-	public void OnFunctionInvoked(FunctionInvokedContext context)
-	{
-
-		FunctionInvoked?.Invoke(this, context);
-	}
-}
-public class PromptFilter : IPromptFilter
-{
-	public event EventHandler<PromptRenderingContext>? PromptRendering;
-	public event EventHandler<PromptRenderedContext>? PromptRendered;
-
-	public void OnPromptRendering(PromptRenderingContext context)
-	{
-		PromptRendering?.Invoke(this, context);
-	}
-
-	public void OnPromptRendered(PromptRenderedContext context)
-	{
-		PromptRendered?.Invoke(this, context);
 	}
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using PromptLab.Core.Models;
 using PromptLab.RazorLib.ChatModels;
 using Radzen;
+using Message = PromptLab.RazorLib.ChatModels.Message;
 
 namespace PromptLab.RazorLib.Components.ChatComponents.LogProbComponents;
 
@@ -34,12 +35,5 @@ public partial class TextAsLogProbTokens : ComponentBase
         DialogService.Open<AlternativesGrid>("", new Dictionary<string, object> { ["TokenString"] = token }, new DialogOptions { ShowClose = false, ShowTitle = false, CloseDialogOnOverlayClick = true, CloseDialogOnEsc = true, Draggable = true, Resizable=true, Style= "padding:0"});
         StateHasChanged();
     }
-    protected override Task OnParametersSetAsync()
-    {
-        //foreach (var tokenString in TokenStrings)
-        //{
-        //    Console.WriteLine("Token LogProbs: " + JsonSerializer.Serialize(tokenString, new JsonSerializerOptions { WriteIndented=true}));
-        //}
-        return base.OnParametersSetAsync();
-    }
+    
 }
