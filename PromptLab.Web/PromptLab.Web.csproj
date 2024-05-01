@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <None Include="Data\PromptLab.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
