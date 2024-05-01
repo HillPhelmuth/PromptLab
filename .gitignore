@@ -371,3 +371,9 @@ FodyWeavers.xsd
 /PromptLab.Web/AllMemoryIds_promptHelperCollection.json
 /PromptLab.Web/AllNewMemoryIds.json
 /PromptLab/appsettings.json
+/PromptLab.Core/BatchFiles
+/PromptLab.Web/AllMemoryIds_promptEnhancedCollectionSmall.json
+/PromptLab.Web/batch.jsonl
+/PromptLab.Web/batchAnswers2.jsonl
+/PromptLab.Web/batchQuestions.jsonl
+/PromptLab.Web/batchQuestions2.jsonl

@@ -22,8 +22,9 @@ public class AppState : INotifyPropertyChanged
 
 	private string _activeSystemPromptMarkdown;
 	private string _promptToSave = "";
-	private ModelSettings _modelSettings = new();
+	private ChatModelSettings _modelSettings = new();
 	private UserProfile _userProfile = new();
+	private EmbeddingModelSettings _embeddingModelSettings = new();
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public string? UserName
@@ -82,13 +83,23 @@ public class AppState : INotifyPropertyChanged
 		}
 	}
 
-	public ModelSettings ModelSettings
+	public ChatModelSettings ChatModelSettings
 	{
 		get => _modelSettings;
 		set
 		{
 			UserProfile.ModelSettings = value;
 			SetField(ref _modelSettings, value);
+		}
+	}
+
+	public EmbeddingModelSettings EmbeddingModelSettings
+	{
+		get => _embeddingModelSettings;
+		set 
+		{ 
+			UserProfile.EmbeddingModelSettings = value;
+			SetField(ref _embeddingModelSettings, value); 
 		}
 	}
 

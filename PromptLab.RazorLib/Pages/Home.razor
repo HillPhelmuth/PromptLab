@@ -48,3 +48,21 @@
 	</RadzenColumn>
 </RadzenRow>
 
+@code{
+	private Task<bool> ValidateSettings()
+	{
+		var (isValid, message) = AppState.ChatModelSettings.Validate();
+		if (isValid) return Task.FromResult(isValid);
+			var notificationMessage = new NotificationMessage
+				{
+					Severity = NotificationSeverity.Error,
+					Summary = $"Chat Model Settings Invalid - {message}",
+					Detail = "Update Settings Here",
+					Duration = 10000,
+					Click = ShowSettings,
+					CloseOnClick = true,
+			DetailContent = ns => @<RadzenButton Text="Update Settings" Click="ShowSettings" /> };
+		NotificationService.Notify(notificationMessage);
+		return Task.FromResult(isValid);
+	}
+}
