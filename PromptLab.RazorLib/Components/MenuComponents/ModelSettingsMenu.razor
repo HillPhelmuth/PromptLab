@@ -8,7 +8,7 @@
 						<RadzenDropDown Data="@(Enum.GetValues<OpenAIModelType>())" TValue="OpenAIModelType" @bind-Value=_chatModelSettings.OpenAIModelType></RadzenDropDown>
 					</ChildContent>
 					<Helper>
-						<RadzenText Style="color:#3ca1c3" TextStyle="TextStyle.Caption" Text="Select Standard or Azure Hosted"></RadzenText>
+						<RadzenText Style="@(AppState.AppSettings.Theme == StyleTheme.Dark ? "color:white":"color:black")" TextStyle="TextStyle.Caption" Text="Select Standard or Azure Hosted"></RadzenText>
 					</Helper>
 				</RadzenFormField>
 				@if (_chatModelSettings.OpenAIModelType == OpenAIModelType.OpenAI)

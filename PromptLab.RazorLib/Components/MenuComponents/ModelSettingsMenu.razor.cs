@@ -20,8 +20,8 @@ public partial class ModelSettingsMenu
 	private EmbeddingModelSettings _embeddingsModelSettings = new();
 	protected override void OnParametersSet()
 	{
-		ChatModelSettings ??= AppState.ChatModelSettings;
-		_chatModelSettings = ChatModelSettings;
+		ChatModelSettings = AppState.ChatModelSettings;
+		_chatModelSettings = AppState.ChatModelSettings;
 		EmbeddingModelSettings ??= AppState.EmbeddingModelSettings;
 		_embeddingsModelSettings = EmbeddingModelSettings;
 		StateHasChanged();
@@ -39,7 +39,7 @@ public partial class ModelSettingsMenu
 	private async void Submit(ChatModelSettings modelSettings)
 	{
 		AppState.ChatModelSettings = modelSettings;
-		if (!string.IsNullOrEmpty(modelSettings.OpenAIApiKey))
+		if (!string.IsNullOrEmpty(modelSettings.OpenAIApiKey) && string.IsNullOrEmpty(AppState.EmbeddingModelSettings.OpenAIApiKey))
 		{
 			var confirm = await DialogService.Confirm("Use same OpenAI ApiKey for Embeddings (text-embedding-3-small)?", "Confirm", new ConfirmOptions { OkButtonText = "Yes", CancelButtonText = "No" });
 			if (confirm == true)

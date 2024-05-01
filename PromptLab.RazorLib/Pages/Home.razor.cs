@@ -10,6 +10,7 @@ using System.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Radzen;
 using PromptLab.RazorLib.Components.ModalWindows;
+using PromptLab.RazorLib.Components.MenuComponents;
 
 namespace PromptLab.RazorLib.Pages;
 
@@ -25,6 +26,7 @@ public partial class Home
 	private PromptEngineerService PromptEngineerService { get; set; } = default!;
 	[Inject]
 	private DialogService DialogService { get; set; } = default!;
+
 	private CancellationTokenSource _cancellationTokenSource = new();
 	private class SystemPromptForm
 	{
@@ -45,8 +47,8 @@ public partial class Home
 	}
 	protected override async void UpdateState(object? sender, PropertyChangedEventArgs args)
 	{
-        Logger.LogInformation("UpdateState triggered in {Home} from property {propName}", nameof(Home),args.PropertyName);
-        switch (args.PropertyName)
+		Logger.LogInformation("UpdateState triggered in {Home} from property {propName}", nameof(Home), args.PropertyName);
+		switch (args.PropertyName)
 		{
 			case nameof(AppState.ActiveSystemPromptHtml):
 				_systemPromptForm.SystemPromptHtml = AppState.ActiveSystemPromptHtml;
@@ -54,12 +56,12 @@ public partial class Home
 				break;
 			case nameof(AppState.PromptToSave):
 				{
-                    //var parameters = new Dictionary<string, object> { ["MessageText"] = _text };
-                    //var dialogOptions = new DialogOptions { CloseDialogOnOverlayClick = true, Height = "40vh", Width = "40vw", Resizable = true, Draggable = true };
-                    //await DialogService.OpenAsync<MessageModalWindow>("Response from Prompt Engineer Agent", parameters, dialogOptions);
-                    Logger.LogInformation("Save Prompt dialog triggered");
-                    var properties = new Dictionary<string, object> { ["MessageText"] = AppState.PromptToSave, ["ShowConfirmButton"] = true };
-					var save = await DialogService.OpenAsync<MessageModalWindow>("Save Prompt", properties, new DialogOptions { Height = "80vh", Width = "65vw"});
+					//var parameters = new Dictionary<string, object> { ["MessageText"] = _text };
+					//var dialogOptions = new DialogOptions { CloseDialogOnOverlayClick = true, Height = "40vh", Width = "40vw", Resizable = true, Draggable = true };
+					//await DialogService.OpenAsync<MessageModalWindow>("Response from Prompt Engineer Agent", parameters, dialogOptions);
+					Logger.LogInformation("Save Prompt dialog triggered");
+					var properties = new Dictionary<string, object> { ["MessageText"] = AppState.PromptToSave, ["ShowConfirmButton"] = true };
+					var save = await DialogService.OpenAsync<MessageModalWindow>("Save Prompt", properties, new DialogOptions { Height = "80vh", Width = "65vw" });
 					Logger.LogInformation("Save Prompt dialog result: {saveResult}", ((object)save)?.ToString());
 					if (save is bool && save == true)
 					{
@@ -139,6 +141,7 @@ public partial class Home
 	}
 	private async void HandleInput(string input)
 	{
+		if (!await ValidateSettings()) return;
 		_isBusy = true;
 		StateHasChanged();
 		await Task.Delay(1);
@@ -168,6 +171,15 @@ public partial class Home
 			StateHasChanged();
 		}
 	}
+	
+	private void ShowSettings(NotificationMessage m)
+	{
+		DialogService.Open<ModelSettingsMenu>("Chat Settings", options: new DialogOptions { Height = "50vh", Width = "35vw", ShowTitle = false, CloseDialogOnOverlayClick = true });
+	}
+	private void ShowSettings()
+	{
+		DialogService.Open<ModelSettingsMenu>("Chat Settings", options: new DialogOptions { Height = "50vh", Width = "35vw", ShowTitle = false, CloseDialogOnOverlayClick = true });
+	}
 	private async Task ExecuteChatSequence(IAsyncEnumerable<string> chatseq)
 	{
 		var hasStarted = false;
@@ -190,7 +202,7 @@ public partial class Home
 		if (lastAsstMessage is not null)
 			lastAsstMessage.IsActiveStreaming = false;
 	}
-	
+
 	private string AsHtml(string? text)
 	{
 		if (text == null) return "";

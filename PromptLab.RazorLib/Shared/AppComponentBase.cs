@@ -3,6 +3,7 @@ using PromptLab.Core;
 using System.ComponentModel;
 using Microsoft.Extensions.Logging;
 using PromptLab.Core.Services;
+using Radzen;
 
 namespace PromptLab.RazorLib.Shared;
 
@@ -14,6 +15,8 @@ public class AppComponentBase : ComponentBase, IDisposable
     private ILoggerFactory LoggerFactory { get; set; } = default!;
     [Inject]
     protected IFileService FileService { get; set; } = default!;
+    [Inject]
+    protected NotificationService NotificationService { get; set; } = default!;
 	protected ILogger Logger => LoggerFactory.CreateLogger(GetType());
 
     protected override Task OnInitializedAsync()
