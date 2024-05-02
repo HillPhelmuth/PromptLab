@@ -10,12 +10,16 @@ public class Message(Role role, string content, int order)
     public Role Role { get; set; } = role;
     public DateTime TimeStamp { get; set; } = DateTime.Now;
     public bool IsActiveStreaming { get; set; }
+    public string? ImageUrl { get; set; }
 
     public static Message UserMessage(string content, int order)
     {
         return new Message(Role.User, content, order);
     }
-
+    public static Message UserMessage(string content, string imageUrl, int order)
+    {
+        return new Message(Role.User, content, order) { ImageUrl = imageUrl};
+    }
     public static Message AssistantMessage(string content, int order)
     {
         return new Message(Role.Assistant, content, order);

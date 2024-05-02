@@ -43,7 +43,7 @@
 		</RadzenCard>
 
 		<RadzenCard Style="position:relative" Variant="Variant.Filled">
-			<UserInput IsRequired="@(_chatView.ChatState.ChatMessages.LastOrDefault()?.Role == Role.Assistant)" ButtonLabel="Send" HelperText="User Input" MessageSubmit="HandleInput" IsBusy="_isBusy" CancelRequest="Cancel"></UserInput>
+			<UserInput IsRequired="@(false)" ButtonLabel="Send" HelperText="User Input" UserInputSubmit="HandleRequest" IsBusy="_isBusy" CancelRequest="Cancel"></UserInput>
 		</RadzenCard>
 	</RadzenColumn>
 </RadzenRow>

@@ -9,13 +9,13 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PromptLab.Web
 {
-	public class BrowserStorageService : IFileService
+	public class BrowserFileService : IFileService
 	{
 		private readonly ProtectedLocalStorage _localStorage;
 		private readonly DialogService _dialogService;
 		private Dictionary<string, string> _prompts = [];
 		private IJSRuntime _jsRuntime;
-		public BrowserStorageService(ProtectedLocalStorage localStorage, DialogService dialogService, IJSRuntime jsRuntime)
+		public BrowserFileService(ProtectedLocalStorage localStorage, DialogService dialogService, IJSRuntime jsRuntime)
 		{
 			_localStorage = localStorage;
 			_dialogService = dialogService;
@@ -37,7 +37,15 @@ namespace PromptLab.Web
 			return null;
 
 		}
-
+		public async Task<(string, byte[])> OpenImageFileAsync()
+		{
+			var fileContent = await _dialogService.OpenAsync<UploadImageWindow>("", options: new DialogOptions { Draggable = true, ShowClose = true, Resizable = true, ShowTitle = false, CloseDialogOnOverlayClick = true});
+			if (fileContent is FileUpload file)
+			{
+				return (file.FileName!, file.FileBytes!);
+			}
+			return ("", Array.Empty<byte>());
+		}
 		public async Task<string?> SaveFileAsync(string fileName, string file)
 		{
 			var confirmed = await _dialogService.OpenAsync<SavePromptWindow>("", options: new DialogOptions { Draggable = true, ShowClose = false, Resizable = true, ShowTitle = false });

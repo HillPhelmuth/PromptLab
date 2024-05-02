@@ -7,18 +7,26 @@ using PromptLab.RazorLib.Shared;
 using PromptLab.Web;
 using PromptLab.Web.Components;
 using Radzen;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents().AddHubOptions(o =>
+    {
+        o.MaximumReceiveMessageSize = null;
+    });
 var services = builder.Services;
 services.AddScoped<AppState>();
 services.AddPromptLab();
 services.AddRadzenComponents();
 services.AddScoped<ChatStateCollection>().AddTransient<AppJsInterop>();
-services.AddScoped<IFileService, BrowserStorageService>();
+services.AddScoped<IFileService, BrowserFileService>();
+services.AddAzureClients(clientBuilder =>
+{
+    clientBuilder.AddBlobServiceClient(builder.Configuration["PromptLabImagesConnectionString"]!, preferMsi: true);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

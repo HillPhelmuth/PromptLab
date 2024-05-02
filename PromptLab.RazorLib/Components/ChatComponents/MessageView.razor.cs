@@ -36,7 +36,7 @@ public partial class MessageView
 
     protected override Task OnParametersSetAsync()
     {
-        Console.WriteLine($"ALlow remove = {AllowRemove}");
+        //Console.WriteLine($"ALlow remove = {AllowRemove}");
         if (Message.Content != _previousContent)
         {
             _previousContent = Message.Content ?? "";

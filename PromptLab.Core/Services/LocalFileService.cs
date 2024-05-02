@@ -6,14 +6,20 @@ namespace PromptLab.Core.Services;
 public class LocalFileService : IFileService
 {
     public event Action? PickFile;
+    public event Action? PickImageFile;
     public event Action<UserProfile>? SaveUserProfile;
     public event Action<string, string>? SaveFile;
     public event Action<double>? Zoom;
     public event Func<UserProfile>? LoadUserProfile;
     private TaskCompletionSource<string?> Tcs { get; set; } = new();
+    private TaskCompletionSource<(string, byte[])> ImageTcs { get; set; } = new();
     public void FilePicked(string filePath)
     {
         Tcs.TrySetResult(filePath);
+    }
+    public void ImagePicked(string fileName, byte[] fileBytes)
+    {
+        ImageTcs.TrySetResult((fileName, fileBytes));
     }
     public async Task<string?> OpenFileAsync(string fileName = "")
     {
@@ -34,6 +40,15 @@ public class LocalFileService : IFileService
         var item = LoadUserProfile?.Invoke();
         return Task.FromResult(item ?? new UserProfile());
     }
+
+    public async Task<(string, byte[])> OpenImageFileAsync()
+    {
+        PickImageFile?.Invoke();
+        var imageData = await ImageTcs.Task;
+        ImageTcs = new TaskCompletionSource<(string, byte[])>();
+        return imageData;
+    }
+
     public async Task<string?> SaveFileAsync(string fileName, string file)
     {
         SaveFile?.Invoke(fileName, file);

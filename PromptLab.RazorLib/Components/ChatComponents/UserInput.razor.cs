@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
+using PromptLab.Core.Helpers;
+using PromptLab.Core.Models;
+using PromptLab.Core.Services;
 using PromptLab.RazorLib.ChatModels;
 
 namespace PromptLab.RazorLib.Components.ChatComponents;
@@ -26,6 +29,8 @@ public partial class UserInput : ComponentBase
     public EventCallback CancelRequest { get; set; }
     [Parameter]
     public bool IsRequired { get; set; } = true;
+    [Inject]
+    private IFileService FileService { get; set; } = default!;
     protected override Task OnParametersSetAsync()
     {
         _requestForm.UserInputRequest.UserInputType = UserInputType;
@@ -37,6 +42,7 @@ public partial class UserInput : ComponentBase
     private class RequestForm
     {
         public string? Content { get; set; }
+        public bool ShowImageInput { get; set; }
         public UserInputRequest UserInputRequest { get; set; } = new();
     }
 
@@ -51,6 +57,19 @@ public partial class UserInput : ComponentBase
             ? UserInputFieldType.TextArea
             : UserInputFieldType.TextBox;
         StateHasChanged();
+    }
+    private async Task AddImage()
+    {
+        var (fileName, bytes) = await FileService.OpenImageFileAsync();
+        if (bytes.Length > 0)
+        {
+            _requestForm.UserInputRequest.FileUpload = new FileUpload
+            {
+                FileName = fileName,
+                FileBytes = bytes,
+                FileBase64 = Convert.ToBase64String(bytes)
+            };
+        }
     }
     private void SubmitRequest(RequestForm form)
     {
