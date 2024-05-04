@@ -30,13 +30,28 @@ public class DesktopFileService
 			Filter = "txt files (*.txt)|*.txt|markdown files (*.md)|*.md|All files (*.*)|*.*",
 			FilterIndex = 2,
 			RestoreDirectory = true,
-			//Multiselect = multiSelect
 		};
 
 
 		return fileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fileDialog.FileName) ? fileDialog.FileName : string.Empty;
 	}
-	public static string OpenSaveFile(string filename, string fileText)
+	public static (string, byte[])? OpenImageFileDialog()
+	{
+		var fileDialog = new OpenFileDialog
+        {
+            Filter = "Image files (*.jpg;*.jpeg;*.png;*.bmp;*.gif)|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All files (*.*)|*.*",
+            FilterIndex = 1,
+            RestoreDirectory = true,
+        };
+		if (fileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fileDialog.FileName))
+		{
+			var fileName = Path.GetFileName(fileDialog.FileName);
+			var bytes = File.ReadAllBytes(fileDialog.FileName);
+			return (fileName, bytes);
+		}
+		return null;
+    }
+    public static string OpenSaveFile(string filename, string fileText)
 	{
 		var saveFileDialog = new SaveFileDialog
 		{

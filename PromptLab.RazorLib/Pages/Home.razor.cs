@@ -8,9 +8,12 @@ using Markdig;
 using PromptLab.RazorLib.ChatModels;
 using System.ComponentModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.SemanticKernel;
 using Radzen;
 using PromptLab.RazorLib.Components.ModalWindows;
 using PromptLab.RazorLib.Components.MenuComponents;
+using Microsoft.SemanticKernel.ChatCompletion;
+using PromptLab.Core.Models;
 
 namespace PromptLab.RazorLib.Pages;
 
@@ -19,7 +22,7 @@ public partial class Home
 	private ChatView _chatView;
 	private bool _isBusy;
 	[Inject]
-	private IFileService FileService { get; set; } = default!;
+	private BlobService BlobService { get; set; } = default!;
 	[Inject]
 	private ChatService ChatService { get; set; } = default!;
 	[Inject]
@@ -142,12 +145,20 @@ public partial class Home
 	private async void HandleInput(string input)
 	{
 		if (!await ValidateSettings()) return;
-		_isBusy = true;
-		StateHasChanged();
-		await Task.Delay(1);
+
+		
 		if (!string.IsNullOrWhiteSpace(input))
 			_chatView.ChatState.AddUserMessage(input);
-		_cancellationTokenSource = new();
+		
+		await SubmitRequest();
+	}
+
+	private async Task SubmitRequest()
+	{
+        _isBusy = true;
+        StateHasChanged();
+        await Task.Delay(1);
+        _cancellationTokenSource = new();
 		var token = _cancellationTokenSource.Token;
 		if (AppState.ChatSettings is { LogProbs: true })
 		{
@@ -165,13 +176,31 @@ public partial class Home
 		{
 			var settings = AppState.ChatSettings.AsPromptExecutionSettings();
 			var chatSequence = ChatService.StreamingChatResponse(_chatView.ChatState.ChatHistory, settings,
-							   AppState.ActiveSystemPrompt, AppState.ChatSettings.Model, token);
+				AppState.ActiveSystemPrompt, AppState.ChatSettings.Model, token);
 			await ExecuteChatSequence(chatSequence);
 			_isBusy = false;
 			StateHasChanged();
 		}
 	}
-	
+
+	private async void HandleRequest(UserInputRequest userInputRequest)
+	{
+		if (userInputRequest.FileUpload is null)
+		{
+			HandleInput(userInputRequest.ChatInput);
+			return;
+		}
+		var text = new TextContent(userInputRequest.ChatInput);
+		var url = await GetImageUrlFromBlobStorage(userInputRequest.FileUpload!);
+		var image = new ImageContent(new Uri(url));
+		_chatView.ChatState.AddUserMessage(text, image);
+		await SubmitRequest();
+	}
+	private async Task<string> GetImageUrlFromBlobStorage(FileUpload file)
+	{
+		var url = await BlobService.UploadBlobFile(file.FileName!, file.FileBytes!);
+		return url;
+	}
 	private void ShowSettings(NotificationMessage m)
 	{
 		DialogService.Open<ModelSettingsMenu>("Chat Settings", options: new DialogOptions { Height = "50vh", Width = "35vw", ShowTitle = false, CloseDialogOnOverlayClick = true });

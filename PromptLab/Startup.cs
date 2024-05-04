@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,6 +17,7 @@ public  class Startup
 {
     public static IServiceProvider? Services { get; private set; }
     public static IServiceCollection? ServiceCollection { get; private set; }
+    private static IConfiguration? _config;
 
     public static void Init()
     {
@@ -24,7 +26,7 @@ public  class Startup
                        .ConfigureAppConfiguration((hostingContext, config) =>
                        {
                            config.AddUserSecrets<Startup>();
-
+                           _config = config.Build();
                        })
                        .Build();
         Services = host.Services;
@@ -46,8 +48,12 @@ public  class Startup
         {
             c.Services.AddSingleton(Log.Logger);
         });
+        services.AddAzureClients(clientBuilder =>
+        {
+            clientBuilder.AddBlobServiceClient(_config!["PromptLabImagesConnectionString"]!, preferMsi: true);
+        });
 #if DEBUG
-		services.AddBlazorWebViewDeveloperTools();
+        services.AddBlazorWebViewDeveloperTools();
 #endif
         ServiceCollection = services;
     }

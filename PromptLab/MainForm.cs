@@ -26,11 +26,11 @@ public partial class MainForm : Form
             DesktopFileService.SaveUserSettings(profile, UserDataFolder);
         };
         _filePickerService.LoadUserProfile += () => DesktopFileService.LoadUserSettings(UserDataFolder);
-        //_filePickerService.PickFolder += () =>
-        //{
-        //    var folderPath = DesktopFilePicker.OpenFolderDialog();
-        //    _filePickerService.FolderPicked(folderPath);
-        //};
+        _filePickerService.PickImageFile += () =>
+        {
+            var nameBytes = DesktopFileService.OpenImageFileDialog();
+            _filePickerService.ImagePicked(nameBytes.Value.Item1, nameBytes.Value.Item2);
+        };
         _filePickerService.SaveFile += (fileName, fileText) =>
         {
             var filePath = DesktopFileService.OpenSaveFile(fileName, fileText);

@@ -15,9 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Data\PromptLab.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+   
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.3" />
   </ItemGroup>
 
 

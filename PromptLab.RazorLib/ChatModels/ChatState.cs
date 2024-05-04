@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using PromptLab.Core.Models;
 
@@ -27,7 +28,13 @@ public class ChatState : INotifyPropertyChanged
         ChatHistory.AddUserMessage(message);
         MessagePropertyChanged();
     }
-
+    public void AddUserMessage(TextContent text, ImageContent image, int? order = null)
+    {
+        order ??= MessageCount + 1;
+        ChatMessages.Add(Message.UserMessage(text.Text!,image.Uri?.ToString() ?? "", order.Value));
+        ChatHistory.Add(new ChatMessageContent(AuthorRole.User, [text, image]));
+        MessagePropertyChanged();
+    }
     public void AddAssistantMessage(string message, int? order = null, List<TokenString>? tokenStrings = null)
     {
         order ??= MessageCount + 1;

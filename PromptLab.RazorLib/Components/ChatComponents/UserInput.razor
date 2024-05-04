@@ -24,6 +24,13 @@
                                     <RadzenRequiredValidator Visible=IsRequired Component="Input" Text="@($"{HelperText} required")"></RadzenRequiredValidator>
                                 </Helper>
                             </RadzenFormField>
+                            @if (_requestForm.ShowImageInput){
+								<RadzenFormField Text="Image Url" Style="width: 100%">
+									<ChildContent>
+										<RadzenTextBox  Name="Image" Style="width: 100%" @bind-Value="_requestForm.UserInputRequest.ImageUrlInput"></RadzenTextBox>
+									</ChildContent>
+								</RadzenFormField>
+							}
                         }
                     </RadzenColumn>
                     <RadzenColumn Size="2" SizeLG="2" Style="display: flex; align-items:center">
@@ -31,7 +38,13 @@
 	                        <RadzenButton ButtonStyle=ButtonStyle.Info Size="ButtonSize.ExtraSmall" Icon="@(UserInputFieldType == UserInputFieldType.TextBox ? "expand":"unfold_less")" Click="ToggleInputType"></RadzenButton>
                             <RadzenButton Disabled="_isDisabled" ButtonType="ButtonType.Submit" Size=ButtonSize.Small Icon="send" IsBusy="IsBusy" BusyText="Sending..." Text="@ButtonLabel"></RadzenButton>
                             
-                            <RadzenButton Size="ButtonSize.Small" Icon="block" Click="Cancel"></RadzenButton>                            
+                            <RadzenButton Size="ButtonSize.Small" Icon="block" Click="Cancel"></RadzenButton>
+                            <RadzenButton Size="ButtonSize.Small" Icon="attach_file" Click="AddImage" ButtonStyle="ButtonStyle.Secondary"></RadzenButton>
+                            @if (!string.IsNullOrEmpty(_requestForm.UserInputRequest.FileUpload?.FileBase64))
+                            {
+	                            <RadzenImage Style="width:2rem;height:2rem" Path="@($"data:image/png;base64,{_requestForm.UserInputRequest.FileUpload.FileBase64}")"></RadzenImage>
+                            }
+                            
                         </RadzenCard>
                     </RadzenColumn>
                 </RadzenRow>

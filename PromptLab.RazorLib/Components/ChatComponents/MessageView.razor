@@ -6,6 +6,10 @@
     }
     
     <div @ref=_ref style="@("width:100%")">@((MarkupString)AsHtml(Message.Content))</div>
+    @if (Message.ImageUrl is not null)
+    {
+        <img src="@(Message.ImageUrl)" style="max-height:200px;max-width:200px" alt="uploaded image" />
+    }
     @if (AppState.ShowTimestamps)
     {
         <RadzenText Style="color:darkblue" TextStyle="TextStyle.Overline">@Message.TimeStamp.ToString("g")</RadzenText>

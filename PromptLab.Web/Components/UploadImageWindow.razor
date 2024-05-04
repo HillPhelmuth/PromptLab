@@ -1,0 +1,12 @@
+﻿@using PromptLab.Core.Models
+@inherits AppComponentBase
+<RadzenCard>
+	<RadzenTemplateForm Data=_fileUpload TItem="FileUpload" Submit="Submit">
+		<RadzenFormField Text="Image Upload">
+			<ChildContent>
+				<RadzenFileInput MaxFileSize="maxFileSize" @bind-Value=_fileUpload.FileBase64 @bind-FileName=_fileUpload.FileName MaxHeight="600" MaxWidth="600" ChooseText="Img"></RadzenFileInput>
+			</ChildContent>
+		</RadzenFormField><br />
+		<RadzenButton Size="ButtonSize.Small" ButtonType="ButtonType.Submit" Icon="attach_file" Text="Attach"></RadzenButton>
+	</RadzenTemplateForm>
+</RadzenCard>
