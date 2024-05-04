@@ -34,6 +34,7 @@
     <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.10.0-alpha" />
     <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.10.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="8.0.21" />
+    <PackageReference Include="PromptFlowEvalsAsPlugins" Version="0.0.1-beta" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="Tiktoken" Version="1.2.0" />
