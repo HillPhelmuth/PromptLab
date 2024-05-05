@@ -13,7 +13,8 @@ using System.Text;
 using Microsoft.SemanticKernel;
 using PromptLab.Core.Models;
 using Azure.AI.OpenAI;
-
+using PromptFlowEvalsAsPlugins;
+using PromptLab.RazorLib.Components.ModalWindows;
 
 
 #pragma warning disable SKEXP0001
@@ -38,6 +39,9 @@ public partial class MemoryPage
 	private List<MemoryQueryResult> _memoryQueryResultsEnhanced = [];
 	private RadzenDataGrid<MemoryQueryResult> _grid;
 	private RadzenDataGrid<MemoryQueryResult> _grid2;
+	private RadzenDataGrid<InputModelDisplay> _InputNonHydeGrid;
+	private RadzenDataGrid<InputModelDisplay> _InputHydeGrid;
+	
 	private List<string> _logs = [];
 	protected override Task OnInitializedAsync()
 	{
@@ -73,7 +77,7 @@ public partial class MemoryPage
 	{
 		ClearResults();
 		var count = 0;
-		await foreach (var result in MemoryService.SearchVectorStoreAsync(memorySearchForm.SearchText, memorySearchForm.Count, memorySearchForm.MinThreshold))
+		await foreach (var result in MemoryService.SearchVectorStoreAsync(memorySearchForm.SearchText, memorySearchForm.Count, memorySearchForm.MinThreshold, useHyde:true))
 		{
 			_memoryQueryResults.Add(result);
 			count++;
@@ -110,14 +114,14 @@ public partial class MemoryPage
 				await _grid.Reload();
 		}
 
-		await foreach (var result in MemoryService.GetAllVectorStoreContent(CollectionType.PromptEngineeringEnhancedCollection))
-		{
-			_memoryQueryResultsEnhanced.Add(result);
-			count++;
-			if (count % 10 == 0)
-				await _grid2.Reload();
-		}
-		await _grid2.Reload();
+		//await foreach (var result in MemoryService.GetAllVectorStoreContent(CollectionType.PromptEngineeringEnhancedCollection))
+		//{
+		//	_memoryQueryResultsEnhanced.Add(result);
+		//	count++;
+		//	if (count % 10 == 0)
+		//		await _grid2.Reload();
+		//}
+		//await _grid2.Reload();
 	}
 	private const string PromptHelperPromptGeneral =
 		"""
@@ -195,6 +199,80 @@ Do not mention or reference the text specifically in the question.
 		var path = @"C:\Users\adamh\source\repos\PromptLab\PromptLab.Core\BatchFiles\batch_YTQtehdzh2ATOAG9a29MDqvE_output.json";
 		var results = BatchResultsHelper.GetUsageResults(path);
 		_usages = results.Where(x => x != null).ToList()!;
+		StateHasChanged();
+	}
+	private List<InputModelDisplay> _inputModels = [];
+	private class InputModelDisplay(InputModel inputModel, bool isHyde)
+	{
+		public InputModel InputModel { get; set; } = inputModel;
+		public bool IsHyde { get; set; } = isHyde;
+	}
+	private async void GetAllInputModels()
+	{
+		List<Task> tasks = [GetInputModels(false), GetInputModels(true)];
+		await Task.WhenAll(tasks);
+	}
+	private async Task GetInputModels(bool hyde)
+	{
+		_isBusy = true;
+		StateHasChanged();
+		await Task.Delay(1);
+		var count = 0;
+		await foreach (var model in MemoryService.GenerateBenchmarkInputModels(hyde, 125))
+		{
+			count++;
+			_inputModels.Add(new InputModelDisplay(model, hyde));
+			switch (count % 10)
+			{
+				case 0 when !hyde:
+					await _InputNonHydeGrid.Reload();
+					break;
+				case 0 when hyde:
+					await _InputHydeGrid.Reload();
+					break;
+			}
+		}
+		_isBusy = false;
+		StateHasChanged();
+	}
+	
+	private List<EvalResultDisplay> _evalResults = [];
+	private List<EvalResultDisplay> _hydeEvalResults = [];
+	private Dictionary<string, double> _resultsAgg = [];
+	private Dictionary<string, double> _resultsAggHyde = [];
+	private bool _isEval;
+	private EvalDisplay? _evalDisplay;
+	private EvalDisplay? _evalDisplayHyde;
+	private async Task GetEvalsResults()
+	{
+		_isEval = true;
+		StateHasChanged();
+		await Task.Delay(1);
+		var count = 0;
+		var inputModels = _inputModels.Where(x => !x.IsHyde).Select(x => x.InputModel).ToList();
+		await foreach (var result in MemoryService.GenerateEvalResults(inputModels))
+		{
+			count++;
+			_evalResults.Add(result);
+			if (count % 10 == 0 && _evalDisplay is not null)
+				await _evalDisplay.RefreshGrid();
+			if (count % 10 == 0)
+				StateHasChanged();
+		}
+		var hydeInputs = _inputModels.Where(x => x.IsHyde).Select(x => x.InputModel).ToList();
+		await foreach (var result in MemoryService.GenerateEvalResults(hydeInputs, true))
+		{
+			count++;
+			_hydeEvalResults.Add(result);
+			if (count % 10 == 0 && _evalDisplayHyde is not null)
+				await _evalDisplayHyde.RefreshGrid();
+			if (count % 10 == 0)
+				StateHasChanged();
+		}
+		//_evalResults = await MemoryService.GenerateEvalResults(_inputModels);
+		_resultsAgg = EvalService.AggregateResults(_evalResults.Select(x => x.ResultScore));
+		_resultsAggHyde= EvalService.AggregateResults(_hydeEvalResults.Select(x => x.ResultScore));
+		_isEval = false;
 		StateHasChanged();
 	}
 	private string AsHtml(string? text)

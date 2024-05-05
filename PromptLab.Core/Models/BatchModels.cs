@@ -75,10 +75,39 @@ public class BatchRequestLine
 		return sb.ToString();
 	}
 }
-
+/// <summary>
+/// For Deserializing the response from Batch Results
+/// </summary>
 public class BatchLineResult
 {
-	[JsonPropertyName("id")]
+	public static List<(string matchId, BatchLineResult result)> GeneratedQuestions()
+	{
+		var path = @"C:\Users\adamh\source\repos\PromptLab\PromptLab.Core\BatchFiles\GeneratedQuestions.json";
+		var json = File.ReadAllText(path);
+		var results = JsonSerializer.Deserialize<List<BatchLineResult>>(json).Select(x => (x.Id, x));
+		return results!.ToList();
+    }
+	public static List<(string matchId, BatchLineResult result)> GeneratedAnswers()
+	{
+        var path = @"C:\Users\adamh\source\repos\PromptLab\PromptLab.Core\BatchFiles\Gpt4SyntheticAnswers.json";
+        var json = File.ReadAllText(path);
+        var results = JsonSerializer.Deserialize<List<BatchLineResult>>(json).Select(x => (x.CustomId, x));
+        return results!.ToList()!;
+    }
+    public static List<Benchmark> BenchMarkQandA()
+	{
+		var questions = GeneratedQuestions().Select(x => new Benchmark(x.matchId, x.result.GetAssistentMessage())).ToList();
+		foreach (var answerItem in GeneratedAnswers())
+		{
+			var question = questions.FirstOrDefault(x => x.Id == answerItem.matchId);
+			if (question is null) continue;
+			question.GoldenAnswer = answerItem.result.GetAssistentMessage();
+		}
+		File.WriteAllText("BenchmarkQnadAs.json", JsonSerializer.Serialize(questions, new JsonSerializerOptions() { WriteIndented = true }));
+		return [.. questions];
+	}
+
+    [JsonPropertyName("id")]
 	public string Id { get; set; } = default!;
 
 	[JsonPropertyName("custom_id")]

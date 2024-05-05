@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+ <PropertyGroup>
+  <TargetFramework>net8.0</TargetFramework>
+  <ImplicitUsings>enable</ImplicitUsings>
+  <Nullable>enable</Nullable>
+  <NoWarn>SKEXP0010</NoWarn>
+
+  <Title>PromptFlow Eval Flows as SemanticKernel Plugins</Title>
+  <PackageProjectUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</PackageProjectUrl>
+  <RepositoryUrl>https://github.com/HillPhelmuth/PromptFlowEvalsAsPlugins</RepositoryUrl>
+  <PackageOutputPath>C:\Users\adamh\source\localPackages</PackageOutputPath>
+
+ </PropertyGroup>
+ <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  <Version>0.0.2-beta</Version>
+ </PropertyGroup>
+ <ItemGroup>
+  <None Remove="EvalPluginYaml\Empathy.yaml" />
+  <None Remove="EvalPluginYaml\Fluency.yaml" />
+  <None Remove="EvalPluginYaml\PerceivedIntelligenceNonRag.yaml" />
+ </ItemGroup>
+
+ <ItemGroup>
+  <EmbeddedResource Include="EvalPluginYaml\*.yaml" />
+ </ItemGroup>
+
+ <ItemGroup>
+  <Compile Remove="IInputModel.cs" />
+ </ItemGroup>
+
+ <ItemGroup>
+  <PackageReference Include="Microsoft.SemanticKernel" Version="1.10.0" />
+  <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.10.0" />
+ </ItemGroup>
+
+</Project>

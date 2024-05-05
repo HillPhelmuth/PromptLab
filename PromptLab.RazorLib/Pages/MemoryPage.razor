@@ -1,5 +1,6 @@
 ﻿@page "/memory"
 @using Microsoft.SemanticKernel.Memory
+@using PromptFlowEvalsAsPlugins
 <RadzenTabs>
 	<Tabs>
 		<RadzenTabsItem Text="Memory Search">
@@ -111,6 +112,59 @@
 				</RadzenColumn>
 			</RadzenRow>
 		</RadzenTabsItem>
-		
+		<RadzenTabsItem Text="Evals">
+			<RadzenRow>
+				<RadzenColumn Size="5">
+					
+					<RadzenButton Text="Run Evals" Size=ButtonSize.ExtraSmall Style="margin-left:25%" Click="@(() => GetEvalsResults())" IsBusy=_isEval BusyText="Evaluating..."></RadzenButton>
+					<RadzenButton Text="Get Non-hyde" Size=ButtonSize.ExtraSmall Click="GetAllInputModels" IsBusy=_isBusy BusyText="Generating Inputs..."></RadzenButton>
+					<RadzenCard>
+						
+						<RadzenDataGrid @ref=_InputNonHydeGrid Data="_inputModels.Where(x => !x.IsHyde)" TItem="InputModelDisplay" AllowSorting=true Density="Density.Compact" AllowPaging=true PageSize="12" ShowPagingSummary=true>
+							<Columns>
+								<RadzenDataGridColumn TItem=InputModelDisplay Title="Func" Property="InputModel.FunctionName" Width="25%"></RadzenDataGridColumn>
+								@* <RadzenDataGridColumn TItem=InputModelDisplay Title="Is Hyde" Property="@(nameof(InputModelDisplay.IsHyde))"></RadzenDataGridColumn> *@
+								<RadzenDataGridColumn TItem=InputModelDisplay Title="Question" Sortable=false Width="75%">
+									<Template Context="ctx">
+										@if (ctx.InputModel.RequiredInputs.Any(x => x.Key == "question"))
+										{
+											<RadzenText TextStyle="TextStyle.Body2" Text="@ctx.InputModel.RequiredInputs["question"]?.ToString()"></RadzenText>
+										}
+
+									</Template>
+								</RadzenDataGridColumn>
+							</Columns>
+						</RadzenDataGrid>
+					</RadzenCard>
+					<RadzenCard>						
+						<RadzenDataGrid @ref=_InputHydeGrid Data="_inputModels.Where(x => x.IsHyde)" TItem="InputModelDisplay" AllowSorting=true Density="Density.Compact" AllowPaging=true PageSize="12" ShowPagingSummary=true>
+							<Columns>
+								<RadzenDataGridColumn TItem=InputModelDisplay Title="Func" Property="InputModel.FunctionName" Width="25%"></RadzenDataGridColumn>
+								@* <RadzenDataGridColumn TItem=InputModelDisplay Title="Is Hyde" Property="@(nameof(InputModelDisplay.IsHyde))"></RadzenDataGridColumn> *@
+								<RadzenDataGridColumn TItem=InputModelDisplay Title="Question" Sortable=false Width="75%">
+									<Template Context="ctx">
+										@if (ctx.InputModel.RequiredInputs.Any(x => x.Key == "question"))
+										{
+											<RadzenText TextStyle="TextStyle.Body2" Text="@ctx.InputModel.RequiredInputs["question"]?.ToString()"></RadzenText>
+										}
+
+									</Template>
+								</RadzenDataGridColumn>
+							</Columns>
+						</RadzenDataGrid>
+					</RadzenCard>
+				</RadzenColumn>
+				<RadzenColumn Size="7">
+					@if (_evalResults.Count > 0)
+					{
+						<EvalDisplay @ref=_evalDisplay EvalResultDisplays="_evalResults" AggregatedResults="_resultsAgg" Header="Non-Hyde Results"></EvalDisplay>
+					}
+					@if (_hydeEvalResults.Count > 0)
+					{
+						<EvalDisplay @ref=_evalDisplayHyde EvalResultDisplays="_hydeEvalResults" AggregatedResults="_resultsAggHyde" Header="Hyde Results"></EvalDisplay>
+					}
+				</RadzenColumn>
+			</RadzenRow>
+		</RadzenTabsItem>
 	</Tabs>
 </RadzenTabs>

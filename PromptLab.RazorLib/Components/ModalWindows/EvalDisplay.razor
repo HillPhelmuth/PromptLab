@@ -1,0 +1,39 @@
+﻿@using PromptLab.Core.Services
+@inherits AppComponentBase
+<RadzenText Text="@Header" TextAlign="TextAlign.Center" TextStyle="TextStyle.Subtitle1"></RadzenText>
+<RadzenDataGrid @ref=_grid Data="EvalResultDisplays" TItem="EvalResultDisplay" AllowSorting=true Density="Density.Compact" AllowPaging=true PageSize="12" ShowPagingSummary=true>
+    <Template Context="display">
+        <RadzenText Style="word-wrap: break-word;
+	                       overflow-wrap: break-word;
+	                       white-space: normal;
+	                       overflow: hidden;
+	                       width: 100%;" TextStyle="TextStyle.Overline">@display.ResultScore.Output</RadzenText>
+        <RadzenCard Style="word-wrap: break-word;
+                           overflow-wrap: break-word;
+                           white-space: normal;
+                           overflow: hidden;
+                           width: 100%;">
+            @((MarkupString)AsHtml(display.Answer))
+        </RadzenCard>
+    </Template>
+    <Columns>
+        <RadzenDataGridColumn TItem="EvalResultDisplay" Title="Question" Property="Question" Width="70%"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="EvalResultDisplay" Title="Eval" Property="ResultScore.EvalName" Width="20%"></RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="EvalResultDisplay" Title="Score" Property="ResultScore.Score" Width="10%"></RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+@if (AggregatedResults.Any())
+{
+    <RadzenCard>
+        <RadzenText Text="Aggregated Results" TextStyle="TextStyle.Subtitle1" TextAlign="TextAlign.Center"></RadzenText>
+        <div style="display:flex;flex-direction:row">
+            @foreach (var agg in AggregatedResults)
+            {
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Body1">@agg.Key </RadzenText>
+                    <RadzenText TextStyle="TextStyle.Caption">@agg.Value @(agg.Key == "PerceivedIntelligenceNonRag" || agg.Key.Contains("PerceivedIntelligence") ? " / 10" : " / 5")</RadzenText>
+            </RadzenCard>
+            }
+        </div>
+    </RadzenCard>
+}

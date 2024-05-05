@@ -46,6 +46,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PromptFlowEvalsAsPlugins\PromptFlowEvalsAsPlugins.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Data\PromptLab.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

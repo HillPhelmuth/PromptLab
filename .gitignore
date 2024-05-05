@@ -377,3 +377,8 @@ FodyWeavers.xsd
 /PromptLab.Web/batchAnswers2.jsonl
 /PromptLab.Web/batchQuestions.jsonl
 /PromptLab.Web/batchQuestions2.jsonl
+/PromptLab.Web/BenchmarkEvalResults.json
+/PromptLab.Web/BenchmarkEvalResults_Hyde.json
+/PromptLab.Web/BenchmarkInputModels.json
+/PromptLab.Web/BenchmarkInputModels_Hyde.json
+/PromptLab.Web/BenchmarkQnadAs.json
