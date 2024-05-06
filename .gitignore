@@ -377,3 +377,4 @@ FodyWeavers.xsd
 /PromptLab.Web/batchAnswers2.jsonl
 /PromptLab.Web/batchQuestions.jsonl
 /PromptLab.Web/batchQuestions2.jsonl
+/PromptLab/appsettings.json

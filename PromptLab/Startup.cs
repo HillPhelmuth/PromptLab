@@ -26,6 +26,7 @@ public  class Startup
                        .ConfigureAppConfiguration((hostingContext, config) =>
                        {
                            config.AddUserSecrets<Startup>();
+                           config.AddEnvironmentVariables();
                            _config = config.Build();
                        })
                        .Build();
