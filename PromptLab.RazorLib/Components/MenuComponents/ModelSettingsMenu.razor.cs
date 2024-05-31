@@ -47,6 +47,7 @@ public partial class ModelSettingsMenu
 				_embeddingsModelSettings.OpenAIApiKey = modelSettings.OpenAIApiKey;
 				EmbeddingModelSettings!.OpenAIApiKey = modelSettings.OpenAIApiKey;
 				AppState.EmbeddingModelSettings.OpenAIApiKey = modelSettings.OpenAIApiKey;
+				AppState.UserProfile.EmbeddingModelSettings = EmbeddingModelSettings;
 			}
 		}
 		await FileService.SaveUserSettings(AppState.UserProfile);

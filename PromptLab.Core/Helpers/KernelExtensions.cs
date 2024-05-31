@@ -9,12 +9,12 @@ public static class KernelExtensions
 	{
 		if (modelSettings.OpenAIModelType == OpenAIModelType.OpenAI)
 		{
-			kernelBuilder.AddOpenAIChatCompletion(model, modelSettings.OpenAIApiKey!);
+			kernelBuilder.AddOpenAIChatCompletion(model, modelSettings.OpenAIApiKey!, serviceId:"OpenAI");
 		}
 		else
 		{
 			var deployment = model.Contains('3') ? modelSettings.AzureOpenAIGpt35DeploymentName : modelSettings.AzureOpenAIGpt4DeploymentName;
-			kernelBuilder.AddAzureOpenAIChatCompletion(deployment!, modelSettings.AzureOpenAIApiEndpoint!, modelSettings.AzureOpenAIApiKey!);
+			kernelBuilder.AddAzureOpenAIChatCompletion(deployment!, modelSettings.AzureOpenAIApiEndpoint!, modelSettings.AzureOpenAIApiKey!, serviceId:"OpenAI");
 		}
 		return kernelBuilder;
 	}

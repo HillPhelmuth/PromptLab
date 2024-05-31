@@ -27,6 +27,10 @@ services.AddAzureClients(clientBuilder =>
 {
     clientBuilder.AddBlobServiceClient(builder.Configuration["PromptLabImagesConnectionString"]!, preferMsi: true);
 });
+services.AddLogging(o =>
+{
+    o.AddConsole();
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -11,6 +11,7 @@ using System.ComponentModel;
 using Radzen;
 using System.Threading;
 using PromptLab.RazorLib.Components.ModalWindows;
+using Microsoft.SemanticKernel;
 
 namespace PromptLab.RazorLib.Pages;
 
@@ -22,8 +23,9 @@ public partial class PromptHelpPage
 	private IConfiguration Configuration { get; set; } = default!;
 	[Inject]
 	private DialogService DialogService { get; set; } = default!;
-
-	private ChatView _chatView;
+    [Inject]
+    private BlobService BlobService { get; set; } = default!;
+    private ChatView _chatView;
 	private bool _isBusy;
 	private List<LogEntry> _logs = [];
 	private CancellationTokenSource _cancellationTokenSource = new();
@@ -59,15 +61,39 @@ public partial class PromptHelpPage
 		_isBusy = true;
 		StateHasChanged();
 		await Task.Delay(1);
-		_cancellationTokenSource = new();
-		var token = _cancellationTokenSource.Token;
-		_chatView.ChatState.AddUserMessage(input);
-		var chatStream = PromptEngineerService.ChatWithPromptEngineer(_chatView.ChatState.ChatHistory, token);
-		await ExecuteChatSequence(chatStream);
-		_isBusy = false;
+        _chatView.ChatState.AddUserMessage(input);
+        await SubmitRequest();
+        _isBusy = false;
 		StateHasChanged();
 	}
-	private void Cancel()
+
+    private Task SubmitRequest()
+    {
+        _cancellationTokenSource = new();
+        var token = _cancellationTokenSource.Token;		
+        var chatStream = PromptEngineerService.ChatWithPromptEngineer(_chatView.ChatState.ChatHistory, token);
+        return ExecuteChatSequence(chatStream);
+    }
+
+    private async void HandleRequest(UserInputRequest userInputRequest)
+    {
+        if (userInputRequest.FileUpload is null)
+        {
+            HandleInput(userInputRequest.ChatInput);
+            return;
+        }
+        var text = new TextContent(userInputRequest.ChatInput);
+        var url = await GetImageUrlFromBlobStorage(userInputRequest.FileUpload!);
+        var image = new ImageContent(new Uri(url));
+        _chatView.ChatState.AddUserMessage(text, image);
+        await SubmitRequest();
+    }
+    private async Task<string> GetImageUrlFromBlobStorage(FileUpload file)
+    {
+        var url = await BlobService.UploadBlobFile(file.FileName!, file.FileBytes!);
+        return url;
+    }
+    private void Cancel()
 	{
 		_cancellationTokenSource.Cancel();
 	}

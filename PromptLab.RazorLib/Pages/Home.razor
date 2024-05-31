@@ -37,7 +37,10 @@
 	<RadzenColumn Size="8" Style="position:relative">
 		<RadzenCard>
 
-			<RadzenButton Style="position:absolute; left:.5rem; top: 0" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="Clear" Click="ClearChat"></RadzenButton>
+			<div style="position:absolute; left:.5rem; top: 0; display:flex; flex-direction:row">
+				<RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="Clear" Click="ClearChat"></RadzenButton>
+				<RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="save" Text="Save" Click="SaveChat"></RadzenButton>
+			</div>
 			<RadzenButton Style="position:absolute; right:.5rem; top: 0" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="post_add" Text="Add Message" Click="AddMessage"></RadzenButton>
 			<ChatView ResetOnClose="false" AllowRemove=true ViewId="chatWithSk" Height="80vh" IsLogProbView=AppState.IsLogProbView Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
 		</RadzenCard>
@@ -48,12 +51,12 @@
 	</RadzenColumn>
 </RadzenRow>
 
-@code{
+@code {
 	private Task<bool> ValidateSettings()
 	{
 		var (isValid, message) = AppState.ChatModelSettings.Validate();
 		if (isValid) return Task.FromResult(isValid);
-			var notificationMessage = new NotificationMessage
+		var notificationMessage = new NotificationMessage
 				{
 					Severity = NotificationSeverity.Error,
 					Summary = $"Chat Model Settings Invalid - {message}",
@@ -61,7 +64,7 @@
 					Duration = 10000,
 					Click = ShowSettings,
 					CloseOnClick = true,
-			DetailContent = ns => @<RadzenButton Text="Update Settings" Click="ShowSettings" /> };
+					DetailContent = ns => @<RadzenButton Text="Update Settings" Click="ShowSettings" /> };
 		NotificationService.Notify(notificationMessage);
 		return Task.FromResult(isValid);
 	}

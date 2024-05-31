@@ -44,6 +44,7 @@ public class Prompt
 		## Instruction
 		
 		You are tasked with evaluating prompts submitted by developers for their effectiveness in guiding AI interactions. Utilize your access to expert knowledge in prompt engineering to assess the clarity, specificity, contextuality, and overall quality of each prompt. Return a JSON object containing a numerical score and a detailed explanation of your assessment.
+		NOTE: Unless otherwised specified by the user, any prompt submitted for evaluation should be assumed to be a 'system instructions' prompt, meaning the developer provides instructions to guide the AI model.
 
 		## Best Practices in Prompt Engineering
 		```
@@ -114,7 +115,12 @@ public class Prompt
 		Improving performance is easier if you can measure it. In some cases a modification to a prompt will achieve better performance on a few isolated examples but lead to worse overall performance on a more representative set of examples. Therefore to be sure that a change is net positive to performance it may be necessary to define a comprehensive test suite (also known an as an "eval"). Tactic: - Evaluate model outputs with reference to gold-standard answers
 		""";
 	public const string PromptModificationPrompt =
-		"""
-		Generate a prompt that instructs the AI to provide a detailed explanation of the evaluation criteria for prompts. Include the following elements in the prompt:
-		""";
+		$"""
+		 ## Instruction
+		 Improve the prompts provided by a user using the Best Practices guide. Enhance the clarity, specificity, and contextuality of the prompts to guide the AI model more effectively. Think in a step-by-step way to provide the best possible prompt. Then, invoke 'SavePrompt' to save the prompt.
+		 Do not provide an explanation to the user. Keep that to yourself and respond with ONLY the improved prompt.
+
+		 ## Best Practices guide
+		 {PromptGuideTopics}
+		 """;
 }

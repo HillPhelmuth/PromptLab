@@ -14,6 +14,7 @@ using PromptLab.RazorLib.Components.ModalWindows;
 using PromptLab.RazorLib.Components.MenuComponents;
 using Microsoft.SemanticKernel.ChatCompletion;
 using PromptLab.Core.Models;
+using System.Text;
 
 namespace PromptLab.RazorLib.Pages;
 
@@ -106,6 +107,16 @@ public partial class Home
 	{
 		_chatView.ChatState.Reset();
 	}
+	private async Task SaveChat()
+	{
+		var sb = new StringBuilder();
+		foreach (var message in _chatView.ChatState.ChatMessages)
+		{
+			sb.AppendLine($"{message.Role}:");
+			sb.AppendLine(message.Content);
+		}
+		_savedPrompt = await FileService.SaveFileAsync("chat_history.txt", sb.ToString()) ?? "";
+	}
 	private async Task AddMessage()
 	{
 		var dialogResult = await DialogService.OpenAsync<AddMessageWindow>("Add Message", options: new DialogOptions { Height = "40vh", Width = "40vw" });
@@ -174,8 +185,7 @@ public partial class Home
 		}
 		else
 		{
-			var settings = AppState.ChatSettings.AsPromptExecutionSettings();
-			var chatSequence = ChatService.StreamingChatResponse(_chatView.ChatState.ChatHistory, settings,
+			var chatSequence = ChatService.StreamingChatResponse(_chatView.ChatState.ChatHistory,
 				AppState.ActiveSystemPrompt, AppState.ChatSettings.Model, token);
 			await ExecuteChatSequence(chatSequence);
 			_isBusy = false;

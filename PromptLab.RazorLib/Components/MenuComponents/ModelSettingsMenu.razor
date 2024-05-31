@@ -62,6 +62,11 @@
 						<RadzenPassword Name="GoogleApiKey" @bind-Value=_chatModelSettings.GoogleGeminiApiKey></RadzenPassword>
 					</ChildContent>
 				</RadzenFormField>
+				<RadzenFormField Text="Mistral Api Key (Optional)">
+					<ChildContent>
+						<RadzenPassword Name="MistralApiKey" @bind-Value=_chatModelSettings.MistralApiKey></RadzenPassword>
+					</ChildContent>
+				</RadzenFormField>
 				<RadzenButton ButtonType="ButtonType.Submit" Text="Save"></RadzenButton>
 			</RadzenTemplateForm>
 		</RadzenTabsItem>

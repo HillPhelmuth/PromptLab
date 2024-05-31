@@ -12,3 +12,16 @@ public class FunctionFilter : IFunctionInvocationFilter
 		FunctionInvoked?.Invoke(this, context);
 	}
 }
+public class AutoInvokeFunctionFilter: IAutoFunctionInvocationFilter
+{
+	public event EventHandler<AutoFunctionInvocationContext>? AutoFunctionInvoked;
+	public event EventHandler<AutoFunctionInvocationContext>? AutoFunctionInvoking;
+	public async Task OnAutoFunctionInvocationAsync(AutoFunctionInvocationContext context, Func<AutoFunctionInvocationContext, Task> next)
+	{
+		AutoFunctionInvoking?.Invoke(this, context);
+		await next(context);
+		AutoFunctionInvoked?.Invoke(this, context);
+		if (context.Function.Name == "SavePrompt")
+			context.Terminate = true;
+	}
+}

@@ -12,6 +12,7 @@ public class ChatModelSettings : ModelSettings
 	public string? AzureOpenAIGpt35DeploymentName { get; set; }
 	
 	public string? GoogleGeminiApiKey { get; set; }
+	public string? MistralApiKey { get; set; }
 	public (bool, string) Validate()
 	{
 		if (OpenAIModelType == OpenAIModelType.AzureOpenAI)

@@ -14,7 +14,7 @@ namespace PromptLab.Core.Models
             var models = new List<string>();
             if (ModelSettings.OpenAIModelType == OpenAIModelType.OpenAI)
             {
-                models.AddRange(SettingsOptions.AvailableModels);
+                models.AddRange(SettingsOptions.OpenAIAvailableModels);
 			}
 			else
             {
@@ -24,6 +24,10 @@ namespace PromptLab.Core.Models
             {
                 models.Add("gemini-1.0-pro");
                 models.Add("gemini-1.5-pro-latest");
+            }
+            if (!string.IsNullOrEmpty(ModelSettings.MistralApiKey))
+            {
+                models.AddRange(SettingsOptions.MistralAIAvailableModels);
             }
             return models;
         }

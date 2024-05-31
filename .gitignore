@@ -378,3 +378,11 @@ FodyWeavers.xsd
 /PromptLab.Web/batchQuestions.jsonl
 /PromptLab.Web/batchQuestions2.jsonl
 /PromptLab/appsettings.json
+/PromptLab.Web/BenchmarkEvalResults.json
+/PromptLab.Web/BenchmarkEvalResults_Hyde.json
+/PromptLab.Web/BenchmarkInputModels.json
+/PromptLab.Web/BenchmarkInputModels_Hyde.json
+/PromptLab.Web/BenchmarkQnadAs.json
+/PromptLab.Web/Properties/ServiceDependencies/local/storage1.arm.json
+/PromptLab.Web/Properties/serviceDependencies.json
+/PromptLab.Web/Properties/serviceDependencies.local.json
