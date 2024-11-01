@@ -386,3 +386,6 @@ FodyWeavers.xsd
 /PromptLab.Web/Properties/ServiceDependencies/local/storage1.arm.json
 /PromptLab.Web/Properties/serviceDependencies.json
 /PromptLab.Web/Properties/serviceDependencies.local.json
+/PromptLab.Web/Properties/ServiceDependencies/local/storage2.arm.json
+/PromptLab.RazorLib/Pages/AgentBuilderPage.razor
+/PromptLab.RazorLib/Pages/AgentBuilderPage.razor.cs

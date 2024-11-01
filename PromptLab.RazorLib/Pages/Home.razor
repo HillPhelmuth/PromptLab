@@ -5,34 +5,41 @@
 <RadzenRow>
 	<RadzenColumn Size="4">
 
-		<RadzenCard>
-			<div>
-				@if (!string.IsNullOrEmpty(_savedPrompt))
-				{
-					<RadzenText TextStyle="TextStyle.Caption">Saved as: @_savedPrompt</RadzenText>
-				}
-			</div>
-			<RadzenFormField Text="System Prompt Editor" Style="width:100%">
-				<RadzenCard Style="padding:.5rem; width:100%">
-					<RadzenHtmlEditor @bind-Value=@AppState.ActiveSystemPromptHtml style="height: 75vh;width:100%" Execute="HandleExecute">
-						<RadzenHtmlEditorUndo />
-						<RadzenHtmlEditorRedo />
-						<RadzenHtmlEditorSeparator />
-						<RadzenHtmlEditorUnorderedList />
-						<RadzenHtmlEditorOrderedList />
-						<RadzenHtmlEditorFormatBlock />
-						<RadzenHtmlEditorSeparator />
-						<RadzenHtmlEditorSeparator />
-						<RadzenHtmlEditorCustomTool CommandName="Save" Title="Save Prompt" Icon="save" IconColor="green" />
-						<RadzenHtmlEditorCustomTool CommandName="Load" Title="Load Prompt" Icon="file_upload" IconColor="blue" />
-						<RadzenHtmlEditorCustomTool CommandName="Improve" Title="Ask Expert Prompt Engineer For Help" Icon="psychology_alt" IconColor="black" />
+        <RadzenCard>
+            <div>
+                @if (!string.IsNullOrEmpty(_savedPrompt))
+                {
+                    <RadzenText TextStyle="TextStyle.Caption">Saved as: @_savedPrompt</RadzenText>
+                }
+            </div>
+            <RadzenFormField Text="System Prompt Editor" Style="width:100%">
+                <RadzenCard Style="padding:.5rem; width:100%">
+                    <RadzenHtmlEditor @bind-Value="@AppState.ActiveSystemPromptHtml" style="height: 75vh;width:100%" Execute="HandleExecute">
+                        <RadzenHtmlEditorUndo />
+                        <RadzenHtmlEditorRedo />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorUnorderedList />
+                        <RadzenHtmlEditorOrderedList />
+                        <RadzenHtmlEditorFormatBlock />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorCustomTool CommandName="Save" Title="Save Prompt" Icon="save" IconColor="green" />
+                        <RadzenHtmlEditorCustomTool CommandName="Load" Title="Load Prompt" Icon="file_upload" IconColor="blue" />
+                        <RadzenHtmlEditorCustomTool CommandName="Improve" Title="Ask Expert Prompt Engineer For Help" Icon="psychology_alt" IconColor="black" />
+                        <RadzenHtmlEditorCustomTool CommandName="Evaluate" Title="Evaluate Prompt" Icon="query_stats" IconColor="darkblue" />
+                        
+                    </RadzenHtmlEditor>
+                </RadzenCard>
 
-					</RadzenHtmlEditor>
-				</RadzenCard>
+            </RadzenFormField>
 
-			</RadzenFormField>
-
-		</RadzenCard>
+        </RadzenCard>
+		@if (!string.IsNullOrEmpty(_usageData))
+        {
+            <RadzenCard Style="max-height:10rem; overflow:auto">
+				@((MarkupString)AsHtml(_usageData))
+            </RadzenCard>
+        }
 	</RadzenColumn>
 	<RadzenColumn Size="8" Style="position:relative">
 		<RadzenCard>
@@ -46,7 +53,7 @@
 		</RadzenCard>
 
 		<RadzenCard Style="position:relative" Variant="Variant.Filled">
-			<UserInput IsRequired="@(false)" ButtonLabel="Send" HelperText="User Input" UserInputSubmit="HandleRequest" IsBusy="_isBusy" CancelRequest="Cancel"></UserInput>
+			<UserInput IsRequired="@(false)" ButtonLabel="Send" HelperText="User Input" UserInputSubmit="HandleRequest" IsBusy="_isBusy" CancelRequest="Cancel" ImprovedPromptRequest="HandleImprovePrompt" ImprovedPrompt="@_suggestedPrompt"></UserInput>
 		</RadzenCard>
 	</RadzenColumn>
 </RadzenRow>

@@ -20,6 +20,11 @@ public partial class AppSettingsMenu
     {
         _appSettings = AppState.AppSettings;
     }
+    protected override void OnParametersSet()
+    {
+        _appSettings = AppState.AppSettings;
+        StateHasChanged();
+    }
     protected override void UpdateState(object? sender, PropertyChangedEventArgs args)
     {
 	    if (args.PropertyName == nameof(AppState.AppSettings))

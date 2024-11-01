@@ -11,6 +11,7 @@ public class Message(Role role, string content, int order)
     public DateTime TimeStamp { get; set; } = DateTime.Now;
     public bool IsActiveStreaming { get; set; }
     public string? ImageUrl { get; set; }
+    //public bool IsModify { get; set; }
 
     public static Message UserMessage(string content, int order)
     {

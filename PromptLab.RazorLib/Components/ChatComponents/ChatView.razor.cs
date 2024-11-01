@@ -59,7 +59,11 @@ public partial class ChatView
 		ChatState.RemoveMessage(message);
 		StateHasChanged();
     }
-
+	private void HandleUpdateMessage(Message message)
+	{
+		ChatState.ChatHistory.Last().Content = message.Content + " ";
+		StateHasChanged();
+	}
 	public List<(string role, string? message)> GetMessageHistory()
 	{
 		return ChatState.ChatMessages.Select(x => (x.Role.ToString(), x.Content)).ToList();

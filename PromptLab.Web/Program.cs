@@ -25,7 +25,7 @@ services.AddScoped<ChatStateCollection>().AddTransient<AppJsInterop>();
 services.AddScoped<IFileService, BrowserFileService>();
 services.AddAzureClients(clientBuilder =>
 {
-    clientBuilder.AddBlobServiceClient(builder.Configuration["PromptLabImagesConnectionString"]!, preferMsi: true);
+    clientBuilder.AddBlobServiceClient(builder.Configuration["ConnectionString:blob"]!, preferMsi: true);
 });
 services.AddLogging(o =>
 {

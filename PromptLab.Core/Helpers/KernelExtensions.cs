@@ -10,6 +10,7 @@ public static class KernelExtensions
 		if (modelSettings.OpenAIModelType == OpenAIModelType.OpenAI)
 		{
 			kernelBuilder.AddOpenAIChatCompletion(model, modelSettings.OpenAIApiKey!, serviceId:"OpenAI");
+			//kernelBuilder.AddOpenAIChatCompletion(model, modelSettings.OpenAIApiKey!);
 		}
 		else
 		{

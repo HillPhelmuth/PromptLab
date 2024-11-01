@@ -17,8 +17,9 @@
 
 		<RadzenPanelMenu>
 			<RadzenPanelMenuItem Path="" Text="Home" Click="@(() => SetHeaderTitle("Prompt Lab Playground"))"></RadzenPanelMenuItem>
-			<RadzenPanelMenuItem Path="prompt" Text="Prompt Helper" Click="@(() => SetHeaderTitle("Prompt Engineering Assistant"))"></RadzenPanelMenuItem>
-			<RadzenPanelMenuItem Icon="expand" Text="Application Settings">
+            <RadzenPanelMenuItem Path="prompt" Text="Prompt Helper" Click="@(() => SetHeaderTitle("Prompt Engineering Assistant"))"></RadzenPanelMenuItem>
+			@* <RadzenPanelMenuItem Path="save" Text="Save" Click="@(() => SetHeaderTitle("Save Markdown Files"))"></RadzenPanelMenuItem> *@
+			@* <RadzenPanelMenuItem Icon="expand" Text="Application Settings">
 				<AppSettingsMenu></AppSettingsMenu>
 			</RadzenPanelMenuItem>
 			<RadzenPanelMenuItem Icon="expand" Text="Chat Settings">
@@ -26,12 +27,24 @@
 			</RadzenPanelMenuItem>
 			<RadzenPanelMenuItem Icon="expand" Text="Model Settings">
 				<ModelSettingsMenu></ModelSettingsMenu>
-			</RadzenPanelMenuItem>
-			
+			</RadzenPanelMenuItem> *@
+			<RadzenAccordion>
+				<Items>
+					<RadzenAccordionItem Icon="settings" Text="Application Settings" ExpandTitle="Update App Settings">
+						<AppSettingsMenu></AppSettingsMenu>
+					</RadzenAccordionItem>
+					<RadzenAccordionItem Icon="speaker_notes" Text="Chat Settings" ExpandTitle="Update Chat Settings">
+						<ChatSettingsMenu></ChatSettingsMenu>
+					</RadzenAccordionItem>
+					<RadzenAccordionItem Icon="model_training" Text="Model Settings" ExpandTitle="Update Model Settings">
+						<ModelSettingsMenu></ModelSettingsMenu>
+					</RadzenAccordionItem>
+				</Items>
+			</RadzenAccordion>
 		</RadzenPanelMenu>
 
 	</RadzenSidebar>
 	<RadzenBody Style="padding: 4px 4px 0 0; height:99vh" @onclick="CloseSidebars">@Body</RadzenBody>
 	
 </RadzenLayout>
-<RadzenComponents />
+<RadzenComponents  />

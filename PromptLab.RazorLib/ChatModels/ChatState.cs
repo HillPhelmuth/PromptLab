@@ -45,6 +45,21 @@ public class ChatState : INotifyPropertyChanged
         ChatHistory.AddAssistantMessage(message);
         MessagePropertyChanged();
     }
+    public void UpdateAssistantMessage(TokenString tokenString)
+    {
+	    if (ChatMessages.LastOrDefault()?.Role != Role.Assistant)
+        {
+            ChatMessages.Add(new Message(Role.Assistant, tokenString.StringValue, MessageCount + 1) { TokenStrings = [tokenString] });
+            ChatHistory.AddAssistantMessage(tokenString.StringValue);
+            MessagePropertyChanged();
+            return;
+		}
+	    var lastMessage = ChatMessages.Last(x => x.Role == Role.Assistant);
+        var lastHistory = ChatHistory.Last(x => x.Role == AuthorRole.Assistant);
+        lastHistory.Content += tokenString.StringValue;
+        lastMessage.TokenStrings.Add(tokenString);
+        MessagePropertyChanged();
+	}
     /// <summary>
     /// Updates the last assistant message with the token.
     /// </summary>
@@ -52,8 +67,10 @@ public class ChatState : INotifyPropertyChanged
     public void UpdateAssistantMessage(string token)
     {
         if (ChatMessages.All(x => x.Role != Role.Assistant)) throw new ArgumentOutOfRangeException(nameof(token),"No assistant message found.");
-        ChatMessages.Last(x => x.Role == Role.Assistant).Content += token;
-        ChatHistory.Last(x => x.Role == AuthorRole.Assistant).Content += token;
+        var message = ChatMessages.Last(x => x.Role == Role.Assistant);
+        message.Content += token;
+        var lastChatMessageContent = ChatHistory.Last(x => x.Role == AuthorRole.Assistant);
+        lastChatMessageContent.Content += token;
         MessagePropertyChanged();
     }
     /// <summary>

@@ -25,11 +25,12 @@ public partial class MainLayout
         if (firstRender)
         {
             var userSettings = await FileService.LoadUserSettings();
-            AppState.ChatModelSettings = userSettings.ModelSettings;
-			AppState.ChatSettings = userSettings.ChatSettings;
+            AppState.UserProfile = userSettings;
+   //         AppState.ChatModelSettings = userSettings.ModelSettings;
+			//AppState.ChatSettings = userSettings.ChatSettings;
             AppState.IsLogProbView = userSettings.ChatSettings.LogProbs;
-            AppState.EmbeddingModelSettings = userSettings.EmbeddingModelSettings;
-            AppState.AppSettings = userSettings.AppSettings;
+            //AppState.EmbeddingModelSettings = userSettings.EmbeddingModelSettings;
+            //AppState.AppSettings = userSettings.AppSettings;
             AppState.ShowTimestamps = userSettings.AppSettings.ShowTimestamps;
             if (userSettings.AppSettings.Theme != StyleTheme.Standard)
                 await AppJsInterop.SetAppTheme(userSettings.AppSettings.Theme);

@@ -1,36 +1,40 @@
-﻿<RadzenText Text="Top 5 Tokens by probability" TextAlign="TextAlign.Center"></RadzenText>
+﻿@inherits AppComponentBase
+<RadzenText Text="Top 5 Tokens by probability" TextAlign="TextAlign.Center"></RadzenText>
 <RadzenDataGrid Data="TokenString.TopLogProbs" TItem="TokenString" Density="Density.Compact">
-    <Columns>
-        <RadzenDataGridColumn TItem="TokenString" Property="@nameof(TokenString.StringValue)" Title="Token">
-            <Template Context="token">
-                @if (TokenString.StringValue == token.StringValue)
-                {
-                    <strong>@token.StringValue</strong>
-                }
-                else
-                {
-                    @token.StringValue
-                }
+	<Columns>
+		<RadzenDataGridColumn TItem="TokenString" Property="@nameof(TokenString.StringValue)" Title="Token">
+			<Template Context="token">
+				@if (TokenString.StringValue == token.StringValue)
+				{
+					<strong>@token.StringValue</strong>
+				}
+				else
+				{
+					@token.StringValue
+				}
 
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TokenString" Property="@nameof(TokenString.NormalizedLogProbability)" Title="Probability">
-            <Template Context="token">
-                @if (TokenString.StringValue == token.StringValue)
-                {
-                    <strong>@token.NormalizedLogProbability.ToString("P3")</strong>
-                }
-                else
-                {
-                    @token.NormalizedLogProbability.ToString("P3")
-                }
+			</Template>
+		</RadzenDataGridColumn>
+		<RadzenDataGridColumn TItem="TokenString" Property="@nameof(TokenString.NormalizedLogProbability)" Title="Probability">
+			<Template Context="token">
+				@if (TokenString.StringValue == token.StringValue)
+				{
+					<strong>@token.NormalizedLogProbability.ToString("P3")</strong>
+				}
+				else
+				{
+					@token.NormalizedLogProbability.ToString("P3")
+				}
 
-            </Template>
-        </RadzenDataGridColumn>
-    </Columns>
+			</Template>
+		</RadzenDataGridColumn>
+		@if (AppState.AppSettings.AutoCompleteView)
+		{
+			<RadzenDataGridColumn TItem="TokenString">
+				<Template Context="token">
+					<RadzenButton Size="ButtonSize.ExtraSmall" Text="Select" Click="@(() => Select(token))"></RadzenButton>
+				</Template>
+			</RadzenDataGridColumn>
+		}
+	</Columns>
 </RadzenDataGrid>
-
-@code {
-    [Parameter]
-    public TokenString TokenString { get; set; }
-}

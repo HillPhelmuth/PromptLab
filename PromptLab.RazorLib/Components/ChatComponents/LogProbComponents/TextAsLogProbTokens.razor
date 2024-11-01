@@ -2,7 +2,10 @@
     <RadzenCard class="@Message.CssClass" Style="position:relative;max-width: 100%;word-wrap: break-word; overflow-wrap: break-word;">
 	    @if (AllowRemove)
 	    {
-            <RadzenButton Size=ButtonSize.ExtraSmall Variant=Variant.Text Style="position:absolute; right:4px; top: 2px;" IconColor="red" Icon="delete" title="Remove message" Click="@(() => OnRemove.InvokeAsync(Message))"></RadzenButton>
+		    <div style="position:absolute; right:4px; top: 30%;">
+			    <RadzenButton Size=ButtonSize.ExtraSmall Variant=Variant.Text Icon="edit" title="Edit message" Click="Modify"></RadzenButton>
+			    <RadzenButton Size=ButtonSize.ExtraSmall Variant=Variant.Text Icon="delete" title="Remove message" Click="@(() => OnRemove.InvokeAsync(Message))"></RadzenButton>
+		    </div>
 	    }
         @foreach (var item in TokenStrings)
         {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using PromptLab.Core.Models;
 using Radzen;
 
@@ -33,10 +34,18 @@ public partial class LogItem
     }
     private string AsHtml(string? text)
     {
-        if (text == null) return "";
-        var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-        var result = Markdown.ToHtml(text, pipeline);
-        return result;
+        try
+        {
+            if (text == null) return "";
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            var result = Markdown.ToHtml(text, pipeline);
+            return result;
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, "Error converting markdown to HTML");
+            return text;
+        }
 
     }
 }

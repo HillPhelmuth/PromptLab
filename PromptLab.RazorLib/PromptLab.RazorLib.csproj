@@ -10,6 +10,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>PromptLab.RazorLib</RootNamespace>
         <NoWarn>SKEXP0001,SKEXP0010,SKEXP0020,SKEXP0070,SKEXP0050</NoWarn>
+        <Platforms>AnyCPU;ARM64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,10 +18,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Markdig" Version="0.37.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.6" />
-        <PackageReference Include="Radzen.Blazor" Version="4.32.2" />
-        <PackageReference Include="ReverseMarkdown" Version="4.4.0" />
+        <PackageReference Include="Markdig" Version="0.38.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.10" />
+        <PackageReference Include="Radzen.Blazor" Version="5.3.5" />
+        <PackageReference Include="ReverseMarkdown" Version="4.6.0" />
     </ItemGroup>
 
     <ItemGroup>

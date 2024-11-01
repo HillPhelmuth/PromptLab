@@ -39,10 +39,10 @@ public class PromptEngineerService
         chatHistory.AddSystemMessage(Prompt.PromptEngineerSystemPrompt);
         var kernel = ChatService.CreateKernel(_appState.ChatSettings.Model);
         AddPluginsAndFilters(kernel);
-        PromptExecutionSettings settings = item == "Google" ? _appState.ChatSettings.AsGeminiPromptExecutionSettings() : _appState.ChatSettings.AsPromptExecutionSettings();
+        PromptExecutionSettings settings = item == "Google" ? _appState.ChatSettings.AsGeminiPromptExecutionSettings() : _appState.ChatSettings.AsOpenAIPromptExecutionSettings();
         var chatService = kernel.Services.GetRequiredKeyedService<IChatCompletionService>(item);
         //var settings = new OpenAIPromptExecutionSettings { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions, MaxTokens = 1024 };
-        var chatStream = item == "OpenAI" ? OpenAIChatStream(chatHistory, cancellationToken, chatService, _appState.ChatSettings, kernel) : GoogleChatStream(chatHistory, cancellationToken, chatService, _appState.ChatSettings, kernel);
+        var chatStream = item == "OpenAI" ? OpenAIChatStream(chatHistory, cancellationToken, chatService as OpenAIChatCompletionService, _appState.ChatSettings, kernel) : GoogleChatStream(chatHistory, cancellationToken, chatService, _appState.ChatSettings, kernel);
         await foreach (var update in chatStream.WithCancellation(cancellationToken))
         {
             if (string.IsNullOrEmpty(update.Content)) continue;
@@ -51,9 +51,9 @@ public class PromptEngineerService
     }
 
     private static IAsyncEnumerable<StreamingChatMessageContent> OpenAIChatStream(ChatHistory chatHistory, CancellationToken cancellationToken,
-        IChatCompletionService chatService, ChatSettings chatSettings, Kernel kernel)
+        OpenAIChatCompletionService chatService, ChatSettings chatSettings, Kernel kernel)
     {
-        var settings = chatSettings.AsPromptExecutionSettings();
+        var settings = chatSettings.AsOpenAIPromptExecutionSettings(allowParallel:true, allowConcurrant:true);
         var chatStream = chatService.GetStreamingChatMessageContentsAsync(chatHistory, settings, kernel, cancellationToken);
         return chatStream;
     }
@@ -67,7 +67,7 @@ public class PromptEngineerService
     private void AddPluginsAndFilters(Kernel kernel)
     {
         AddFilters(kernel);
-        var evaluator = kernel.ImportPluginFromType<PromptEvaluationPlugin>();
+        kernel.ImportPluginFromType<PromptEvaluationPlugin>();
         kernel.ImportPluginFromType<PromptExpertPlugin>();
         kernel.ImportPluginFromType<SavePromptPlugin>();
     }
@@ -77,10 +77,11 @@ public class PromptEngineerService
         var filters = new FunctionFilter();
         var promptFilters = new PromptFilter();
         var autoInvoke = new AutoInvokeFunctionFilter();
-        filters.FunctionInvoked += OnFunctionInvoked;
+        autoInvoke.AutoFunctionInvoking += OnAutoFunctionInvoking;
+        //filters.FunctionInvoked += OnFunctionInvoked;
         promptFilters.PromptRendered += OnPromptRendered;
-        //autoInvoke.AutoFunctionInvoked += OnAutoFunctionInvoked;
-        kernel.FunctionInvocationFilters.Add(filters);
+        autoInvoke.AutoFunctionInvoked += OnAutoFunctionInvoked;
+        //kernel.FunctionInvocationFilters.Add(filters);
         kernel.PromptRenderFilters.Add(promptFilters);
         kernel.AutoFunctionInvocationFilters.Add(autoInvoke);
     }
@@ -94,16 +95,51 @@ public class PromptEngineerService
 		             Improve this prompt. Do not evaluate. Do not explain or ask for approval. Just think carefully about each change you will make to the prompt and then create the improved prompt and save the prompt with 'SavePrompt'.
 
 		             ## Prompt
-
+		             
+		             ```markdown
 		             {prompt}
+		             ```
 		             """;
         chatHistory.AddUserMessage(input);
         var key = ChatService.GetServiceId();
         var chatService = kernel.Services.GetRequiredKeyedService<IChatCompletionService>(key);
-        var settings = new OpenAIPromptExecutionSettings { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions, MaxTokens = 1024 };
+        var options = new FunctionChoiceBehaviorOptions()
+            { AllowConcurrentInvocation = true, AllowParallelCalls = true };
+        var settings = new OpenAIPromptExecutionSettings { FunctionChoiceBehavior = FunctionChoiceBehavior.Auto(), MaxTokens = 1024 };
         var response = await chatService.GetChatMessageContentAsync(chatHistory, settings, kernel);
         _logger.LogInformation("Chat Response: {response}", response.Content);
         return response.Content ?? "";
+    }
+
+    public async Task<PromptEval> EvaluatePrompt(string prompt, CancellationToken token = default)
+    {
+        var chatSettingsModel = _appState.ChatSettings.Model.Contains("gpt-4") ? _appState.ChatSettings.Model : "gpt-4o-mini";
+        var kernel = ChatService.CreateKernel(chatSettingsModel);
+        var evalPlugin = kernel.ImportPluginFromType<PromptEvaluationPlugin>();
+        var evalPromptFunction = evalPlugin["EvaluatePrompt"];
+        var arguments = new KernelArguments(new OpenAIPromptExecutionSettings(){ResponseFormat = "json_object"}) { ["prompt"] = prompt };
+        //var result = await kernel.InvokeAsync<string>(evalPromptFunction, arguments, token);
+        var result2 = await evalPromptFunction.InvokeAsync<string>(kernel, arguments, token);
+		var promptEval = JsonSerializer.Deserialize<PromptEval>(result2.Replace("```json","").Replace("```","").TrimStart('\n'));
+		return promptEval;
+
+	}
+    public async Task<string> EvaluateUserPrompt(string prompt, ChatHistory chatHistory, CancellationToken token = default)
+    {
+        var kernel = ChatService.CreateKernel(_appState.ChatSettings.Model);
+        var helperPlugin = kernel.ImportPluginFromType<PromptExpertPlugin>();
+        var userPromptHelperFunction = helperPlugin["ImproveUserPrompt"];
+        var sb = new StringBuilder();
+        foreach (var message in chatHistory)
+        {
+            var text = $"Role: {message.Role}\nContent:\n{message.Content}";
+            sb.AppendLine();
+            sb.AppendLine(text);
+        }
+        var arguments = new KernelArguments() { ["prompt"] = prompt, ["chatHistory"] = sb.ToString() };
+        var result = await userPromptHelperFunction.InvokeAsync<string>(kernel, arguments, token);
+        
+        return result ?? "Error evaluating user prompt";
     }
     private void OnPromptRendered(object? sender, PromptRenderContext context)
     {
@@ -123,6 +159,14 @@ public class PromptEngineerService
         var functionName = context.Function.Name;
         var functionDescription = context.Function.Description;
         AddLogItems(functionName, functionResult, functionDescription);
+    }
+    private void OnAutoFunctionInvoking(object? sender, AutoFunctionInvocationContext context)
+    {
+        //var functionResult = context.Result;
+        var functionName = context.Function.Name;
+        var functionDescription = context.Function.Description;
+        var args = context.Arguments;
+        LogItem?.Invoke(new LogEntry($"Function {functionName} - {functionDescription} Invoking\n```json\n{JsonSerializer.Serialize(args,new JsonSerializerOptions(){WriteIndented = true})}\n```", DisplayType.Markdown, functionName + " Invoking", functionDescription));
     }
     private void AddLogItems(string functionName, FunctionResult functionResult, string functionDescription)
     {

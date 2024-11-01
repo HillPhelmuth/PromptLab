@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PromptLab.Core;
 using PromptLab.Core.Helpers;
+using PromptLab.Core.Plugins;
 using PromptLab.RazorLib.ChatModels;
 using PromptLab.RazorLib.Components.ChatComponents;
 using PromptLab.RazorLib.Shared;
@@ -51,10 +52,11 @@ public  class Startup
         });
         services.AddAzureClients(clientBuilder =>
         {
-            clientBuilder.AddBlobServiceClient(_config!["PromptLabImagesConnectionString"]!, preferMsi: true);
+            clientBuilder.AddBlobServiceClient(_config!["ConnectionString:blob"]!, preferMsi: true);
         });
 #if DEBUG
         services.AddBlazorWebViewDeveloperTools();
+        //services.AddSingleton<MemorySave>();
 #endif
         ServiceCollection = services;
     }

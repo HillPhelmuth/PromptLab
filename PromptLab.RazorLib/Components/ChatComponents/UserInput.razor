@@ -35,7 +35,8 @@
                     </RadzenColumn>
                     <RadzenColumn Size="2" SizeLG="2" Style="display: flex; align-items:center">
                         <RadzenCard Variant=Variant.Text Style="display: flex; align-items: center; justify-items: center; justify-content:center; justify-items:center; padding:0">
-	                        <RadzenButton ButtonStyle=ButtonStyle.Info Size="ButtonSize.ExtraSmall" Icon="@(UserInputFieldType == UserInputFieldType.TextBox ? "expand":"unfold_less")" Click="ToggleInputType"></RadzenButton>
+                            <RadzenButton ButtonStyle=ButtonStyle.Info Size="ButtonSize.ExtraSmall" Icon="@(UserInputFieldType == UserInputFieldType.TextBox ? "expand":"unfold_less")" Click="ToggleInputType"></RadzenButton>
+                            <RadzenButton ButtonStyle=ButtonStyle.Success Size="ButtonSize.ExtraSmall" Icon="prompt_suggestion" Click="ImprovePrompt" title="Suggest Improvements"></RadzenButton>
                             <RadzenButton Disabled="_isDisabled" ButtonType="ButtonType.Submit" Size=ButtonSize.Small Icon="send" IsBusy="IsBusy" BusyText="Sending..." Text="@ButtonLabel"></RadzenButton>
                             
                             <RadzenButton Size="ButtonSize.Small" Icon="block" Click="Cancel"></RadzenButton>

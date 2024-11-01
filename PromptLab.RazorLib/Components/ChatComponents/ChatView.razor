@@ -1,19 +1,19 @@
 ﻿@using PromptLab.RazorLib.ChatModels
 @inherits AppComponentBase
 <CascadingValue Value="Timestamps" Name="Timestamps" TValue="bool">
-    <CascadingValue Value="AllowRemove" Name="AllowRemove" TValue="bool">
-        <div @ref=_chatColumn style="@($"height:{Height}; overflow:auto; width:100%;font-family: Arial Narrow")">
-            @foreach (var message in ChatState?.ChatMessages ?? [])
-            {
-            @if (IsLogProbView && message.Role == Role.Assistant)
-            {
-            <TextAsLogProbTokens OnRemove=HandleRemoveMessage Message="message"></TextAsLogProbTokens>
-            }
-            else
-            {
-            <MessageView Message="message" OnRemove="HandleRemoveMessage"></MessageView>
-            }
-            }
-        </div>
-    </CascadingValue>
+	<CascadingValue Value="AllowRemove" Name="AllowRemove" TValue="bool">
+		<div @ref=_chatColumn style="@($"height:{Height}; overflow:auto; width:100%;font-family: Arial Narrow")">
+			@foreach (var message in ChatState?.ChatMessages ?? [])
+			{
+				@if (IsLogProbView && message.Role == Role.Assistant)
+				{
+					<TextAsLogProbTokens OnRemove=HandleRemoveMessage Message="message" OnContentUpdate="HandleUpdateMessage"></TextAsLogProbTokens>
+				}
+				else
+				{
+					<MessageView Message="message" OnRemove="HandleRemoveMessage" OnContentUpdate="HandleUpdateMessage"></MessageView>
+				}
+			}
+		</div>
+	</CascadingValue>
 </CascadingValue>

@@ -29,10 +29,20 @@ public partial class UserInput : ComponentBase
     public EventCallback CancelRequest { get; set; }
     [Parameter]
     public bool IsRequired { get; set; } = true;
+    [Parameter]
+    public string? ImprovedPrompt { get; set; }
+    [Parameter]
+    public EventCallback<string> ImprovedPromptRequest { get; set; }
     [Inject]
     private IFileService FileService { get; set; } = default!;
+
+    private bool _isPromptImproveRequested;
     protected override Task OnParametersSetAsync()
     {
+        if (_isPromptImproveRequested && !string.IsNullOrEmpty(ImprovedPrompt))
+        {
+            _requestForm.UserInputRequest.ChatInput = ImprovedPrompt;
+        }
         _requestForm.UserInputRequest.UserInputType = UserInputType;
         return base.OnParametersSetAsync();
     }
@@ -70,6 +80,14 @@ public partial class UserInput : ComponentBase
                 FileBase64 = Convert.ToBase64String(bytes)
             };
         }
+    }
+
+    private async Task ImprovePrompt()
+    {
+        var currentPrompt = _requestForm.UserInputRequest.ChatInput;
+        _isPromptImproveRequested = true;
+        await ImprovedPromptRequest.InvokeAsync(currentPrompt);
+
     }
     private void SubmitRequest(RequestForm form)
     {
