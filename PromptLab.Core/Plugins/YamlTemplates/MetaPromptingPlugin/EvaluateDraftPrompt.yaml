@@ -1,0 +1,47 @@
+name: EvaluateDraftPrompt
+description: Evaluate the re-written draft prompt
+execution_settings:
+  default:
+    temperature: 0.3
+    top_p: 1.0
+input_variables:
+- name: originalPrompt
+  description: The original prompt
+  default: ''
+- name: draftPrompt
+  description: The draft version of the prompt
+  default: ''
+- name: analysis
+  description: The original analysis
+  default: ''
+template: |
+ You are tasked with evaluating a draft prompt against its original version and analysis. Compare the improvements and identify any remaining issues or new problems introduced.
+
+ ## Original Prompt
+ ```
+ {{$originalPrompt}}
+ ```
+
+ ## Draft Prompt
+ ```
+ {{$draftPrompt}}
+ ```
+
+ ## Original Analysis
+ {{$analysis}}
+
+ Evaluate the draft prompt and provide a response in the following markdown format:
+
+ ### Improvements Assessment
+  - **Addressed Issues**: 
+   - List of successfully addressed issues.
+  - **Remaining Issues**: 
+   - List of issues that still need attention.
+  - **New Issues**: 
+   - List of any new problems introduced in the draft.
+
+ ### Effectiveness Score
+ - (*integer ranging from 1 to 10*) Score comparing to original.
+
+ ### Suggested Refinements
+ - List of specific suggestions for the final version.

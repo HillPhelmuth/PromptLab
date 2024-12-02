@@ -8,8 +8,7 @@ namespace PromptLab.RazorLib.Shared;
 
 public partial class MainLayout
 {
-    private bool sidebarExpanded = false;
-    private bool rightSidebarExpanded = false;
+    private bool _sidebarExpanded;
     [Inject]
     private DialogService DialogService { get; set; } = default!;
     [Inject]
@@ -18,16 +17,31 @@ public partial class MainLayout
     private IFileService FileService { get; set; } = default!;
     [Inject]
     private AppJsInterop AppJsInterop { get; set; } = default!;
-	private string _title = "Prompt Lab Playground";
 
-	protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override Task OnInitializedAsync()
+    {
+        AppState.PropertyChanged += UpdateState;
+        return base.OnInitializedAsync();
+    }
+
+    private void UpdateState(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(AppState.CurrentPageTitle)) return;
+        SetHeaderTitle(AppState.CurrentPageTitle);
+        StateHasChanged();
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
         if (firstRender)
         {
             var userSettings = await FileService.LoadUserSettings();
+
             AppState.UserProfile = userSettings;
-   //         AppState.ChatModelSettings = userSettings.ModelSettings;
-			//AppState.ChatSettings = userSettings.ChatSettings;
+            FileService.ZoomChanged(userSettings.AppSettings.ZoomFactor);
+            //AppState.ChatModelSettings = userSettings.ModelSettings;
+            //AppState.ChatSettings = userSettings.ChatSettings;
             AppState.IsLogProbView = userSettings.ChatSettings.LogProbs;
             //AppState.EmbeddingModelSettings = userSettings.EmbeddingModelSettings;
             //AppState.AppSettings = userSettings.AppSettings;
@@ -40,12 +54,11 @@ public partial class MainLayout
 	}
 	private void SetHeaderTitle(string title)
     {
-        _title = title;
+        AppState.CurrentPageTitle = title;
     }
     private void CloseSidebars()
     {
-        sidebarExpanded = false;
-        rightSidebarExpanded = false;
+        _sidebarExpanded = false;
         StateHasChanged();
     }
 }

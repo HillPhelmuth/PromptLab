@@ -28,8 +28,8 @@ public partial class MainForm : Form
         _filePickerService.LoadUserProfile += () => DesktopFileService.LoadUserSettings(UserDataFolder);
         _filePickerService.PickImageFile += () =>
         {
-            var nameBytes = DesktopFileService.OpenImageFileDialog();
-            _filePickerService.ImagePicked(nameBytes.Value.Item1, nameBytes.Value.Item2);
+            var files = DesktopFileService.OpenImageFileDialog();
+            _filePickerService.ImagePicked(files);
         };
         _filePickerService.SaveFile += (fileName, fileText) =>
         {
@@ -56,6 +56,7 @@ public partial class MainForm : Form
         Startup.ServiceCollection!.AddSingleton<IFileService>(_filePickerService);
         blazor.Services = Startup.ServiceCollection!.BuildServiceProvider();
         var logger = blazor.Services.GetRequiredService<ILoggerFactory>();
+        
         logger.AddFile("Logs\\AppLogs.txt");
         blazor.RootComponents.Add<Main>("#app");
         Controls.Add(blazor);

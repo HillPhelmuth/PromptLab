@@ -14,12 +14,29 @@ public partial class UploadImageWindow
     private DialogService DialogService { get; set; } = default!;
     private FileUpload _fileUpload = new();
     private int maxFileSize = 1024 * 1024 * 500;
-    private void Submit(FileUpload fileUpload)
+
+   
+    private MultiFileUpload _multiFileUpload = new(){FileUploads = [new FileUpload()]};
+    private void Submit(MultiFileUpload fileUploads)
     {
-        if (FileHelper.TryConvertFromBase64String(fileUpload.FileBase64, out var bytes))
+        foreach (var fileUpload in fileUploads.FileUploads)
         {
-            fileUpload.FileBytes = bytes;
+            if (FileHelper.TryConvertFromBase64String(fileUpload.FileBase64!, out var bytes))
+            {
+                fileUpload.FileBytes = bytes;
+            }
         }
-        DialogService.Close(fileUpload);
+        
+        DialogService.Close(fileUploads);
+    }
+    private void Add()
+    {
+        if (_multiFileUpload.FileUploads.Count < 5)
+            _multiFileUpload.FileUploads.Add(new FileUpload());
+    }
+    private void Remove(FileUpload fileUpload)
+    {
+        if (_multiFileUpload.FileUploads.Count > 1)
+            _multiFileUpload.FileUploads.Remove(fileUpload);
     }
 }

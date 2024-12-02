@@ -1,3 +1,4 @@
+using BlazorJoditEditor;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +41,7 @@ public  class Startup
         services.AddSingleton<AppState>();
         services.AddPromptLab();
         services.AddRadzenComponents();
-        services.AddScoped<ChatStateCollection>().AddTransient<AppJsInterop>();
+        services.AddScoped<ChatStateCollection>().AddTransient<AppJsInterop>().AddTransient<JoditEditorInterop>();
         Log.Logger = new LoggerConfiguration()
 	        .MinimumLevel.Debug()
 	        .WriteTo.File("logs/myapp.txt", restrictedToMinimumLevel:Serilog.Events.LogEventLevel.Information, rollingInterval: RollingInterval.Day)
@@ -54,6 +55,7 @@ public  class Startup
         {
             clientBuilder.AddBlobServiceClient(_config!["ConnectionString:blob"]!, preferMsi: true);
         });
+        services.AddHttpClient();
 #if DEBUG
         services.AddBlazorWebViewDeveloperTools();
         //services.AddSingleton<MemorySave>();

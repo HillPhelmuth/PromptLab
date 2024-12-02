@@ -11,6 +11,7 @@ public class Message(Role role, string content, int order)
     public DateTime TimeStamp { get; set; } = DateTime.Now;
     public bool IsActiveStreaming { get; set; }
     public string? ImageUrl { get; set; }
+    public List<string> ImageUrls { get; set; } = [];
     //public bool IsModify { get; set; }
 
     public static Message UserMessage(string content, int order)
@@ -20,6 +21,11 @@ public class Message(Role role, string content, int order)
     public static Message UserMessage(string content, string imageUrl, int order)
     {
         return new Message(Role.User, content, order) { ImageUrl = imageUrl};
+    }
+
+    public static Message UserMessage(string content, List<string> imageUrls, int order)
+    {
+        return new Message(Role.User, content, order) { ImageUrls = imageUrls };
     }
     public static Message AssistantMessage(string content, int order)
     {

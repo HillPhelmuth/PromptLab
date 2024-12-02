@@ -1,21 +1,25 @@
 ﻿@using System.Text.Json
 @inherits AppComponentBase
-<RadzenButton Style="position:sticky;left:.2rem;top:.2rem" Icon="close" Variant="Variant.Outlined" Click=Close Size=ButtonSize.ExtraSmall></RadzenButton>
+@if (!HideClose)
+{
+    <RadzenButton Style="position:sticky;left:.2rem;top:.2rem" Icon="close" Variant="Variant.Outlined" Click=Close Size=ButtonSize.ExtraSmall></RadzenButton>
+}
+
 @switch (Log?.DisplayType)
 {
 	case DisplayType.Json:
 		<div style="height:max-content; min-height:10px">
-			<json-viewer data="@(JsonSerializer.Deserialize<object>(Log?.Content))" @ref=_ref id="json"></json-viewer>
+			<json-viewer data="@(GetObjectFromContent())" @ref=_ref id="json"></json-viewer>
 		</div>
 		break;
 	case DisplayType.Text:
 		<RadzenText>@Log?.Content</RadzenText>
 		break;
 	case DisplayType.Markdown:
-		<div>@((MarkupString)AsHtml(Log?.Content))</div>
+		<div @ref=_markdownReference>@((MarkupString)AsHtml(Log?.Content))</div>
 		break;
 	case DisplayType.Prompt:
-		<div>@((MarkupString)AsHtml(Log?.Content))</div>
+		<div @ref=_markdownReference>@((MarkupString)AsHtml(Log?.Content))</div>
 		break;
 }
 <div @ref=_ref></div>

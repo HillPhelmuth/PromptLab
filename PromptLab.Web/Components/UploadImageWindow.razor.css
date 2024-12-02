@@ -1,0 +1,17 @@
+.upload-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.upload-item {
+    flex: 0 0 calc(33.33% - 1rem);
+    position: relative;
+}
+
+.remove-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+}

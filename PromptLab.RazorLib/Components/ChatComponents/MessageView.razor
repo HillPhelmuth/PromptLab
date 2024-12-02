@@ -9,9 +9,19 @@
 			
 		</div>
 	}
-	@if (Message.ImageUrl is not null)
+	@if (Message.ImageUrls.Count > 0)
 	{
-		<img src="@(Message.ImageUrl)" style="max-height:200px;max-width:200px" alt="uploaded image" />
+        <div style="display:flex;flex-direction:row; gap:4px">
+			@foreach (var image in Message.ImageUrls)
+            {
+				if (string.IsNullOrEmpty(image))
+                {
+                    <span>image url is empty</span>
+                }
+				<img src="@image" style="max-height:150px;max-width:200px" alt="uploaded image" />
+            }
+        </div>
+		@* <img src="@(Message.ImageUrl)" style="max-height:200px;max-width:200px" alt="uploaded image" /> *@
 	}
 	@if (_isModify)
 	{

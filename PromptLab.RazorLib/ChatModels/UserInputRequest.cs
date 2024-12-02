@@ -10,4 +10,5 @@ public class UserInputRequest
 	public UserInputFieldType UserInputFieldType { get; set; }
 	public string? ImageUrlInput { get; set; }
 	public FileUpload? FileUpload { get; set; }
+	public List<FileUpload> FileUploads { get; set; } = [];
 }

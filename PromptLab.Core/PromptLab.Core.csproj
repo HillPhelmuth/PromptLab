@@ -1,52 +1,52 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <NoWarn>SKEXP0001,SKEXP0010,SKEXP0020,SKEXP0070,SKEXP0050, SKEXP0101,SKEXP0110</NoWarn>
-	  <Platforms>AnyCPU;ARM64</Platforms>
+   <NoWarn>SKEXP0001,SKEXP0010,SKEXP0020,SKEXP0070,SKEXP0050, SKEXP0101,SKEXP0110</NoWarn>
+   <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Plugins\MetaPromptPlugin.cs" />
     <Compile Remove="Services\WebFileService.cs" />
   </ItemGroup>
+	
 
   <ItemGroup>
-    <None Remove="Prompts\openaipromptguide.md" />
-  </ItemGroup>
-
-  <ItemGroup>
+	  <EmbeddedResource Include="Plugins\**\*.yaml" />
     <EmbeddedResource Include="Prompts\openaipromptguide.md" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="HdbscanSharp" Version="2.0.0" />
     <PackageReference Include="Markdig" Version="0.38.0" />
-    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.6" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.10.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.26.0" />
-    <PackageReference Include="Microsoft.SemanticKernel.Agents.Core" Version="1.26.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Agents.OpenAI" Version="1.26.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.26.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.MistralAI" Version="1.26.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.26.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.26.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.OpenApi" Version="1.26.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.26.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="8.0.92" />
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.9.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.31.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Agents.Core" Version="1.31.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Agents.OpenAI" Version="1.31.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.31.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.MistralAI" Version="1.31.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.31.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.31.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.31.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.OpenApi" Version="1.31.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.31.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="9.0.10" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
-    <PackageReference Include="Tiktoken" Version="2.0.3" />
+    <PackageReference Include="Tiktoken" Version="2.2.0" />
     <PackageReference Include="ReverseMarkdown" Version="4.6.0" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.19.0" />
-    <PackageReference Include="Azure.Storage.Files.Shares" Version="12.20.1" />
-    <PackageReference Include="Azure.Storage.Queues" Version="12.20.1" />
-    <PackageReference Include="System.Memory.Data" Version="8.0.1" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
+    <PackageReference Include="Azure.Storage.Files.Shares" Version="12.21.0" />
+    <PackageReference Include="Azure.Storage.Queues" Version="12.21.0" />
+    <PackageReference Include="System.Memory.Data" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,5 +54,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+ 
 
 </Project>

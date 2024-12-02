@@ -35,6 +35,13 @@ public class ChatState : INotifyPropertyChanged
         ChatHistory.Add(new ChatMessageContent(AuthorRole.User, [text, image]));
         MessagePropertyChanged();
     }
+    public void AddUserMessage(TextContent text, List<ImageContent> images, int? order = null)
+    {
+        order ??= MessageCount + 1;
+        ChatMessages.Add(Message.UserMessage(text.Text!, images.Select(x => x.DataUri?.ToString()).ToList()!, order.Value));
+        ChatHistory.Add(new ChatMessageContent(AuthorRole.User, [text, ..images]));
+        MessagePropertyChanged();
+    }
     public void AddAssistantMessage(string message, int? order = null, List<TokenString>? tokenStrings = null)
     {
         order ??= MessageCount + 1;

@@ -1,12 +1,36 @@
 ﻿@using PromptLab.Core.Models
 @inherits AppComponentBase
+
 <RadzenCard>
-	<RadzenTemplateForm Data=_fileUpload TItem="FileUpload" Submit="Submit">
-		<RadzenFormField Text="Image Upload">
-			<ChildContent>
-				<RadzenFileInput MaxFileSize="maxFileSize" @bind-Value=_fileUpload.FileBase64 @bind-FileName=_fileUpload.FileName MaxHeight="600" MaxWidth="600" ChooseText="Img"></RadzenFileInput>
-			</ChildContent>
-		</RadzenFormField><br />
-		<RadzenButton Size="ButtonSize.Small" ButtonType="ButtonType.Submit" Icon="attach_file" Text="Attach"></RadzenButton>
-	</RadzenTemplateForm>
+    <RadzenTemplateForm Data="_multiFileUpload" TItem="MultiFileUpload" Submit="Submit">
+        <div class="upload-grid">
+            @foreach (var fileUpload in _multiFileUpload.FileUploads)
+            {
+                <div class="upload-item">
+                    <RadzenButton Size="ButtonSize.ExtraSmall" Icon="close" class="remove-button" ButtonStyle="ButtonStyle.Light" Click="@(() => Remove(fileUpload))" />
+                    <RadzenFormField Text="Image Upload">
+                        <ChildContent>
+                            <RadzenFileInput MaxFileSize="maxFileSize" 
+                                           @bind-Value=fileUpload.FileBase64 
+                                           @bind-FileName=fileUpload.FileName 
+                                           MaxHeight="600" 
+                                           MaxWidth="600" 
+                                           ChooseText="Img" />
+                        </ChildContent>
+                    </RadzenFormField>
+                </div>
+            }
+        </div>
+        <div style="margin-top: 1rem;">
+            <RadzenButton Size="ButtonSize.ExtraSmall" 
+                        Icon="add" 
+                        Text="Add Image" 
+                        Click="Add" 
+                        Style="margin-right: 0.5rem;" />
+            <RadzenButton Size="ButtonSize.Small" 
+                        ButtonType="ButtonType.Submit" 
+                        Icon="attach_file" 
+                        Text="Attach" />
+        </div>
+    </RadzenTemplateForm>
 </RadzenCard>

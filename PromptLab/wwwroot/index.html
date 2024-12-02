@@ -11,6 +11,10 @@
     <link id="radzen-style" rel="stylesheet" href="_content/Radzen.Blazor/css/standard.css">
     <link rel="stylesheet" href="css/font-awesome/css/all.min.css" />
     <link href="css/app.css" rel="stylesheet" />
+    <link rel="stylesheet" href="js/lib/prism/themes/prism.min.css">
+    <link rel="stylesheet" href="js/lib/prism/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="js/lib/prism/plugins/toolbar/prism-toolbar.min.css" />
+    <link rel="stylesheet" href="js/lib/jodit/jodit.min.css" />
     <style>
         html {
             height: 100%;
@@ -24,12 +28,12 @@
             width: 100%;
         }
 
-       /*  .app-content {
+        /*  .app-content {
             background-color: white;
             color: black;
         } */
 
-       /*  @media (prefers-color-scheme: dark) {
+        /*  @media (prefers-color-scheme: dark) {
             .app-content {
                 background-color: #121212;
                 color: white;
@@ -76,6 +80,23 @@
 
             // Update the link element's href attribute to the new value
             link.href = newHref;
+        }
+    </script>
+    <script src="js/lib/prism/prism.min.js"></script>
+    <script src="js/lib/prism/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="js/lib/prism/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="js/lib/prism/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="js/lib\prism\plugins\copy-to-clipboard\prism-copy-to-clipboard.js"></script>
+<script src="js/lib/jodit/jodit.min.js"></script>
+<script src="_content/BlazorJoditEditor/jodit/jodit.min.js"></script>
+    <script>
+        window.addCopyButtons = (element) => {
+            if (!element) {
+                console.log("No element in addCopyButtons");
+                return;
+            }
+
+            Prism.highlightAllUnder(element);
         }
     </script>
 </body>

@@ -389,3 +389,4 @@ FodyWeavers.xsd
 /PromptLab.Web/Properties/ServiceDependencies/local/storage2.arm.json
 /PromptLab.RazorLib/Pages/AgentBuilderPage.razor
 /PromptLab.RazorLib/Pages/AgentBuilderPage.razor.cs
+/PromptLab.Web/MetaPromptSteps.json

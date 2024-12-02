@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PromptLab.Core", "PromptLab
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PromptLab.Web", "PromptLab.Web\PromptLab.Web.csproj", "{D764CCFC-4296-45D6-B86D-970BB897F4AC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorJoditEditor", "BlazorJoditEditor\BlazorJoditEditor.csproj", "{EA217B66-60BC-494D-B46C-43F72A0CF1EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,14 @@ Global
 		{D764CCFC-4296-45D6-B86D-970BB897F4AC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D764CCFC-4296-45D6-B86D-970BB897F4AC}.Release|ARM64.ActiveCfg = Release|ARM64
 		{D764CCFC-4296-45D6-B86D-970BB897F4AC}.Release|ARM64.Build.0 = Release|ARM64
+		{EA217B66-60BC-494D-B46C-43F72A0CF1EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA217B66-60BC-494D-B46C-43F72A0CF1EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA217B66-60BC-494D-B46C-43F72A0CF1EC}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{EA217B66-60BC-494D-B46C-43F72A0CF1EC}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{EA217B66-60BC-494D-B46C-43F72A0CF1EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA217B66-60BC-494D-B46C-43F72A0CF1EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA217B66-60BC-494D-B46C-43F72A0CF1EC}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{EA217B66-60BC-494D-B46C-43F72A0CF1EC}.Release|ARM64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

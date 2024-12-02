@@ -30,14 +30,14 @@ public class BrowserFileService(ProtectedLocalStorage localStorage, DialogServic
         return null;
 
     }
-    public async Task<(string, byte[])> OpenImageFileAsync()
+    public async Task<List<(string, byte[])>> OpenImageFileAsync()
     {
         var fileContent = await dialogService.OpenAsync<UploadImageWindow>("", options: new DialogOptions { Draggable = true, ShowClose = true, Resizable = true, ShowTitle = false, CloseDialogOnOverlayClick = true});
-        if (fileContent is FileUpload file)
+        if (fileContent is MultiFileUpload file)
         {
-            return (file.FileName!, file.FileBytes!);
+            return file.FileUploads.Select(x => (x.FileName, x.FileBytes)).ToList()!;
         }
-        return ("", []);
+        return [];
     }
     public async Task<string?> SaveFileAsync(string fileName, string file)
     {

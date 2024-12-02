@@ -18,7 +18,7 @@ namespace PromptLab.RazorLib.Pages;
 public partial class PromptHelpPage
 {
 	[Inject]
-	private PromptEngineerService PromptEngineerService { get; set; } = default!;
+	private PromptEngineerAgent PromptEngineerService { get; set; } = default!;
 	[Inject]
 	private IConfiguration Configuration { get; set; } = default!;
 	[Inject]
@@ -77,17 +77,16 @@ public partial class PromptHelpPage
 
     private async void HandleRequest(UserInputRequest userInputRequest)
     {
-        if (userInputRequest.FileUpload is null)
-        {
-            HandleInput(userInputRequest.ChatInput);
-            return;
-        }
-        var text = new TextContent(userInputRequest.ChatInput);
-        var url = await GetImageUrlFromBlobStorage(userInputRequest.FileUpload!);
-        var image = new ImageContent(new Uri(url));
-        _chatView.ChatState.AddUserMessage(text, image);
-        await SubmitRequest();
-    }
+		if (userInputRequest.FileUploads.Count == 0)
+		{
+			HandleInput(userInputRequest.ChatInput);
+			return;
+		}
+		var text = new TextContent(userInputRequest.ChatInput);
+		var images = userInputRequest.FileUploads.Select(file => new ImageContent(file.FileBytes, "image/jpeg")).ToList();
+		_chatView.ChatState.AddUserMessage(text, [.. images]);
+		await SubmitRequest();
+	}
     private async Task<string> GetImageUrlFromBlobStorage(FileUpload file)
     {
         var url = await BlobService.UploadBlobFile(file.FileName!, file.FileBytes!);
@@ -118,12 +117,5 @@ public partial class PromptHelpPage
 		if (lastAsstMessage is not null)
 			lastAsstMessage.IsActiveStreaming = false;
 	}
-	private string AsHtml(string? text)
-	{
-		if (text == null) return "";
-		var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-		var result = Markdown.ToHtml(text, pipeline);
-		return result;
-
-	}
+	
 }

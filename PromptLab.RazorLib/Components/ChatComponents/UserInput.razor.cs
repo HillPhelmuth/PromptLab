@@ -70,15 +70,10 @@ public partial class UserInput : ComponentBase
     }
     private async Task AddImage()
     {
-        var (fileName, bytes) = await FileService.OpenImageFileAsync();
-        if (bytes.Length > 0)
+        var files = await FileService.OpenImageFileAsync();
+        if (files.Count > 0)
         {
-            _requestForm.UserInputRequest.FileUpload = new FileUpload
-            {
-                FileName = fileName,
-                FileBytes = bytes,
-                FileBase64 = Convert.ToBase64String(bytes)
-            };
+            _requestForm.UserInputRequest.FileUploads = [..files.Select(x => new FileUpload {FileName = x.Item1, FileBase64 = Convert.ToBase64String(x.Item2), FileBytes = x.Item2})];
         }
     }
 
