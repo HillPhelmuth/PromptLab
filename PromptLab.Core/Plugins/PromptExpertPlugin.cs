@@ -16,7 +16,9 @@ using System.Collections;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel.Embeddings;
+using PromptLab.Core.Models;
 using static PromptLab.Core.Helpers.AppConstants;
+using PromptLab.Core.Services;
 
 namespace PromptLab.Core.Plugins;
 
@@ -47,7 +49,7 @@ public class PromptExpertPlugin
 
 	private const string PromptHelperPromptGeneral =
 		"""
-		You are a prompt expert. Utilize the following Expert Knowledge to guide your response to the question provided.
+		You are a prompt engineering teacher. Utilize the following Expert Knowledge to guide your response to the question provided.
 
 		Expert Knowledge: {{ $expertKnowledge }}
 
@@ -60,20 +62,37 @@ public class PromptExpertPlugin
 		Justify each suggestion with direct references or logical connections to the Expert Knowledge. Ensure each part of your response is clear and comprehensible to someone unfamiliar with prompt engineering.
 
 		""";
-	
+
+    private const string UserPromptHelperGuidePrompt =
+        $$$"""
+        You are a prompt expert. Using the Chat Context and Expert Knowledge below, improve the provided prompt. Provide ONLY the improved prompt without preamble or explanation.
+
+        ## Expert Knowledge
+        1. 
+        {{{Prompt.UserPromptGuide}}}
+        2. 
+        {{{Prompt.MasterChatGptPromptGuide}}}
+        
+        ## Chat Context
+        {{ $chatHistory }}
+        
+        ## Prompt
+        {{ $prompt }}
+        """;
+
 	public PromptExpertPlugin(IConfiguration configuration, ILoggerFactory loggerFactory)
 	{
 		_configuration = configuration;
 		_apiKey = _configuration["OpenAI:ApiKey"];
 		_loggerFactory = loggerFactory;		
 	}
-	[KernelFunction, Description("Get expert advice on how to improve a prompt")]
-	public async Task<string> PromptExpertAdvice(Kernel kernel, [Description("The prompt that needs improvement")] string prompt, [Description("issues found by the evaluator")] string issues = "", [Description("Optional specific question for the expert")] string question = "")
+	[KernelFunction, Description("Get expert advice on advanced prompt engineering techniques to improve a complex prompt")]
+	public async Task<string> PromptExpertAdvice(Kernel kernel,
+        [Description("The prompt that needs improvement")] string prompt,
+        [Description("Specific question for the expert")] string question,
+        [Description("issues found by the evaluator (if applicable)")] string issues = "")
 	{
-		if (string.IsNullOrEmpty(question))
-		{
-			question = issues;
-		}
+		
 		var embeddings = kernel.GetAllServices<ITextEmbeddingGenerationService>().FirstOrDefault();
 		if (_semanticTextMemory is null && embeddings is not null) await CreateMemoryStore(embeddings);
 		var plugin = KernelPluginFactory.CreateFromObject(new TextMemoryPlugin(_semanticTextMemory!), "TextMemory");
@@ -121,7 +140,15 @@ public class PromptExpertPlugin
 		kernel.Plugins.Remove(plugin);
 		return result.GetValue<string>() ?? "Inform the user about an error executing Get Expert Advice and proceed without it.";
 	}
-
+	[KernelFunction, Description("Improve a user's prompt using the various tips, tricks and prompting guides. NOTE: this is for user prompts not system prompts.")]
+    public async Task<string> ImproveUserPrompt(Kernel kernel, string prompt, string chatHistory)
+    {
+        var item = ChatService.GetServiceId();
+        var settings = ChatService.GetServicePromptExecutionSettings(item);
+        var args = new KernelArguments(settings) { ["prompt"] = prompt, ["chatHistory"] = chatHistory };
+		var result = await kernel.InvokePromptAsync(UserPromptHelperGuidePrompt, args);
+        return result.ToString();
+    }
 	internal async Task CreateMemoryStore(ITextEmbeddingGenerationService embeddingGenerationService)
 	{
 		var sqliteConnect = await SqliteMemoryStore.ConnectAsync(_configuration["Sqlite:ConnectionString"]);

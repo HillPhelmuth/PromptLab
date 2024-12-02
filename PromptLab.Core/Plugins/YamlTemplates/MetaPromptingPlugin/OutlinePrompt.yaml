@@ -1,0 +1,60 @@
+name: OutlinePrompt
+description: Generate an outline to improve an existing prompt based on original text and analysis.
+execution_settings:
+  default:
+    temperature: 0.5
+    top_p: 1.0
+input_variables:
+- name: prompt
+  description: Original prompt
+  default: ''
+- name: analysis
+  description: Analysis of the prompt.
+  default: ''
+template: |
+ Generate an outline to improve an existing prompt based on original text and analysis.
+
+ Utilize the provided original prompt content and its corresponding analysis to give insights into how improvements can be made.
+
+ ## Original Prompt:
+ ```
+ {{$prompt}}
+ ```
+
+ ## Analysis of Original Prompt:
+ ```
+ {{$analysis}}
+ ``
+
+ # Steps
+
+ 1. **Assess Problem Areas**: Use the analysis to identify weaknesses or ambiguities in the original prompt.
+ 2. **Reframe Goals**: Define the main objective of the original prompt clearly.
+ 3. **Divide and Conquer**: Break down complex parts of the original prompt into smaller, more manageable pieces.
+ 4. **Specify Requirements and Expectations**: Address any missing requirements, constraints, or output expectations.
+ 5. **Use Examples**: If possible, include or plan detailed step-by-step examples to illustrate how a better prompt should guide the user.
+  
+ # Outline Format
+
+ The outline sections should be as follows:
+  - **Objective**: Clearly define what the prompt should achieve.
+  - **Issues from Analysis**: Summarize the key issues identified from the analysis.
+  - **Improvement Plan**:
+  - **Structure Improvements**: Layout specific changes in the organization of the prompt.
+  - **Detail Enhancements**: Identify where to add more detailed instructions or requirements.
+  - **Simplification Recommendations**: Specify sections to simplify, if appropriate.
+  - **Examples Outline**: Include a section where examples will be illustrated in an improved prompt.
+  
+ # Output Format
+
+ Output the outline as a structured text set of bullet points or sections, separated clearly for easy understanding. Format should follow:
+
+  - Objective
+  - Issues from Analysis
+  - Improvement Plan
+  - Structure Improvements
+  - Detail Enhancements
+  - Simplification Recommendations
+  - Examples Outline 
+
+ Ensure each part is clear and actionable for further improvement and generation of an enhanced prompt.

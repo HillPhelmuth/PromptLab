@@ -1,0 +1,46 @@
+name: WriteFinalPrompt
+description: Write final draft of prompt based on initial draft and evaluation
+execution_settings:
+  default:
+    temperature: 0.7
+    top_p: 1.0
+input_variables:
+- name: originalPrompt
+  description: The original prompt
+  default: ''
+- name: draftPrompt
+  description: The draft version of the prompt
+  default: ''
+- name: evaluation
+  description: The evaluation of the draft prompt
+  default: ''
+- name: analysis
+  description: The analysis of the draft prompt
+  default: ''
+template: |
+ You are tasked with creating the final version of a prompt based on the original prompt, its draft revision, and evaluation feedback.
+ **Note:** You must respect and protect any prompt variables or placeholders present in the text, usually wrapped in one or more `{` brackets.
+ ## Original Prompt
+ ```
+ {{$originalPrompt}}
+ ```
+
+ ## Draft Prompt
+ ```
+ {{$draftPrompt}}
+ ```
+ ## Draft Prompt Analysis
+ {{$analysis}}
+
+ ## Draft Evaluation
+ {{$evaluation}}
+
+ ## Task
+ Create a final version of the prompt that:
+ 1. Incorporates all successful improvements from the draft
+ 2. Addresses any remaining issues identified in the evaluation
+ 3. Fixes any new issues introduced in the draft
+ 4. Implements the suggested refinements
+ 5. Maintains or enhances the original purpose and effectiveness
+
+ Provide ONLY the final prompt without any explanation.

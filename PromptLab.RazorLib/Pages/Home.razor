@@ -1,71 +1,61 @@
-﻿@using PromptLab.RazorLib.ChatModels
-@using PromptLab.Core.Plugins
-@using Microsoft.Extensions.Configuration
-@inherits AppComponentBase
+﻿@inherits AppComponentBase
+
+
 <RadzenRow>
-	<RadzenColumn Size="4">
+    <RadzenColumn Size="8" Offset="2">
+        <RadzenCard>
+            <RadzenText>
+                <strong>Prompt Lab</strong> is a versatile application designed to empower users in creating, testing, and refining prompts for a wide range of applications. It provides a user-friendly interface with tools tailored to different levels of expertise, making it an essential resource for anyone working with language models.
+            </RadzenText><br/>
+            <RadzenText>
+                The three core features of <strong>Prompt Lab</strong> include the 
+                <a href="playground" id="prompt-playground-link">Prompt Playground</a>, an open-ended environment to experiment with prompt ideas and observe results in real time; the
+                <a href="prompt" id="prompt-helper-link">Prompt Helper</a>, an intelligent assistant to guide users in crafting and improving their prompts; and the
+                <a href="improve" id="meta-prompt-tool-link">Meta Prompt Tool</a>, a specialized feature for optimizing and analyzing prompts for enhanced performance and reliability.
+            </RadzenText><br/>
+            <RadzenText>
+                Whether you're a developer fine-tuning AI interactions, a researcher exploring creative applications, or a beginner learning the ropes of prompt engineering, <strong>Prompt Lab</strong> streamlines the process with intuitive tools and clear guidance. The platform's organized layout ensures that users can easily navigate between testing, refining, and evaluating prompts, making it an invaluable companion for mastering the art of prompt design.
+            </RadzenText>
+        </RadzenCard>
+    </RadzenColumn>
+    <RadzenColumn Size="6" Offset="3">
 
-		<RadzenCard>
-			<div>
-				@if (!string.IsNullOrEmpty(_savedPrompt))
-				{
-					<RadzenText TextStyle="TextStyle.Caption">Saved as: @_savedPrompt</RadzenText>
-				}
-			</div>
-			<RadzenFormField Text="System Prompt Editor" Style="width:100%">
-				<RadzenCard Style="padding:.5rem; width:100%">
-					<RadzenHtmlEditor @bind-Value=@AppState.ActiveSystemPromptHtml style="height: 75vh;width:100%" Execute="HandleExecute">
-						<RadzenHtmlEditorUndo />
-						<RadzenHtmlEditorRedo />
-						<RadzenHtmlEditorSeparator />
-						<RadzenHtmlEditorUnorderedList />
-						<RadzenHtmlEditorOrderedList />
-						<RadzenHtmlEditorFormatBlock />
-						<RadzenHtmlEditorSeparator />
-						<RadzenHtmlEditorSeparator />
-						<RadzenHtmlEditorCustomTool CommandName="Save" Title="Save Prompt" Icon="save" IconColor="green" />
-						<RadzenHtmlEditorCustomTool CommandName="Load" Title="Load Prompt" Icon="file_upload" IconColor="blue" />
-						<RadzenHtmlEditorCustomTool CommandName="Improve" Title="Ask Expert Prompt Engineer For Help" Icon="psychology_alt" IconColor="black" />
-
-					</RadzenHtmlEditor>
-				</RadzenCard>
-
-			</RadzenFormField>
-
-		</RadzenCard>
-	</RadzenColumn>
-	<RadzenColumn Size="8" Style="position:relative">
-		<RadzenCard>
-
-			<div style="position:absolute; left:.5rem; top: 0; display:flex; flex-direction:row">
-				<RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="Clear" Click="ClearChat"></RadzenButton>
-				<RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="save" Text="Save" Click="SaveChat"></RadzenButton>
-			</div>
-			<RadzenButton Style="position:absolute; right:.5rem; top: 0" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="post_add" Text="Add Message" Click="AddMessage"></RadzenButton>
-			<ChatView ResetOnClose="false" AllowRemove=true ViewId="chatWithSk" Height="80vh" IsLogProbView=AppState.IsLogProbView Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
-		</RadzenCard>
-
-		<RadzenCard Style="position:relative" Variant="Variant.Filled">
-			<UserInput IsRequired="@(false)" ButtonLabel="Send" HelperText="User Input" UserInputSubmit="HandleRequest" IsBusy="_isBusy" CancelRequest="Cancel"></UserInput>
-		</RadzenCard>
-	</RadzenColumn>
+        <RadzenCard>
+            <RadzenPanelMenu DisplayStyle="MenuItemDisplayStyle.IconAndText">
+                <RadzenPanelMenuItem Path="playground" Click="@(() => SetHeaderTitle("Prompt Lab Playground"))">
+                    <Template>
+                        <RadzenStack Orientation="Orientation.Horizontal">
+                            <RadzenIcon Icon="forum"></RadzenIcon>
+                            <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                                <RadzenText Style="color:white" TextStyle="TextStyle.Subtitle1">Prompt Playground</RadzenText>
+                                <RadzenText Style="color:white" TextStyle="TextStyle.Body2">An open chat playground to test your prompts</RadzenText>
+                            </RadzenStack>
+                        </RadzenStack>
+                    </Template>
+                </RadzenPanelMenuItem>
+                <RadzenPanelMenuItem Path="prompt" Click="@(() => SetHeaderTitle("Prompt Engineering Assistant"))">
+                    <Template>
+                        <RadzenStack Orientation="Orientation.Horizontal">
+                            <RadzenIcon Icon="psychology_alt"></RadzenIcon>
+                            <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                                <RadzenText Style="color:white" TextStyle="TextStyle.Subtitle1">Prompt Helper</RadzenText>
+                                <RadzenText Style="color:white" TextStyle="TextStyle.Body2">An assistant to help you create and modify prompts</RadzenText>
+                            </RadzenStack>
+                        </RadzenStack>
+                    </Template>
+                </RadzenPanelMenuItem>
+                <RadzenPanelMenuItem Path="improve" Click="@(() => SetHeaderTitle("Meta Prompt Tool"))">
+                    <Template>
+                        <RadzenStack Orientation="Orientation.Horizontal">
+                            <RadzenIcon Icon="tactic"></RadzenIcon>
+                            <RadzenStack Orientation="Orientation.Vertical" Gap="0">
+                                <RadzenText Style="color:white" TextStyle="TextStyle.Subtitle1">Meta Prompt Tool</RadzenText>
+                                <RadzenText Style="color:white" TextStyle="TextStyle.Body2">A robust tool to help you create and/or improve your prompts</RadzenText>
+                            </RadzenStack>
+                        </RadzenStack>
+                    </Template>
+                </RadzenPanelMenuItem>
+            </RadzenPanelMenu>
+        </RadzenCard>
+    </RadzenColumn>
 </RadzenRow>
-
-@code {
-	private Task<bool> ValidateSettings()
-	{
-		var (isValid, message) = AppState.ChatModelSettings.Validate();
-		if (isValid) return Task.FromResult(isValid);
-		var notificationMessage = new NotificationMessage
-				{
-					Severity = NotificationSeverity.Error,
-					Summary = $"Chat Model Settings Invalid - {message}",
-					Detail = "Update Settings Here",
-					Duration = 10000,
-					Click = ShowSettings,
-					CloseOnClick = true,
-					DetailContent = ns => @<RadzenButton Text="Update Settings" Click="ShowSettings" /> };
-		NotificationService.Notify(notificationMessage);
-		return Task.FromResult(isValid);
-	}
-}

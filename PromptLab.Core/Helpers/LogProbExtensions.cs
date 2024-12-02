@@ -4,34 +4,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenAI.Chat;
 using PromptLab.Core.Models;
 using Tiktoken;
-using Encoding = Tiktoken.Encoding;
+using Encoder = Tiktoken.Encoder;
 
 namespace PromptLab.Core.Helpers;
 
 public static class LogProbExtensions
 {
-    public static List<TokenString> AsTokenStrings(this List<ChatTokenLogProbabilityResult> logProbContentItems)
+    public static List<TokenString> AsTokenStrings(this IReadOnlyList<ChatTokenLogProbabilityDetails> logProbContentItems)
     {
         var result = new List<TokenString>();
         foreach (var logProb in logProbContentItems)
         {
             var tokenString = new TokenString(logProb.Token, logProb.NormalizedLogProb());
-            if (logProb.TopLogProbabilityEntries is { Count: > 0 })
+            if (logProb.TopLogProbabilities is { Count: > 0 })
             {
-                var innerResult = logProb.TopLogProbabilityEntries.Select(item => new TokenString(item.Token, item.NormalizedLogProb())).ToList();
+                var innerResult = logProb.TopLogProbabilities.Select(item => new TokenString(item.Token, item.NormalizedLogProb())).ToList();
                 tokenString.TopLogProbs = innerResult;
             }
             result.Add(tokenString);
         }
         return result;
     }
-    public static double NormalizedLogProb(this ChatTokenLogProbabilityResult logProbabilityResult)
+    public static TokenString AsTokenString(this IReadOnlyList<ChatTokenLogProbabilityDetails> logProbabilityInfo)
+    {
+	    var probabilityResult = logProbabilityInfo[0];
+        var tokenString = new TokenString(probabilityResult.Token, probabilityResult.NormalizedLogProb());
+        foreach (var logProb in probabilityResult.TopLogProbabilities)
+		{
+			tokenString.TopLogProbs.Add(new TokenString(logProb.Token, logProb.NormalizedLogProb()));
+		}
+        return tokenString;
+    }
+    public static double NormalizedLogProb(this ChatTokenTopLogProbabilityDetails logProbabilityResult)
     {
         return Math.Exp(logProbabilityResult.LogProbability);
     }
-    public static double NormalizedLogProb(this ChatTokenLogProbabilityInfo logProbInfo)
+    public static double NormalizedLogProb(this ChatTokenLogProbabilityDetails logProbInfo)
     {
         return Math.Exp(logProbInfo.LogProbability);
     }
@@ -39,7 +50,7 @@ public static class LogProbExtensions
 }
 public static class TokenHelper
 {
-    private static Encoding _encoding = Encoding.ForModel("gpt-4");
+    private static Encoder _encoding = ModelToEncoder.For("gpt-4");
     public static int GetTokens(string text)
     {
         return _encoding.CountTokens(text);

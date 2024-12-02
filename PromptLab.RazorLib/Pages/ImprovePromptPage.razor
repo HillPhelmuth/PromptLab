@@ -1,0 +1,67 @@
+﻿@inherits AppComponentBase
+@page "/improve"
+<RadzenSteps SelectedIndex="_currentStep" SelectedIndexChanged="SelectedStepChanged">
+    <Steps>
+        <RadzenStepsItem Text="Prompt" NextText="Improve Prompt">
+            <RadzenTabs>
+                <Tabs>
+                    <RadzenTabsItem Text="Improve Prompt">
+                        <RadzenCard>
+                            <RadzenTemplateForm Data="_promptForm" Submit="UpdatePrompt" TItem="PromptForm">
+                                <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.ExtraSmall" Text="Submit"></RadzenButton>
+                                <RadzenFormField Text="Prompt" Style="width:100%">
+                                    @* <RadzenTextArea Style="width:100%; height:50vh" @bind-Value="_promptForm.Prompt"></RadzenTextArea> *@
+                                    <JoditEditor @ref=_joditEditor ElementId="editor" @bind-HtmlContent="@AppState.ActiveSystemPromptHtml" EventInvoked="HandleExecute"></JoditEditor>
+                                </RadzenFormField>
+                            </RadzenTemplateForm>
+                        </RadzenCard>
+                    </RadzenTabsItem>
+                    <RadzenTabsItem Text="Create Prompt">
+                        <RadzenCard>
+                            <RadzenTemplateForm Data="_createPromptForm" TItem="CreatePromptForm" Submit="UpdateCreatePrompt">
+                                <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.ExtraSmall" Text="Submit"></RadzenButton>
+                                <RadzenFormField Text="Task" Style="width:100%">
+                                    <ChildContent>
+                                        <RadzenTextArea Style="width:100%; height:5rem" @bind-Value="_createPromptForm.Task"></RadzenTextArea>
+                                    </ChildContent>
+                                    <Helper>
+                                        <RadzenText TextStyle="TextStyle.Caption">The task for which the prompt is being created.</RadzenText>
+                                    </Helper>
+                                </RadzenFormField>
+                                <RadzenFormField Text="Prompt Template Variables" Style="width:100%">
+                                    <ChildContent>
+                                        <RadzenTextBox Style="width:100%" @bind-Value="@_createPromptForm.InputVariables"></RadzenTextBox>
+                                    </ChildContent>
+                                    <Helper>
+                                        <RadzenText TextStyle="TextStyle.Caption">Comma seperated list of template variable names</RadzenText>
+                                    </Helper>
+                                </RadzenFormField>
+                            </RadzenTemplateForm>
+                        </RadzenCard>
+                    </RadzenTabsItem>
+                </Tabs>
+            </RadzenTabs>
+        </RadzenStepsItem>
+        <RadzenStepsItem Text="Improve Prompt">
+            <div style="position:sticky;margin-left:2px;top:.2rem">
+                <RadzenText TextStyle="TextStyle.Caption">Current Step: @_stepDescription</RadzenText>
+                <RadzenProgressBar Style="width:100%" @bind-Value="_progress" ProgressBarStyle="(_isBusy ? ProgressBarStyle.Warning : ProgressBarStyle.Success)" ShowValue="false"></RadzenProgressBar>
+            </div>
+            <RadzenTabs TabPosition="TabPosition.Left" @bind-SelectedIndex="_selectedIndex">
+                <Tabs>
+                    @foreach (var tab in AnalysisSteps)
+                    {
+                        <RadzenTabsItem Text="@(tab.Label)">
+                            @if (tab.Label == "WriteFinalPrompt")
+                            {
+                                <RadzenButton Size="ButtonSize.Small" Icon="markdown_copy" Text="Try it!" title="Try this as your new prompt" Click="UpdatePrimaryPrompt"></RadzenButton>
+                            }
+                            <RadzenCard Style="height:65vh;overflow:auto"> <LogItem HideClose="true" Log="tab"></LogItem></RadzenCard>
+                        </RadzenTabsItem>
+                    }
+                </Tabs>
+            </RadzenTabs>
+
+        </RadzenStepsItem>
+    </Steps>
+</RadzenSteps>

@@ -22,8 +22,7 @@ namespace PromptLab.Core.Models
 			}
             if (!string.IsNullOrEmpty(ModelSettings.GoogleGeminiApiKey))
             {
-                models.Add("gemini-1.0-pro");
-                models.Add("gemini-1.5-pro-latest");
+                models.AddRange(SettingsOptions.GeminiAIAvailableModels);
             }
             if (!string.IsNullOrEmpty(ModelSettings.MistralApiKey))
             {

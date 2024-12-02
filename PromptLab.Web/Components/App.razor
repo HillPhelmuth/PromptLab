@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="js/lib/prism/themes/prism.min.css">
     <link rel="stylesheet" href="js/lib/prism/themes/prism-funky.min.css">
     <link rel="stylesheet" href="js/lib/prism/plugins/toolbar/prism-toolbar.min.css" />
+    <link rel="stylesheet" href="_content/BlazorJoditEditor/jodit/jodit.min.css" />
     <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 
@@ -27,6 +28,7 @@
     <script src="js/lib/prism/plugins/show-language/prism-show-language.min.js"></script>
     <script src="js/lib\prism\plugins\copy-to-clipboard\prism-copy-to-clipboard.js"></script>
     <script src=@("https://unpkg.com/@alenaksu/json-viewer@2.0.0/dist/json-viewer.bundle.js")></script>
+    <script src="_content/BlazorJoditEditor/jodit/jodit.min.js"></script>
     <script>
 	    window.setTheme = (theme) => {
 		    const link = document.getElementById('radzen-style');
@@ -45,6 +47,16 @@
       //       document.body.style.width = "100vw";
             document.body.style.transform = `scale(${zoomPercent})`;
 	    } 
+    </script>
+    <script>
+        window.addCopyButtons = (element) => {
+            if (!element) {
+                console.log("No element in addCopyButtons");
+                return;
+            }
+
+            Prism.highlightAllUnder(element);
+        }
     </script>
 </body>
 

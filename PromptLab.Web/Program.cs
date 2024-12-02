@@ -8,6 +8,7 @@ using PromptLab.Web;
 using PromptLab.Web.Components;
 using Radzen;
 using Microsoft.Extensions.Azure;
+using BlazorJoditEditor;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +22,11 @@ var services = builder.Services;
 services.AddScoped<AppState>();
 services.AddPromptLab();
 services.AddRadzenComponents();
-services.AddScoped<ChatStateCollection>().AddTransient<AppJsInterop>();
+services.AddScoped<ChatStateCollection>().AddTransient<AppJsInterop>().AddTransient<JoditEditorInterop>();
 services.AddScoped<IFileService, BrowserFileService>();
 services.AddAzureClients(clientBuilder =>
 {
-    clientBuilder.AddBlobServiceClient(builder.Configuration["PromptLabImagesConnectionString"]!, preferMsi: true);
+    clientBuilder.AddBlobServiceClient(builder.Configuration["ConnectionString:blob"]!, preferMsi: true);
 });
 services.AddLogging(o =>
 {

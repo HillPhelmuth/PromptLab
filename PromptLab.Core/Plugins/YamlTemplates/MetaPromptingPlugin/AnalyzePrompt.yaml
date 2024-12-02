@@ -1,0 +1,94 @@
+name: AnalyzePrompt
+description: Analyze the provided prompt.
+execution_settings:
+  default:
+    temperature: 0.5
+    top_p: 1.0
+input_variables:
+- name: prompt
+  description: Prompt to be analyzed.
+  default: ''
+template: |
+ Analyze the provided prompt to evaluate its effectiveness and provide insights for potential improvement.
+
+ Note: Respect any prompt variables or placeholders present in the text, usually wrapped in `{` brackets.
+
+ ## Prompt to be Analyzed:
+
+ ```
+ {{$prompt}}
+ ```
+
+ ### Elements to Examine
+
+ 1. **Purpose**: Identify the main objective or task the prompt is designed to achieve.
+ 2. **Structure**: Analyze how the prompt is organized and formatted.
+ 3. **Key Components**: Identify the main parts of the prompt, such as instructions, context, examples, or constraints.
+ 4. **Language and Tone**: Evaluate the clarity, specificity, and tone of the language used.
+ 5. **Assumptions**: Identify any implicit or explicit assumptions made in the prompt.
+ 6. **Constraints**: Note any limitations or restrictions placed on the AI's response.
+
+ Provide a detailed breakdown of the prompt's structure and components. Explain how each part contributes to the overall effectiveness of the prompt.
+
+ ### Effectiveness Evaluation
+
+ 1. **Clarity**: Is the prompt easy to understand?
+ 2. **Specificity**: Does it provide enough detail for the AI to complete the task accurately?
+ 3. **Completeness**: Does it cover all necessary aspects of the task?
+ 4. **Potential Issues**: Identify any ambiguities, contradictions, or areas that might lead to misinterpretation.
+
+ ### Example Analysis
+
+ Analyze the examples provided within the prompt, if any, and identify the lessons they convey. Specifically:
+
+ 1. **Example Role**: What is the example meant to illustrate?
+ 2. **Relevance**: How closely does the example match the type of response expected?
+ 3. **Effectiveness**: Does the example effectively clarify what is expected from the user or AI? How does it impact the response quality?
+ 4. **Potential Learnings**:
+    - Highlight the key insights or elements that make the example useful.
+    - Suggest improvements for the example if applicable.
+
+ ### Recommendations
+
+ - Suggest potential improvements or modifications that could enhance the prompt's effectiveness.
+
+ ### Summary
+
+ Summarize your analysis, highlighting the key findings and recommendations.
+
+ # Output Format
+
+ Provide your analysis in the following Markdown format, clearly categorized:
+
+ **Purpose**
+ - [Describe the main objective of the prompt]
+
+ **Structure**
+ - [Explain the overall structure and organization of the prompt]
+
+ **Key Components**
+ - [List and describe the main parts of the prompt]
+
+ **Language and Tone**
+ - [Evaluate the language and tone used in the prompt]
+
+ **Assumptions**
+ - [Identify any assumptions made in the prompt]
+
+ **Constraints**
+ - [Note any limitations or restrictions placed on the AI's response]
+
+ **Effectiveness Evaluation**
+ - [Provide an evaluation of the prompt's effectiveness, considering clarity, specificity, completeness, and potential issues]
+
+ **Example Analysis**
+ - **Example Role**: [Describe the purpose of the provided example]
+ - **Relevance**: [Evaluate how relevant the example is]
+ - **Effectiveness**: [Assess how well the example clarifies expected responses]
+ - **Potential Learnings**: [Summarize important insights and suggest improvements]
+
+ **Improvement Suggestions**
+ - [Offer recommendations for enhancing the prompt]
+
+ **Summary**
+ - [Summarize the key findings and recommendations from your analysis]

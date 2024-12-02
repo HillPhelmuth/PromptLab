@@ -8,7 +8,7 @@ namespace PromptLab.Core.Helpers
     {
         public static IServiceCollection AddPromptLab(this IServiceCollection services)
         {
-            return services.AddScoped<ChatService>().AddSingleton<LocalFileService>().AddScoped<PromptEngineerService>().AddSingleton<BlobService>();
+            return services.AddScoped<ChatService>().AddSingleton<LocalFileService>().AddScoped<PromptEngineerAgent>().AddSingleton<BlobService>().AddScoped<MetaPromptService>();
         }
     }
 }

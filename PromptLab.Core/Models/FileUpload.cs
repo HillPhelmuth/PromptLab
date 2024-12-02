@@ -6,3 +6,7 @@ public class FileUpload
     public string? FileName { get; set; }
     public byte[] FileBytes { get; set; } = [];
 }
+public class MultiFileUpload
+{
+    public List<FileUpload> FileUploads { get; set; } = [];
+}

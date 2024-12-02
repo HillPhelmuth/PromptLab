@@ -9,5 +9,5 @@ public interface IFileService
     void ZoomChanged(double zoom);
     Task SaveUserSettings(UserProfile userProfile);
     Task<UserProfile> LoadUserSettings();
-    Task<(string, byte[])> OpenImageFileAsync();
+    Task<List<(string, byte[])>> OpenImageFileAsync();
 }

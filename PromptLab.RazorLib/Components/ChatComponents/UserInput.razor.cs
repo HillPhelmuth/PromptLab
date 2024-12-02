@@ -29,10 +29,20 @@ public partial class UserInput : ComponentBase
     public EventCallback CancelRequest { get; set; }
     [Parameter]
     public bool IsRequired { get; set; } = true;
+    [Parameter]
+    public string? ImprovedPrompt { get; set; }
+    [Parameter]
+    public EventCallback<string> ImprovedPromptRequest { get; set; }
     [Inject]
     private IFileService FileService { get; set; } = default!;
+
+    private bool _isPromptImproveRequested;
     protected override Task OnParametersSetAsync()
     {
+        if (_isPromptImproveRequested && !string.IsNullOrEmpty(ImprovedPrompt))
+        {
+            _requestForm.UserInputRequest.ChatInput = ImprovedPrompt;
+        }
         _requestForm.UserInputRequest.UserInputType = UserInputType;
         return base.OnParametersSetAsync();
     }
@@ -60,16 +70,19 @@ public partial class UserInput : ComponentBase
     }
     private async Task AddImage()
     {
-        var (fileName, bytes) = await FileService.OpenImageFileAsync();
-        if (bytes.Length > 0)
+        var files = await FileService.OpenImageFileAsync();
+        if (files.Count > 0)
         {
-            _requestForm.UserInputRequest.FileUpload = new FileUpload
-            {
-                FileName = fileName,
-                FileBytes = bytes,
-                FileBase64 = Convert.ToBase64String(bytes)
-            };
+            _requestForm.UserInputRequest.FileUploads = [..files.Select(x => new FileUpload {FileName = x.Item1, FileBase64 = Convert.ToBase64String(x.Item2), FileBytes = x.Item2})];
         }
+    }
+
+    private async Task ImprovePrompt()
+    {
+        var currentPrompt = _requestForm.UserInputRequest.ChatInput;
+        _isPromptImproveRequested = true;
+        await ImprovedPromptRequest.InvokeAsync(currentPrompt);
+
     }
     private void SubmitRequest(RequestForm form)
     {

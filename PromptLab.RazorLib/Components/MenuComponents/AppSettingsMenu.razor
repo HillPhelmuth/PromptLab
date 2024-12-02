@@ -13,6 +13,17 @@
         <RadzenDropDown Style="padding-left:4px;padding-right:4px" @bind-Value=_appSettings.Theme TValue="StyleTheme" Data="@(Enum.GetValues<StyleTheme>())"></RadzenDropDown>
     </RadzenFormField><br />
     <RadzenToggleButton Size="ButtonSize.ExtraSmall" Style="border-radius:30px" @bind-Value=_appSettings.ShowTimestamps ToggleButtonStyle="ButtonStyle.Dark" ButtonStyle=ButtonStyle.Light Text="@(_appSettings.ShowTimestamps ? "HIDE Timestamps" : "SHOW Timestamps")" Icon="toggle_on" ToggleIcon="toggle_off"></RadzenToggleButton><br />
-    
+    <RadzenToggleButton Size="ButtonSize.ExtraSmall" Style="border-radius:30px" @bind-Value=_appSettings.AutoCompleteView ToggleButtonStyle="ButtonStyle.Success" ButtonStyle=ButtonStyle.Secondary Text="@(_appSettings.AutoCompleteView ? "REMOVE Autocomplete" : "ADD Autocomplete")" Icon="toggle_on" ToggleIcon="toggle_off"></RadzenToggleButton><br />
+    @if (_appSettings.AutoCompleteView)
+    {
+        <RadzenFormField Text="Autocomplete Length">
+            <ChildContent>
+                <RadzenNumeric @bind-Value="@_appSettings.AutoCompleteLength" Min="1" Max="50" Step="1"></RadzenNumeric>
+            </ChildContent>
+            <Helper>
+                <RadzenText TextStyle="TextStyle.Caption" Text="Number of tokens to autocomplete"></RadzenText>
+            </Helper>
+        </RadzenFormField><br />
+    }
     <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Small" Text="Save"></RadzenButton>
 </RadzenTemplateForm>

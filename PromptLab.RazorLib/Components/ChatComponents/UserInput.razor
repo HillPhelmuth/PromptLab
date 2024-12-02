@@ -1,7 +1,7 @@
 ﻿@using PromptLab.RazorLib.ChatModels
 <RadzenRow Style="position:absolute; bottom:2px; height:max-content; width:95%">
     <RadzenColumn Size="12" SizeLG="12">
-        <RadzenCard Style="padding-top:2px;padding-bottom:6px" Variant="Variant.Text">
+        <RadzenCard Style="padding-top:2px;padding-bottom:1px" Variant="Variant.Text">
             <RadzenTemplateForm Data="_requestForm" TItem="RequestForm" Submit="SubmitRequest">
                 <RadzenRow>
                     <RadzenColumn Size="10">
@@ -35,7 +35,8 @@
                     </RadzenColumn>
                     <RadzenColumn Size="2" SizeLG="2" Style="display: flex; align-items:center">
                         <RadzenCard Variant=Variant.Text Style="display: flex; align-items: center; justify-items: center; justify-content:center; justify-items:center; padding:0">
-	                        <RadzenButton ButtonStyle=ButtonStyle.Info Size="ButtonSize.ExtraSmall" Icon="@(UserInputFieldType == UserInputFieldType.TextBox ? "expand":"unfold_less")" Click="ToggleInputType"></RadzenButton>
+                            <RadzenButton ButtonStyle=ButtonStyle.Info Size="ButtonSize.ExtraSmall" Icon="@(UserInputFieldType == UserInputFieldType.TextBox ? "expand":"unfold_less")" Click="ToggleInputType"></RadzenButton>
+                            <RadzenButton ButtonStyle=ButtonStyle.Success Size="ButtonSize.ExtraSmall" Icon="prompt_suggestion" Click="ImprovePrompt" title="Suggest Improvements"></RadzenButton>
                             <RadzenButton Disabled="_isDisabled" ButtonType="ButtonType.Submit" Size=ButtonSize.Small Icon="send" IsBusy="IsBusy" BusyText="Sending..." Text="@ButtonLabel"></RadzenButton>
                             
                             <RadzenButton Size="ButtonSize.Small" Icon="block" Click="Cancel"></RadzenButton>

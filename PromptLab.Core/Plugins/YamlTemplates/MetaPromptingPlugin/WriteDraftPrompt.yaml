@@ -1,0 +1,41 @@
+name: WriteDraftPrompt
+description: Write a draft re-write of the prompt based on initial analysis
+execution_settings:
+  default:
+    temperature: 0.7
+    top_p: 1.0
+input_variables:
+- name: prompt
+  description: Original prompt to be rewritten
+  default: ''
+- name: analysis
+  description: Analysis of the original prompt
+  default: ''
+- name: evaluation
+  description: Evaluation of the original prompt
+  default: ''
+template: |
+ You are tasked with re-writing a prompt based on the provided analysis and evaluation. Your goal is to create an improved version that addresses the findings and suggestions from the analysis while maintaining or enhancing the original purpose.
+ Note: You must respect and protect any prompt variables or placeholders present in the text, usually wrapped in one or more `{` brackets.
+ ## Original Prompt
+ ```
+ {{$prompt}}
+ ```
+
+ ## Analysis Results
+ {{$analysis}}
+
+ ## Evaluation Results
+ {{$evaluation}}
+
+ ## Instructions
+ 1. Create a new draft of the prompt that:
+  - Addresses the improvement suggestions from the analysis
+  - Maintains the identified purpose
+  - Follows the structural elements that were praised
+  - Fixes any issues highlighted in the effectiveness evaluation
+  - Implements any missing constraints or assumptions
+ 2. Keep the tone and language style consistent with best practices
+ 3. Ensure all key components are included and well-organized
+
+ Create a new version of the prompt incorporating these improvements. Provide ONLY the new prompt without explanation.

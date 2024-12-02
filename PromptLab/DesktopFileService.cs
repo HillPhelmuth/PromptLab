@@ -35,23 +35,28 @@ public class DesktopFileService
 
 		return fileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fileDialog.FileName) ? fileDialog.FileName : string.Empty;
 	}
-	public static (string, byte[])? OpenImageFileDialog()
+	public static List<(string, byte[])>? OpenImageFileDialog()
 	{
 		var fileDialog = new OpenFileDialog
-        {
-            Filter = "Image files (*.jpg;*.jpeg;*.png;*.bmp;*.gif)|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All files (*.*)|*.*",
-            FilterIndex = 1,
-            RestoreDirectory = true,
-        };
-		if (fileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fileDialog.FileName))
 		{
-			var fileName = Path.GetFileName(fileDialog.FileName);
-			var bytes = File.ReadAllBytes(fileDialog.FileName);
-			return (fileName, bytes);
+			Filter = "Image files (*.jpg;*.jpeg;*.png;*.bmp;*.gif)|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All files (*.*)|*.*",
+			FilterIndex = 1,
+			RestoreDirectory = true,
+			Multiselect = true
+		};
+		var result = new List<(string, byte[])>();
+		//var dialogFileName = fileDialog.FileName;
+		if (fileDialog.ShowDialog() != DialogResult.OK || fileDialog.FileNames.Length <= 0) return null;
+		foreach (var dialogFileName in fileDialog.FileNames)
+		{
+			var fileName = Path.GetFileName(dialogFileName);
+			var bytes = File.ReadAllBytes(dialogFileName);
+			result.Add((fileName, bytes));
 		}
-		return null;
-    }
-    public static string OpenSaveFile(string filename, string fileText)
+
+		return result;
+	}
+	public static string OpenSaveFile(string filename, string fileText)
 	{
 		var saveFileDialog = new SaveFileDialog
 		{

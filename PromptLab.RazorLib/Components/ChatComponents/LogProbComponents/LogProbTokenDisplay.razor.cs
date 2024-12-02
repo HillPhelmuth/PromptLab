@@ -92,7 +92,7 @@ public partial class LogProbTokenDisplay : ComponentBase
     private void ShowTooltip(ElementReference elementReference, TokenString alternateTokens)
     {
         TooltipOptions options = new() { CloseTooltipOnDocumentClick = true, Duration = 100000 };
-        Console.WriteLine($"Hover event displays {TokenString.StringValue}.\nProbability:{alternateTokens.NormalizedLogProbability:P3}");
+        //Console.WriteLine($"Hover event displays {TokenString.StringValue}.\nProbability:{alternateTokens.NormalizedLogProbability:P3}");
 
         TooltipService.Open(elementReference, $"Probability: {alternateTokens.NormalizedLogProbability:P3}<br/><em style=\"font-size:90%\">click for details</em>", options);
     }

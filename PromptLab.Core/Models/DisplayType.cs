@@ -1,3 +1,3 @@
 ﻿namespace PromptLab.Core.Models;
 
-public enum DisplayType { Json, Markdown, Text, Prompt }
+public enum DisplayType { Text, Json, Markdown, Prompt }

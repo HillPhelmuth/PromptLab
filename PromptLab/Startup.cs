@@ -1,9 +1,11 @@
+using BlazorJoditEditor;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PromptLab.Core;
 using PromptLab.Core.Helpers;
+using PromptLab.Core.Plugins;
 using PromptLab.RazorLib.ChatModels;
 using PromptLab.RazorLib.Components.ChatComponents;
 using PromptLab.RazorLib.Shared;
@@ -39,7 +41,7 @@ public  class Startup
         services.AddSingleton<AppState>();
         services.AddPromptLab();
         services.AddRadzenComponents();
-        services.AddScoped<ChatStateCollection>().AddTransient<AppJsInterop>();
+        services.AddScoped<ChatStateCollection>().AddTransient<AppJsInterop>().AddTransient<JoditEditorInterop>();
         Log.Logger = new LoggerConfiguration()
 	        .MinimumLevel.Debug()
 	        .WriteTo.File("logs/myapp.txt", restrictedToMinimumLevel:Serilog.Events.LogEventLevel.Information, rollingInterval: RollingInterval.Day)
@@ -51,10 +53,12 @@ public  class Startup
         });
         services.AddAzureClients(clientBuilder =>
         {
-            clientBuilder.AddBlobServiceClient(_config!["PromptLabImagesConnectionString"]!, preferMsi: true);
+            clientBuilder.AddBlobServiceClient(_config!["ConnectionString:blob"]!, preferMsi: true);
         });
+        services.AddHttpClient();
 #if DEBUG
         services.AddBlazorWebViewDeveloperTools();
+        //services.AddSingleton<MemorySave>();
 #endif
         ServiceCollection = services;
     }

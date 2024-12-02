@@ -12,14 +12,14 @@ public class LocalFileService : IFileService
     public event Action<double>? Zoom;
     public event Func<UserProfile>? LoadUserProfile;
     private TaskCompletionSource<string?> Tcs { get; set; } = new();
-    private TaskCompletionSource<(string, byte[])> ImageTcs { get; set; } = new();
+    private TaskCompletionSource<List<(string, byte[])>> ImageTcs { get; set; } = new();
     public void FilePicked(string filePath)
     {
         Tcs.TrySetResult(filePath);
     }
-    public void ImagePicked(string fileName, byte[] fileBytes)
+    public void ImagePicked(List<(string, byte[])> images)
     {
-        ImageTcs.TrySetResult((fileName, fileBytes));
+        ImageTcs.TrySetResult(images);
     }
     public async Task<string?> OpenFileAsync(string fileName = "")
     {
@@ -41,11 +41,11 @@ public class LocalFileService : IFileService
         return Task.FromResult(item ?? new UserProfile());
     }
 
-    public async Task<(string, byte[])> OpenImageFileAsync()
+    public async Task<List<(string, byte[])>> OpenImageFileAsync()
     {
         PickImageFile?.Invoke();
         var imageData = await ImageTcs.Task;
-        ImageTcs = new TaskCompletionSource<(string, byte[])>();
+        ImageTcs = new TaskCompletionSource<List<(string, byte[])>>();
         return imageData;
     }
 

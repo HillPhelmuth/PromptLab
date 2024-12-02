@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
 
         <!-- Project Options -->
         <Nullable>enable</Nullable>
@@ -10,6 +10,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>PromptLab.RazorLib</RootNamespace>
         <NoWarn>SKEXP0001,SKEXP0010,SKEXP0020,SKEXP0070,SKEXP0050</NoWarn>
+        <Platforms>AnyCPU;ARM64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,13 +18,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Markdig" Version="0.37.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.6" />
-        <PackageReference Include="Radzen.Blazor" Version="4.32.2" />
-        <PackageReference Include="ReverseMarkdown" Version="4.4.0" />
+        <PackageReference Include="Markdig" Version="0.38.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Azure" Version="1.9.0" />
+        <PackageReference Include="Radzen.Blazor" Version="5.6.10" />
+        <PackageReference Include="ReverseMarkdown" Version="4.6.0" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\BlazorJoditEditor\BlazorJoditEditor.csproj" />
       <ProjectReference Include="..\PromptLab.Core\PromptLab.Core.csproj" />
     </ItemGroup>
 
