@@ -69,7 +69,7 @@ public partial class ImprovePromptPage
     private void UpdatePrimaryPrompt()
     {
         AppState.ActiveSystemPromptHtml = AsHtml(AnalysisSteps.Last().Content.Replace("```markdown", "").Replace("```", "").Trim('\n'));
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/playground");
     }
     private bool _isNewPrompt;
     private void HandleLogEntryUpdate(LogEntry obj)
