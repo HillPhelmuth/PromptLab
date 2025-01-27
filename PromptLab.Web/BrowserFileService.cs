@@ -46,6 +46,16 @@ public class BrowserFileService(ProtectedLocalStorage localStorage, DialogServic
         return fileContent is not null ? System.Text.Encoding.UTF8.GetBytes(fileContent) : [];
     }
 
+    public Task<string> OpenFileFromPathAsync(string filePath)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<string> GetFilePathAsync(params string[] fileExts)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<string?> SaveFileAsync(string fileName, string file)
     {
         var confirmed = await dialogService.OpenAsync<SavePromptWindow>("", options: new DialogOptions { Draggable = true, ShowClose = false, Resizable = true, ShowTitle = false });
