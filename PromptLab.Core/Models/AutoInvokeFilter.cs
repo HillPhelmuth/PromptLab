@@ -28,7 +28,23 @@ public class AutoInvokeFilter(ILoggerFactory loggerFactory) : IAutoFunctionInvoc
         logger.LogInformation("AutoInvokeFilter Skipping: {functionName}", new { functionName, invocationCount, functionSeqIndex, requestSeqIndex });
 
         //}
-        await next(context);
+        try
+        {
+            await next(context);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error in AutoInvokeFilter");
+            context.Result = new FunctionResult(context.Function,
+                $"""
+                 Inform the user about the following error and ask them to contact support:
+                 ```
+                 {ex}
+                 ```
+
+                 """);
+        }
+
         //if (functionName is "TranscribeVideo" or "TranscribeAndOutlineVideo")
         FunctionResult?.Invoke(context.Result.ToString());
         FunctionInvocationCounts[functionName]++;
