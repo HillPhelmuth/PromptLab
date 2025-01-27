@@ -15,7 +15,7 @@ public class BrowserFileService(ProtectedLocalStorage localStorage, DialogServic
     private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions {WriteIndented = true};
 
     private const string Key = "PromptLabFiles";
-    public async Task<string?> OpenFileAsync(string fileName = "")
+    public async Task<string?> OpenFileTextAsync(params string[] fileExts)
     {
         var files = await localStorage.GetAsync<Dictionary<string, string>>(Key);
         if (files is { Success: true, Value: not null })
@@ -39,6 +39,13 @@ public class BrowserFileService(ProtectedLocalStorage localStorage, DialogServic
         }
         return [];
     }
+
+    public async Task<byte[]> OpenFileDataAsync(params string[] fileExts)
+    {
+        var fileContent = await OpenFileTextAsync(fileExts);
+        return fileContent is not null ? System.Text.Encoding.UTF8.GetBytes(fileContent) : [];
+    }
+
     public async Task<string?> SaveFileAsync(string fileName, string file)
     {
         var confirmed = await dialogService.OpenAsync<SavePromptWindow>("", options: new DialogOptions { Draggable = true, ShowClose = false, Resizable = true, ShowTitle = false });

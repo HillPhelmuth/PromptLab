@@ -22,13 +22,13 @@ public class DesktopFileService
 
 		return string.Empty;
 	}
-	public static string OpenFileDialog()
+	public static string OpenFileDialog(string filter)
 	{
 
 		var fileDialog = new OpenFileDialog
 		{
-			Filter = "txt files (*.txt)|*.txt|markdown files (*.md)|*.md|All files (*.*)|*.*",
-			FilterIndex = 2,
+			Filter = filter,
+			FilterIndex = 1,
 			RestoreDirectory = true,
 		};
 

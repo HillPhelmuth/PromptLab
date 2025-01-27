@@ -13,6 +13,8 @@ public class ChatModelSettings : ModelSettings
 	
 	public string? GoogleGeminiApiKey { get; set; }
 	public string? MistralApiKey { get; set; }
+	public string? AnthropicApiKey { get; set; }
+	public string? DeepseekApiKey { get; set; }
 	public (bool, string) Validate()
 	{
 		if (OpenAIModelType == OpenAIModelType.AzureOpenAI)

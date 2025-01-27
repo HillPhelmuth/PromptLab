@@ -1,0 +1,26 @@
+﻿@inherits AppComponentBase
+
+<RadzenCard>
+    <RadzenTemplateForm Data="_customPluginPathForm" TItem="CustomPluginPath" Submit="AddPluginPath">
+     <RadzenFormField Text="Name">
+      <RadzenTextBox @bind-Value=_customPluginPathForm.Name></RadzenTextBox>
+     </RadzenFormField>
+        <RadzenFormField Text="Path" Style="width:60%">
+            <RadzenTextBox Style="width:100%" ReadOnly="true" @bind-Value=_customPluginPathForm.Path></RadzenTextBox>
+        </RadzenFormField>
+        <RadzenButton Text="Browse" Icon="attach_file" Click="@(() => PickFile(_customPluginPathForm.Name) )" Size="ButtonSize.ExtraSmall"></RadzenButton>
+        <RadzenButton Text="Add" ButtonType="ButtonType.Submit"> </RadzenButton>
+ </RadzenTemplateForm>
+    <RadzenDataGrid @ref=_grid Data="AppState.ChatSettings.OpenApiPluginNamePaths" TItem="CustomPluginPath">
+     
+        <Columns>
+            <RadzenDataGridColumn TItem="CustomPluginPath" Property="Name" Title="Name" />
+            <RadzenDataGridColumn TItem="CustomPluginPath" Property="Path" Title="Path" />
+            <RadzenDataGridColumn TItem="CustomPluginPath">
+                <Template Context="plugin">
+                    <RadzenButton Icon="delete" Size="ButtonSize.ExtraSmall" Text="Remove" Click="@(() => RemovePluginPath(plugin.Name))" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</RadzenCard>

@@ -113,7 +113,7 @@ public partial class Home
     //  }
     //  private async Task PickFile()
     //  {
-    //      var item = await FileService.OpenFileAsync();
+    //      var item = await FileService.OpenFileTextAsync();
     //      if (string.IsNullOrEmpty(item)) return;
     //      AppState.ActiveSystemPromptHtml = AsHtml(item.Replace(@"\",""));
     //      Logger.LogInformation("Loaded system prompt from file and updated state");

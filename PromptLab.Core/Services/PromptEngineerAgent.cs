@@ -39,17 +39,27 @@ public class PromptEngineerAgent
         chatHistory.AddSystemMessage(Prompt.PromptEngineerSystemPrompt);
         var kernel = ChatService.CreateKernel(_appState.ChatSettings.Model);
         AddPluginsAndFilters(kernel);
-        PromptExecutionSettings settings = item == "Google" ? _appState.ChatSettings.AsGeminiPromptExecutionSettings() : _appState.ChatSettings.AsOpenAIPromptExecutionSettings();
+        PromptExecutionSettings settings = GetServicePromptExecutionSettings(item, true);
         var chatService = kernel.Services.GetRequiredKeyedService<IChatCompletionService>(item);
         //var settings = new OpenAIPromptExecutionSettings { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions, MaxTokens = 1024 };
-        var chatStream = item == "OpenAI" ? OpenAIChatStream(chatHistory, cancellationToken, chatService as OpenAIChatCompletionService, _appState.ChatSettings, kernel) : GoogleChatStream(chatHistory, cancellationToken, chatService, _appState.ChatSettings, kernel);
+        var chatStream = chatService.GetStreamingChatMessageContentsAsync(chatHistory, settings, kernel, cancellationToken)/* item == "OpenAI" ? OpenAIChatStream(chatHistory, cancellationToken, chatService as OpenAIChatCompletionService, _appState.ChatSettings, kernel) : GoogleChatStream(chatHistory, cancellationToken, chatService, _appState.ChatSettings, kernel)*/;
         await foreach (var update in chatStream.WithCancellation(cancellationToken))
         {
             if (string.IsNullOrEmpty(update.Content)) continue;
             yield return update.Content;
         }
     }
-
+    private PromptExecutionSettings GetServicePromptExecutionSettings(string item, bool allowToolCalls = false)
+    {
+        PromptExecutionSettings settings = item switch
+        {
+            "Google" => _appState.ChatSettings.AsGeminiPromptExecutionSettings(allowToolCalls),
+            "Mistral" => _appState.ChatSettings.AsMistralPromptExecutionSettings(allowToolCalls),
+            "Anthropic" => _appState.ChatSettings.AsAnthropicPromptExecutionSettings(allowToolCalls),
+            _ => _appState.ChatSettings.AsOpenAIPromptExecutionSettings(allowToolCalls)
+        };
+        return settings;
+    }
     private static IAsyncEnumerable<StreamingChatMessageContent> OpenAIChatStream(ChatHistory chatHistory, CancellationToken cancellationToken,
         OpenAIChatCompletionService chatService, ChatSettings chatSettings, Kernel kernel)
     {

@@ -17,8 +17,11 @@ input_variables:
 - name: analysis
   description: The analysis of the draft prompt
   default: ''
+- name: instructions
+  description: Instructions for the re-writing task
+  default: ''
 template: |
- You are tasked with creating the final version of a prompt based on the original prompt, its draft revision, and evaluation feedback.
+ You are tasked with creating the final version of a prompt based on user instructions, the original prompt, its draft revision, and evaluation feedback.
  **Note:** You must respect and protect any prompt variables or placeholders present in the text, usually wrapped in one or more `{` brackets.
  ## Original Prompt
  ```
@@ -35,12 +38,16 @@ template: |
  ## Draft Evaluation
  {{$evaluation}}
 
+ ## User Instructions
+ {{$instructions}}
+
  ## Task
  Create a final version of the prompt that:
- 1. Incorporates all successful improvements from the draft
- 2. Addresses any remaining issues identified in the evaluation
- 3. Fixes any new issues introduced in the draft
- 4. Implements the suggested refinements
- 5. Maintains or enhances the original purpose and effectiveness
+ 1. Follows the user instructions
+ 2. Incorporates all successful improvements from the draft
+ 3. Addresses any remaining issues identified in the evaluation
+ 4. Fixes any new issues introduced in the draft
+ 5. Implements the suggested refinements
+ 6. Maintains or enhances the original purpose and effectiveness
 
  Provide ONLY the final prompt without any explanation.

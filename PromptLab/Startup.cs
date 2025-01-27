@@ -3,8 +3,10 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using PromptLab.Core;
 using PromptLab.Core.Helpers;
+using PromptLab.Core.Models;
 using PromptLab.Core.Plugins;
 using PromptLab.RazorLib.ChatModels;
 using PromptLab.RazorLib.Components.ChatComponents;
@@ -50,6 +52,8 @@ public  class Startup
 		services.AddLogging(c =>
         {
             c.Services.AddSingleton(Log.Logger);
+            c.Services.AddSingleton<StringEventWriter>();
+            c.Services.AddSingleton<ILoggerProvider, StringEventWriterLoggerProvider>();
         });
         services.AddAzureClients(clientBuilder =>
         {

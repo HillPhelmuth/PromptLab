@@ -29,6 +29,9 @@ public partial class JoditEditor
     public EventCallback<string> MarkdownContentChanged { get; set; }
     [Parameter]
     public EventCallback<string> EventInvoked { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public JoditEditorOptions Options { get; set; } = new();
 
     protected override Task OnInitializedAsync()
     {
@@ -47,7 +50,7 @@ public partial class JoditEditor
         if (firstRender)
         {
             // Load the JavaScript module for Jodit integration
-            await JoditEditorInterop.InitJodit(editorElement, HtmlContent);
+            await JoditEditorInterop.InitJodit(editorElement, HtmlContent, Options);
             
         }
     }

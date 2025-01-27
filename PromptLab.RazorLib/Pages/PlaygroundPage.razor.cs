@@ -17,6 +17,7 @@ public partial class PlaygroundPage
 {
     private ChatView _chatView;
     private JoditEditor _joditEditor;
+    private JoditEditorOptions _editorOptions = new();
     private bool _isBusy;
     [Inject]
     private BlobService BlobService { get; set; } = default!;
@@ -24,6 +25,8 @@ public partial class PlaygroundPage
     private ChatService ChatService { get; set; } = default!;
     [Inject]
     private PromptEngineerAgent PromptEngineerService { get; set; } = default!;
+    [Inject]
+    private StringEventWriter StringEventWriter { get; set; } = default!;
 
     private CancellationTokenSource _cancellationTokenSource = new();
 
@@ -41,6 +44,18 @@ public partial class PlaygroundPage
         var token = _cancellationTokenSource.Token;
         _suggestedPrompt = await PromptEngineerService.EvaluateUserPrompt(prompt, history, token);
         StateHasChanged();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        StringEventWriter.StringWritten += HandleStringWritten;
+        return base.OnInitializedAsync();
+    }
+
+    private void HandleStringWritten(object? sender, string? e)
+    {
+        _usageData ??= "";
+        _usageData += $"<br/>{e}";
     }
 
     protected override async void UpdateState(object? sender, PropertyChangedEventArgs args)
@@ -70,7 +85,7 @@ public partial class PlaygroundPage
     }
     private async Task PickFile()
     {
-        var item = await FileService.OpenFileAsync();
+        var item = await FileService.OpenFileTextAsync();
         if (string.IsNullOrEmpty(item)) return;
         AppState.ActiveSystemPromptHtml = AsHtml(item.Replace(@"\", ""));
         Logger.LogInformation("Loaded system prompt from file and updated state");
@@ -202,7 +217,7 @@ public partial class PlaygroundPage
         {
             if (AppState.ChatSettings.Streaming)
             {
-                var chatSequence = ChatService.StreamingChatResponse(_chatView.ChatState.ChatHistory, AppState.ActiveSystemPrompt, AppState.ChatSettings.Model, token);
+                var chatSequence = AppState.ChatSettings.Model.StartsWith("o1") ? ChatService.Streamingo1ModelRespose(_chatView.ChatState.ChatHistory, AppState.ActiveSystemPrompt, token) : ChatService.StreamingChatResponse(_chatView.ChatState.ChatHistory, AppState.ActiveSystemPrompt, AppState.ChatSettings.Model, token);
                 await ExecuteChatSequence(chatSequence);
                 _isBusy = false;
                 StateHasChanged();

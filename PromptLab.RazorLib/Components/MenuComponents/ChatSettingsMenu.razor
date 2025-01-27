@@ -1,52 +1,69 @@
-﻿@using PromptLab.Core.Helpers
+﻿@using Microsoft.SemanticKernel
+@using PromptLab.Core.Helpers
 @inherits AppComponentBase
 <RadzenTemplateForm Data="_chatSettings" TItem="ChatSettings" Submit="Submit" Style="display: flex;
                                                                                      justify-content: center;
                                                                                      flex-direction: column;
                                                                                      align-content: center;
                                                                                      flex-wrap: wrap;">
-	<RadzenFormField Text="Model">
-		<ChildContent>
-			<RadzenDropDown Name="Model" @bind-Value="_chatSettings.Model" Data="@AppState.UserProfile.AvailableModels()"></RadzenDropDown>
-		</ChildContent>
-		<Helper>
-			<RadzenRequiredValidator Component="Model"></RadzenRequiredValidator>
-		</Helper>
-	</RadzenFormField>
-	<RadzenFormField Text="Tempurature">
-		<ChildContent>
-			<RadzenNumeric Style="padding:4px;color:darkgray" @bind-Value="_chatSettings.Temperature" TValue="float?" Min="0.0m" Max="2.0m" Step="0.05"></RadzenNumeric>
-		</ChildContent>
-	</RadzenFormField>
-	<RadzenFormField Text="TopP">
-		<ChildContent>
-			<RadzenNumeric Style="padding:4px;color:darkgray" @bind-Value="_chatSettings.TopP" TValue="float?" Min="0.1m" Max="3.0m" Step="0.05"></RadzenNumeric>
-		</ChildContent>
-	</RadzenFormField>
-	<RadzenFormField Text="PresencePenalty">
-		<ChildContent>
-			<RadzenNumeric Style="padding:4px;color:darkgray" @bind-Value="_chatSettings.PresencePenalty" TValue="float?" Min="-2.0m" Max="2.0m" Step="0.1"></RadzenNumeric>
-		</ChildContent>
-	</RadzenFormField>
-	<RadzenFormField Text="FrequencyPenalty">
-		<ChildContent>
-			<RadzenNumeric Style="padding:4px;color:darkgray" @bind-Value="_chatSettings.FrequencyPenalty" TValue="float?" Min="-2.0m" Max="2.0m" Step="0.1"></RadzenNumeric>
-		</ChildContent>
-	</RadzenFormField>
-	<RadzenFormField Text="MaxTokens">
-		<ChildContent>
-			<RadzenNumeric Style="padding:4px;color:darkgray" @bind-Value="_chatSettings.MaxTokens" TValue="int?" Min="0" Max="16000" Step="1"></RadzenNumeric>
-		</ChildContent>
-	</RadzenFormField>
-	<RadzenFormField Text="Response Format">
-		<RadzenDropDown Data="@Enum.GetValues(typeof(ResponseFormat))" @bind-Value="_chatSettings.ResponseFormat"></RadzenDropDown>
-	</RadzenFormField>
-	<RadzenLabel Style="border-radius:30px; background-color:white">
-		<RadzenCheckBox Disabled="@(!_chatSettings.Model.Contains("gpt"))" @bind-Value="_chatSettings.LogProbs"></RadzenCheckBox><span style="margin-left:4px; color:blue">Use LogProbs Output</span>
-	</RadzenLabel>
+    <RadzenFormField Text="Model" Style="max-width:250px">
+        <ChildContent>
+            <RadzenDropDown Style="max-width:250px" Name="Model" @bind-Value="_chatSettings.Model" Data="@AppState.UserProfile.AvailableModels()"></RadzenDropDown>
+        </ChildContent>
+        <Helper>
+            <RadzenRequiredValidator Component="Model"></RadzenRequiredValidator>
+        </Helper>
+    </RadzenFormField>
+    <RadzenFormField Text="Tempurature">
+        <ChildContent>
+            <RadzenNumeric Style="padding:4px;color:darkgray" @bind-Value="_chatSettings.Temperature" TValue="float?" Min="0.0m" Max="2.0m" Step="0.05"></RadzenNumeric>
+        </ChildContent>
+    </RadzenFormField>
+    <RadzenFormField Text="TopP">
+        <ChildContent>
+            <RadzenNumeric Style="padding:4px;color:darkgray" @bind-Value="_chatSettings.TopP" TValue="float?" Min="0.1m" Max="3.0m" Step="0.05"></RadzenNumeric>
+        </ChildContent>
+    </RadzenFormField>
+    <RadzenFormField Text="PresencePenalty">
+        <ChildContent>
+            <RadzenNumeric Style="padding:4px;color:darkgray" @bind-Value="_chatSettings.PresencePenalty" TValue="float?" Min="-2.0m" Max="2.0m" Step="0.1"></RadzenNumeric>
+        </ChildContent>
+    </RadzenFormField>
+    <RadzenFormField Text="FrequencyPenalty">
+        <ChildContent>
+            <RadzenNumeric Style="padding:4px;color:darkgray" @bind-Value="_chatSettings.FrequencyPenalty" TValue="float?" Min="-2.0m" Max="2.0m" Step="0.1"></RadzenNumeric>
+        </ChildContent>
+    </RadzenFormField>
+    <RadzenFormField Text="MaxTokens">
+        <ChildContent>
+            <RadzenNumeric Style="padding:4px;color:darkgray" @bind-Value="_chatSettings.MaxTokens" TValue="int?" Min="0" Max="16000" Step="1"></RadzenNumeric>
+        </ChildContent>
+    </RadzenFormField>
+    <RadzenFormField Text="Response Format">
+        <RadzenDropDown Data="@Enum.GetValues(typeof(ResponseFormat))" @bind-Value="_chatSettings.ResponseFormat"></RadzenDropDown>
+    </RadzenFormField>
+    <RadzenLabel Style="border-radius:30px; background-color:white">
+        <RadzenCheckBox Disabled="@(!_chatSettings.Model.Contains("gpt"))" @bind-Value="_chatSettings.LogProbs"></RadzenCheckBox><span style="margin-left:4px; color:blue">Use LogProbs Output</span>
+    </RadzenLabel>
     <RadzenLabel Style="border-radius:30px; background-color:white">
         <RadzenCheckBox @bind-Value="_chatSettings.Streaming"></RadzenCheckBox><span style="color:blue; margin-left:4px">Use Streaming Output</span>
     </RadzenLabel>
-	<br />
-	<RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Small" Text="Save"></RadzenButton>
+    <RadzenLabel Style="border-radius:30px; background-color:white">
+        <RadzenCheckBox @bind-Value="_chatSettings.EnableTools"></RadzenCheckBox><span style="color:blue; margin-left:4px">Enable Tools</span>
+    </RadzenLabel>
+    @if (_chatSettings.EnableTools)
+    {
+        <RadzenButton Text="Add/Remove Plugins" ButtonStyle="ButtonStyle.Info" Click="OpenPluginFile" Size="ButtonSize.Small"></RadzenButton>
+        @if (_chatSettings.CustomPlugins.Any())
+        {
+            <ul>
+                @foreach (var plugin in _chatSettings.CustomPlugins)
+                {
+                    <li style="color:blue">@plugin.Name</li>
+                }
+            </ul>
+        }
+    }
+    <br />
+    <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Small" Text="Save"></RadzenButton>
 </RadzenTemplateForm>

@@ -31,7 +31,7 @@ const uploadIcon = `<svg xmlns='http://www.w3.org/2000/svg' viewBox="0 0 1792 17
 </svg>`;
 const editorInstances = new WeakMap();
 
-export function initializeJoditEditor(element, initialContent, dotNetHelper) {
+export function initializeJoditEditor(element, initialContent, dotNetHelper, options) {
     // Ensure Jodit script is loaded
     if (typeof Jodit === 'undefined') {
         console.error('Jodit library not loaded');
@@ -40,53 +40,41 @@ export function initializeJoditEditor(element, initialContent, dotNetHelper) {
     Jodit.modules.Icon.set('ai-assistant', aiAssistantIcon);
     Jodit.modules.Icon.set('ai-commands', aiCommandsIcon);
     console.log(Jodit.modules.Icon.get('ai-assistant'));
-    const editor = Jodit.make(element, {
-        autofocus: true,
-        spellcheck: true,
-        toolbarButtonSize: "xsmall",
-        defaultMode: "1",
-        //inline: true,
-        toolbarInlineForSelection: true,
-        showPlaceholder: false,
-        height: 650,
-        toolbarAdaptive: false,
-        toolbarStickyOffset: 10,
-        buttons: "bold,italic,underline,ul,ol,paragraph,|,undo,redo,|,spellcheck,|,cut,copy,paste,selectall,|,table,symbols,indent,outdent",
-        extraButtons: [
-            {
-                name: 'improve',
-                icon: Jodit.modules.Icon.get('ai-assistant'),
-                tooltip: 'Ask Expert Prompt Engineer To Improve',
-                exec: function (editor) {
-                    dotNetHelper.invokeMethodAsync('OnEventInvoked', 'Improve');
-                }
-            },
-            {
-                name: 'eval',
-                tooltip: 'Evaluate Prompt',
-                icon: Jodit.modules.Icon.get('ai-commands'),
-                exec: function (editor) {
-                    dotNetHelper.invokeMethodAsync('OnEventInvoked', 'Eval');
-                }
-            },
-            {
-                name: 'save',
-                tooltip: 'Save Prompt',
-                icon: Jodit.modules.Icon.get('save'),
-                exec: function (editor) {
-                    dotNetHelper.invokeMethodAsync('OnEventInvoked', 'Save');
-                }
-            },
-            {
-                name: 'upload',
-                tooltip: 'Load Saved Prompt',
-                icon: Jodit.modules.Icon.get('upload'),
-                exec: function (editor) {
-                    dotNetHelper.invokeMethodAsync('OnEventInvoked', 'Load');
-                }
+    options.extraButtons = [
+        {
+            name: 'improve',
+            icon: Jodit.modules.Icon.get('ai-assistant'),
+            tooltip: 'Ask Expert Prompt Engineer To Improve',
+            exec: function (editor) {
+                dotNetHelper.invokeMethodAsync('OnEventInvoked', 'Improve');
             }
-        ]
-    });
+        },
+        {
+            name: 'eval',
+            tooltip: 'Evaluate Prompt',
+            icon: Jodit.modules.Icon.get('ai-commands'),
+            exec: function (editor) {
+                dotNetHelper.invokeMethodAsync('OnEventInvoked', 'Eval');
+            }
+        },
+        {
+            name: 'save',
+            tooltip: 'Save Prompt',
+            icon: Jodit.modules.Icon.get('save'),
+            exec: function (editor) {
+                dotNetHelper.invokeMethodAsync('OnEventInvoked', 'Save');
+            }
+        },
+        {
+            name: 'upload',
+            tooltip: 'Load Saved Prompt',
+            icon: Jodit.modules.Icon.get('upload'),
+            exec: function (editor) {
+                dotNetHelper.invokeMethodAsync('OnEventInvoked', 'Load');
+            }
+        }
+    ]
+    const editor = Jodit.make(element, options);
    
     // Set initial content
     if (initialContent) {

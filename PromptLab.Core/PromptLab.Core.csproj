@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helpers\AnthropicPromptExecutionSettings.cs" />
+    <Compile Remove="Helpers\GeminiResponse.cs" />
+    <Compile Remove="Models\SearchResult.cs" />
+    <Compile Remove="Plugins\MemorySave.cs" />
     <Compile Remove="Plugins\MetaPromptPlugin.cs" />
     <Compile Remove="Services\WebFileService.cs" />
   </ItemGroup>
@@ -20,25 +24,35 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Anthropic" Version="3.1.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.68.0.3653" />
     <PackageReference Include="HdbscanSharp" Version="2.0.0" />
-    <PackageReference Include="Markdig" Version="0.38.0" />
+    <PackageReference Include="HillPhelmuth.SemanticKernel.LlmAsJudgeEvals" Version="1.0.4" />
+    <PackageReference Include="Lost.SemanticKernel.Connectors.Anthropic" Version="1.25.0-alpha3" />
+    <PackageReference Include="Markdig" Version="0.39.1" />
+    <PackageReference Include="Microsoft.Bing.Search.WebSearch" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.Azure" Version="1.9.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.31.0" />
-    <PackageReference Include="Microsoft.SemanticKernel.Agents.Core" Version="1.31.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Agents.OpenAI" Version="1.31.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.31.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.MistralAI" Version="1.31.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.31.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.31.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.31.0-alpha" />
-    <PackageReference Include="Microsoft.SemanticKernel.Plugins.OpenApi" Version="1.31.0-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.31.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="9.0.10" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.34.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Agents.Core" Version="1.34.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Agents.OpenAI" Version="1.34.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Amazon" Version="1.34.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.34.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.InMemory" Version="1.34.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.MistralAI" Version="1.34.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Pinecone" Version="1.34.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Sqlite" Version="1.34.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.34.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Memory" Version="1.34.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.OpenApi" Version="1.34.0-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.34.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="9.0.22" />
+    <PackageReference Include="PdfPig" Version="0.1.9" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="Tiktoken" Version="2.2.0" />

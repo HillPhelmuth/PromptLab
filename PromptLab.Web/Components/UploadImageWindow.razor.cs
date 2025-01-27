@@ -10,8 +10,6 @@ namespace PromptLab.Web.Components;
 
 public partial class UploadImageWindow
 {
-    [Inject]
-    private DialogService DialogService { get; set; } = default!;
     private FileUpload _fileUpload = new();
     private int maxFileSize = 1024 * 1024 * 500;
 

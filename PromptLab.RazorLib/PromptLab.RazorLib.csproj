@@ -14,11 +14,19 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Pages\AgentBuilderPage.razor.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Pages\AgentBuilderPage.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
         <SupportedPlatform Include="browser" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Markdig" Version="0.38.0" />
+        <PackageReference Include="Markdig" Version="0.39.1" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
         <PackageReference Include="Microsoft.Extensions.Azure" Version="1.9.0" />
         <PackageReference Include="Radzen.Blazor" Version="5.6.10" />

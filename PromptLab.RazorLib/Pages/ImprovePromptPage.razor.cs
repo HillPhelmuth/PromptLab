@@ -26,10 +26,12 @@ public partial class ImprovePromptPage
     private int _selectedIndex;
     private CancellationTokenSource _cts = new();
     private JoditEditor? _joditEditor;
+    private JoditEditorOptions _editorOptions = new(){Height = 550};
 
     private class PromptForm
     {
         public string Prompt { get; set; } = string.Empty;
+        public string ModificationInstructions { get; set; } = string.Empty;
     }
 
     private class CreatePromptForm
@@ -68,7 +70,11 @@ public partial class ImprovePromptPage
 
     private void UpdatePrimaryPrompt()
     {
-        AppState.ActiveSystemPromptHtml = AsHtml(AnalysisSteps.Last().Content.Replace("```markdown", "").Replace("```", "").Trim('\n'));
+        var finalPrompt = AnalysisSteps.Last().Content;
+        if (finalPrompt.StartsWith("```"))
+            finalPrompt = finalPrompt.Trim('`');
+        var cleaned = finalPrompt.Trim('\n');
+        AppState.ActiveSystemPromptHtml = AsHtml(cleaned);
         NavigationManager.NavigateTo("/playground");
     }
     private bool _isNewPrompt;
@@ -108,7 +114,7 @@ public partial class ImprovePromptPage
 
     private async Task PickFile()
     {
-        var item = await FileService.OpenFileAsync();
+        var item = await FileService.OpenFileTextAsync();
         if (string.IsNullOrEmpty(item)) return;
         AppState.ActiveSystemPromptHtml = AsHtml(item);
         await _joditEditor.SetContentAsync(AppState.ActiveSystemPromptHtml);
@@ -156,14 +162,14 @@ public partial class ImprovePromptPage
     }
 
     private bool _showCarosel = true;
-    private async Task ExecuteMetaPrompt()
+    private async Task ExecuteMetaPrompt(string additionalInstructions = "")
     {
 
         AnalysisSteps.Clear();
         _isBusy = true;
         StateHasChanged();
         await Task.Delay(1);
-        var steps = await MetaPromptService.RunFullMetaPromptStack(AppState.ActiveSystemPrompt);
+        var steps = await MetaPromptService.RunFullMetaPromptStack(AppState.ActiveSystemPrompt, modifyInstructions:additionalInstructions);
         await File.WriteAllTextAsync("MetaPromptSteps.json", JsonSerializer.Serialize(steps));
         _selectedIndex = 0;
         StateHasChanged();
@@ -178,7 +184,7 @@ public partial class ImprovePromptPage
 
         //AppState.ActiveSystemPromptHtml = form.Prompt;
         _currentStep = 1;
-        await ExecuteMetaPrompt();
+        await ExecuteMetaPrompt(form.ModificationInstructions);
         StateHasChanged();
     }
     private async void UpdateCreatePrompt(CreatePromptForm form)
@@ -215,9 +221,6 @@ public partial class ImprovePromptPage
                 break;
             case nameof(AppState.PromptToSave):
                 {
-                    //var parameters = new Dictionary<string, object> { ["MessageText"] = _text };
-                    //var dialogOptions = new DialogOptions { CloseDialogOnOverlayClick = true, Height = "40vh", Width = "40vw", Resizable = true, Draggable = true };
-                    //await DialogService.OpenAsync<MessageModalWindow>("Response from Prompt Engineer Agent", parameters, dialogOptions);
                     Logger.LogInformation("Save Prompt dialog triggered");
                     var properties = new Dictionary<string, object> { ["MessageText"] = AppState.PromptToSave, ["ShowConfirmButton"] = true };
                     var save = await DialogService.OpenAsync<MessageModalWindow>("Save Prompt", properties, new DialogOptions { Height = "80vh", Width = "65vw" });

@@ -1009,6 +1009,7 @@ class Config {
          */
         this.showBrowserColorPicker = true;
     }
+    
     static get defaultOptions() {
         if (!Config.__defaultOptions) {
             Config.__defaultOptions = new Config();

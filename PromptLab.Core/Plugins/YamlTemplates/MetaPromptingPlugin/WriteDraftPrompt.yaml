@@ -14,8 +14,11 @@ input_variables:
 - name: evaluation
   description: Evaluation of the original prompt
   default: ''
+- name: instructions
+  description: Instructions for the re-writing task
+  default: ''
 template: |
- You are tasked with re-writing a prompt based on the provided analysis and evaluation. Your goal is to create an improved version that addresses the findings and suggestions from the analysis while maintaining or enhancing the original purpose.
+ You are tasked with re-writing a prompt based on the provided analysis, evaluation and user instructions. Your goal is to create an improved version that implements the user instructions and also addresses the findings and suggestions from the analysis while maintaining or enhancing the original purpose.
  Note: You must respect and protect any prompt variables or placeholders present in the text, usually wrapped in one or more `{` brackets.
  ## Original Prompt
  ```
@@ -28,8 +31,12 @@ template: |
  ## Evaluation Results
  {{$evaluation}}
 
+ ## User Instructions
+ {{$instructions}}
+
  ## Instructions
  1. Create a new draft of the prompt that:
+  - Follows the user instructions
   - Addresses the improvement suggestions from the analysis
   - Maintains the identified purpose
   - Follows the structural elements that were praised

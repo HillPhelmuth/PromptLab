@@ -11,6 +11,9 @@ input_variables:
 - name: analysis
   description: Analysis of the prompt.
   default: ''
+- name: instructions
+  description: Instructions for the outline task.
+  default: ''
 template: |
  Generate an outline to improve an existing prompt based on original text and analysis.
 
@@ -24,7 +27,11 @@ template: |
  ## Analysis of Original Prompt:
  ```
  {{$analysis}}
- ``
+ ```
+ ## User Instructions:
+
+ {{$instructions}}
+ 
 
  # Steps
 
@@ -37,7 +44,7 @@ template: |
  # Outline Format
 
  The outline sections should be as follows:
-  - **Objective**: Clearly define what the prompt should achieve.
+  - **Objective**: Clearly define what the prompt should achieve with a focus on the user instructions.
   - **Issues from Analysis**: Summarize the key issues identified from the analysis.
   - **Improvement Plan**:
   - **Structure Improvements**: Layout specific changes in the organization of the prompt.

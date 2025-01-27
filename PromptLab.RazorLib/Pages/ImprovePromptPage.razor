@@ -3,16 +3,25 @@
 <RadzenSteps SelectedIndex="_currentStep" SelectedIndexChanged="SelectedStepChanged">
     <Steps>
         <RadzenStepsItem Text="Prompt" NextText="Improve Prompt">
-            <RadzenTabs>
+            <RadzenTabs TabPosition="TabPosition.Left">
                 <Tabs>
                     <RadzenTabsItem Text="Improve Prompt">
                         <RadzenCard>
                             <RadzenTemplateForm Data="_promptForm" Submit="UpdatePrompt" TItem="PromptForm">
-                                <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.ExtraSmall" Text="Submit"></RadzenButton>
-                                <RadzenFormField Text="Prompt" Style="width:100%">
-                                    @* <RadzenTextArea Style="width:100%; height:50vh" @bind-Value="_promptForm.Prompt"></RadzenTextArea> *@
-                                    <JoditEditor @ref=_joditEditor ElementId="editor" @bind-HtmlContent="@AppState.ActiveSystemPromptHtml" EventInvoked="HandleExecute"></JoditEditor>
-                                </RadzenFormField>
+                                <RadzenRow>
+                                    <RadzenColumn Size="7">
+                                        <RadzenFormField Text="Prompt" Style="width:100%">
+                                            @* <RadzenTextArea Style="width:100%; height:50vh" @bind-Value="_promptForm.Prompt"></RadzenTextArea> *@
+                                            <JoditEditor Options="_editorOptions" @ref=_joditEditor ElementId="editor" @bind-HtmlContent="@AppState.ActiveSystemPromptHtml" EventInvoked="HandleExecute"></JoditEditor>
+                                        </RadzenFormField>
+                                    </RadzenColumn>
+                                    <RadzenColumn Size="5">
+                                        <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.ExtraSmall" Text="Submit"></RadzenButton>
+                                        <RadzenFormField Style="width:100%" Text="Modification Instructions">
+                                            <RadzenTextArea @bind-Value="_promptForm.ModificationInstructions" Style="width:100%;height:20rem;overflow:auto"></RadzenTextArea>
+                                        </RadzenFormField>
+                                    </RadzenColumn>
+                                </RadzenRow>
                             </RadzenTemplateForm>
                         </RadzenCard>
                     </RadzenTabsItem>

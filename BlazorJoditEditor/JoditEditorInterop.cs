@@ -14,7 +14,7 @@ public class JoditEditorInterop : IAsyncDisposable
         moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
             "import", "./_content/BlazorJoditEditor/jodit-js-module.js").AsTask());
     }
-    public async ValueTask InitJodit(ElementReference elementReference, string? content)
+    public async ValueTask InitJodit(ElementReference elementReference, string? content, JoditEditorOptions options)
     {
         var module = await moduleTask.Value;
         // Create a DotNet reference to pass back to JavaScript
@@ -24,7 +24,7 @@ public class JoditEditorInterop : IAsyncDisposable
         await module.InvokeVoidAsync("initializeJoditEditor",
             elementReference,
             content ?? string.Empty,
-            dotNetHelper);
+            dotNetHelper, options.AsJavascriptObject());
     }
     
     public async ValueTask SetContentAsync(string content, ElementReference editorElement)

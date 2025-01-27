@@ -9,6 +9,7 @@ using PromptLab.Web.Components;
 using Radzen;
 using Microsoft.Extensions.Azure;
 using BlazorJoditEditor;
+using PromptLab.Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,8 @@ services.AddAzureClients(clientBuilder =>
 services.AddLogging(o =>
 {
     o.AddConsole();
+    o.Services.AddSingleton<StringEventWriter>();
+    o.Services.AddSingleton<ILoggerProvider, StringEventWriterLoggerProvider>();
 });
 var app = builder.Build();
 

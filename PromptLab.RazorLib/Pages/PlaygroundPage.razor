@@ -2,63 +2,70 @@
 @page "/playground"
 
 <RadzenRow>
-	<RadzenColumn Size="4">
+    <RadzenColumn Size="4">
 
-		<RadzenCard Style="padding-top:0">
-			<div>
-				@if (!string.IsNullOrEmpty(_savedPrompt))
-				{
-					<RadzenText TextStyle="TextStyle.Caption">Saved as: @_savedPrompt</RadzenText>
-				}
-			</div>
-			<RadzenFormField Text="System Prompt Editor" Style="width:100%">
-				<RadzenCard Style="padding:.5rem; width:100%">
-					
-					<JoditEditor @ref="_joditEditor" ElementId="systemPrompt" @bind-HtmlContent="@AppState.ActiveSystemPromptHtml" EventInvoked="HandleExecute"></JoditEditor>
-				</RadzenCard>
+        <RadzenCard Style="padding-top:0">
+            <div>
+                @if (!string.IsNullOrEmpty(_savedPrompt))
+                {
+                    <RadzenText TextStyle="TextStyle.Caption">Saved as: @_savedPrompt</RadzenText>
+                }
+            </div>
+            <RadzenFormField Text="System Prompt Editor" Style="width:100%">
+                <RadzenCard Style="padding:.5rem; width:100%">
 
-			</RadzenFormField>
+                    <JoditEditor Options="_editorOptions" @ref="_joditEditor" ElementId="systemPrompt" @bind-HtmlContent="@AppState.ActiveSystemPromptHtml" EventInvoked="HandleExecute"></JoditEditor>
+                </RadzenCard>
 
-		</RadzenCard>
-		@if (!string.IsNullOrEmpty(_usageData))
-		{
-			<RadzenCard Style="max-height:10rem; overflow:auto">
-				@((MarkupString)AsHtml(_usageData))
-			</RadzenCard>
-		}
-	</RadzenColumn>
-	<RadzenColumn Size="8" Style="position:relative">
-		<RadzenCard>
+            </RadzenFormField>
 
-			<div style="position:absolute; left:.5rem; top: 0; display:flex; flex-direction:row">
-				<RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="Clear" Click="ClearChat"></RadzenButton>
-				<RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="save" Text="Save" Click="SaveChat"></RadzenButton>
-			</div>
-			<RadzenButton Style="position:absolute; right:.5rem; top: 0" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="post_add" Text="Add Message" Click="AddMessage"></RadzenButton>
-			<ChatView ResetOnClose="false" AllowRemove=true ViewId="chatWithSk" Height="80vh" IsLogProbView=AppState.IsLogProbView Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
-		</RadzenCard>
+        </RadzenCard>
+        @if (!string.IsNullOrEmpty(_usageData))
+        {
+            <RadzenCard Style="max-height:10rem; overflow:auto">
+                <RadzenButton Click="ShowInlineDialog" Text="Show Logs"></RadzenButton>
+            </RadzenCard>
+        }
+    </RadzenColumn>
+    <RadzenColumn Size="8" Style="position:relative">
+        <RadzenCard>
 
-		<RadzenCard Style="position:relative" Variant="Variant.Filled">
-			<UserInput IsRequired="@(false)" ButtonLabel="Send" HelperText="User Input" UserInputSubmit="HandleRequest" IsBusy="_isBusy" CancelRequest="Cancel" ImprovedPromptRequest="HandleImprovePrompt" ImprovedPrompt="@_suggestedPrompt"></UserInput>
-		</RadzenCard>
-	</RadzenColumn>
+            <div style="position:absolute; left:.5rem; top: 0; display:flex; flex-direction:row">
+                <RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="close" Text="Clear" Click="ClearChat"></RadzenButton>
+                <RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="save" Text="Save" Click="SaveChat"></RadzenButton>
+            </div>
+            <RadzenButton Style="position:absolute; right:.5rem; top: 0" Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Icon="post_add" Text="Add Message" Click="AddMessage"></RadzenButton>
+            <ChatView ResetOnClose="false" AllowRemove=true ViewId="chatWithSk" Height="80vh" IsLogProbView=AppState.IsLogProbView Timestamps=AppState.ShowTimestamps @ref=_chatView></ChatView>
+        </RadzenCard>
+
+        <RadzenCard Style="position:relative" Variant="Variant.Filled">
+            <UserInput IsRequired="@(false)" ButtonLabel="Send" HelperText="User Input" UserInputSubmit="HandleRequest" IsBusy="_isBusy" CancelRequest="Cancel" ImprovedPromptRequest="HandleImprovePrompt" ImprovedPrompt="@_suggestedPrompt"></UserInput>
+        </RadzenCard>
+    </RadzenColumn>
 </RadzenRow>
 
 @code {
-	private Task<bool> ValidateSettings()
-	{
-		var (isValid, message) = AppState.ChatModelSettings.Validate();
-		if (isValid) return Task.FromResult(isValid);
-		var notificationMessage = new NotificationMessage
-		{
-			Severity = NotificationSeverity.Error,
-			Summary = $"Chat Model Settings Invalid - {message}",
-			Detail = "Update Settings Here",
-			Duration = 10000,
-			Click = ShowSettings,
-			CloseOnClick = true,
-			DetailContent = ns => @<RadzenButton Text="Update Settings" Click="ShowSettings" /> };
-		NotificationService.Notify(notificationMessage);
-		return Task.FromResult(isValid);
-	}
+    private Task<bool> ValidateSettings()
+    {
+        var (isValid, message) = AppState.ChatModelSettings.Validate();
+        if (isValid) return Task.FromResult(isValid);
+        var notificationMessage = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = $"Chat Model Settings Invalid - {message}",
+                    Detail = "Update Settings Here",
+                    Duration = 10000,
+                    Click = ShowSettings,
+                    CloseOnClick = true,
+                    DetailContent = ns => @<RadzenButton Text="Update Settings" Click="ShowSettings" /> };
+        NotificationService.Notify(notificationMessage);
+        return Task.FromResult(isValid);
+    }
+    async Task ShowInlineDialog()
+    {
+        var result = await DialogService.OpenAsync("Simple Dialog", ds =>
+    @<RadzenCard Style="height:30rem; overflow:auto">
+        @((MarkupString)AsHtml(_usageData)))
+    </RadzenCard>);
+    }
 }
